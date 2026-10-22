@@ -1,0 +1,128 @@
+{
+  "verified_date": "2026-10-22",
+  "notes": [
+    "Sources and SHA256 verified against publisher Hugging Face file pages; model payloads were not downloaded.",
+    "The exports do not identify original URLs or hashes. These are explicit publisher variants selected for this manifest, not proof of the provenance of the original Pod files.",
+    "ComfyUI is supplied by the template, not upgraded by this tool. Use live --verify to check node availability; inference compatibility still requires a smoke generation."
+  ],
+  "models": {
+    "models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/ad4cf4a39bcbda5be137c74bcce84c42fcd2b11d/split_files/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/blob/ad4cf4a39bcbda5be137c74bcce84c42fcd2b11d/split_files/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors",
+      "revision": "ad4cf4a39bcbda5be137c74bcce84c42fcd2b11d",
+      "sha256": "5dc80554d5d83390046a2f4a94ece06afb7700bf7b0aaf8bde9769793875876b",
+      "approx_gb": 20.4,
+      "review": null
+    },
+    "models/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/25608066f9bf5cdc28020836ce9549587053f346/split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/blob/25608066f9bf5cdc28020836ce9549587053f346/split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+      "revision": "25608066f9bf5cdc28020836ce9549587053f346",
+      "sha256": "cb5636d852a0ea6a9075ab1bef496c0db7aef13c02350571e388aea959c5c0b4",
+      "approx_gb": 9.38,
+      "review": null
+    },
+    "models/vae/qwen_image_vae.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/dfe60a0d63f0b946628080f070978594983b8b6e/split_files/vae/qwen_image_vae.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/blob/dfe60a0d63f0b946628080f070978594983b8b6e/split_files/vae/qwen_image_vae.safetensors",
+      "revision": "dfe60a0d63f0b946628080f070978594983b8b6e",
+      "sha256": "a70580f0213e67967ee9c95f05bb400e8fb08307e017a924bf3441223e023d1f",
+      "approx_gb": 0.254,
+      "review": null
+    },
+    "models/diffusion_models/krea2_turbo_int8_convrot.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/6b1d7191d84d5ded74d83a1a98211dad0ac8ae25/diffusion_models/krea2_turbo_int8_convrot.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/Krea-2/blob/6b1d7191d84d5ded74d83a1a98211dad0ac8ae25/diffusion_models/krea2_turbo_int8_convrot.safetensors",
+      "revision": "6b1d7191d84d5ded74d83a1a98211dad0ac8ae25",
+      "sha256": "8e4eeda70dd5037ab1ba2bef6b417f9f901e26093117cf397f741fc1fdaaf3f1",
+      "approx_gb": 13.5,
+      "review": null
+    },
+    "models/diffusion_models/krea2_turbo_fp8_scaled.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/3da2809e72fa04ba266e3b51c2a366fd04500b5a/diffusion_models/krea2_turbo_fp8_scaled.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/Krea-2/blob/3da2809e72fa04ba266e3b51c2a366fd04500b5a/diffusion_models/krea2_turbo_fp8_scaled.safetensors",
+      "revision": "3da2809e72fa04ba266e3b51c2a366fd04500b5a",
+      "sha256": "eb4dd8c612cfd10f64f25b057e6e6bbcb5737c94a7372177e456dbf7579502f1",
+      "approx_gb": 13.1,
+      "review": null
+    },
+    "models/text_encoders/qwen3vl_4b_fp8_scaled.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/4aa0eed112bd2780ceea37583edbdcd2df6c2c09/text_encoders/qwen3vl_4b_fp8_scaled.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/Krea-2/blob/4aa0eed112bd2780ceea37583edbdcd2df6c2c09/text_encoders/qwen3vl_4b_fp8_scaled.safetensors",
+      "revision": "4aa0eed112bd2780ceea37583edbdcd2df6c2c09",
+      "sha256": "54bd5144df0bbc25dd6ccadfcb826b521445a1b06ae5a42570bdd2974ca87094",
+      "approx_gb": 5.24,
+      "review": null
+    },
+    "models/loras/krea2_darkbrush.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/b5a1dcd1574c1d256408cbb5ae46a67b225481e6/loras/krea2_darkbrush.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/Krea-2/blob/b5a1dcd1574c1d256408cbb5ae46a67b225481e6/loras/krea2_darkbrush.safetensors",
+      "revision": "b5a1dcd1574c1d256408cbb5ae46a67b225481e6",
+      "sha256": "f47c4316dd93af66e0518c93b582f459571d4925b519133770c73a52cd5db7c6",
+      "approx_gb": 0.469,
+      "review": null
+    },
+    "models/loras/Qwen-Image-2512-Lightning-4steps-V1.0-fp32.safetensors": {
+      "url": "https://huggingface.co/lightx2v/Qwen-Image-2512-Lightning/resolve/c747488cc28339e752a8527b025be219fa232549/Qwen-Image-2512-Lightning-4steps-V1.0-fp32.safetensors",
+      "source": "https://huggingface.co/lightx2v/Qwen-Image-2512-Lightning/blob/c747488cc28339e752a8527b025be219fa232549/Qwen-Image-2512-Lightning-4steps-V1.0-fp32.safetensors",
+      "revision": "c747488cc28339e752a8527b025be219fa232549",
+      "sha256": "ad12117461cb41e2ea637fec8df6392ce8e8550c47fbe2b829ed3deb98262066",
+      "approx_gb": 1.7,
+      "review": null
+    },
+    "models/loras/Wuli-Qwen-Image-2512-Turbo-LoRA-2steps-V1.0-bf16.safetensors": {
+      "url": "https://huggingface.co/Wuli-art/Qwen-Image-2512-Turbo-LoRA-2-Steps/resolve/1ae1b55d7a66923d67499e1dc1d0b8bd72b0ec65/Wuli-Qwen-Image-2512-Turbo-LoRA-2steps-V1.0-bf16.safetensors",
+      "source": "https://huggingface.co/Wuli-art/Qwen-Image-2512-Turbo-LoRA-2-Steps/blob/1ae1b55d7a66923d67499e1dc1d0b8bd72b0ec65/Wuli-Qwen-Image-2512-Turbo-LoRA-2steps-V1.0-bf16.safetensors",
+      "revision": "1ae1b55d7a66923d67499e1dc1d0b8bd72b0ec65",
+      "sha256": "76b5525a2babb2d96ca1fc37f5616f755cec51e7f71dac59294412f968565193",
+      "approx_gb": 2.36,
+      "review": null
+    }
+  },
+  "custom_nodes": {},
+  "core_nodes": {
+    "CLIPLoader": "https://github.com/Comfy-Org/ComfyUI/blob/master/nodes.py",
+    "CLIPTextEncode": "https://github.com/Comfy-Org/ComfyUI/blob/master/nodes.py",
+    "ConditioningZeroOut": "https://github.com/Comfy-Org/ComfyUI/blob/master/nodes.py",
+    "EmptyLatentImage": "https://github.com/Comfy-Org/ComfyUI/blob/master/nodes.py",
+    "KSampler": "https://github.com/Comfy-Org/ComfyUI/blob/master/nodes.py",
+    "LoraLoaderModelOnly": "https://github.com/Comfy-Org/ComfyUI/blob/master/nodes.py",
+    "SaveImage": "https://github.com/Comfy-Org/ComfyUI/blob/master/nodes.py",
+    "UNETLoader": "https://github.com/Comfy-Org/ComfyUI/blob/master/nodes.py",
+    "VAEDecode": "https://github.com/Comfy-Org/ComfyUI/blob/master/nodes.py",
+    "VAELoader": "https://github.com/Comfy-Org/ComfyUI/blob/master/nodes.py",
+    "EmptySD3LatentImage": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_sd3.py",
+    "ModelSamplingAuraFlow": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_model_advanced.py",
+    "ComfySwitchNode": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_logic.py",
+    "PrimitiveBoolean": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_primitive.py",
+    "PrimitiveInt": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_primitive.py",
+    "PrimitiveFloat": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_primitive.py",
+    "PrimitiveStringMultiline": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_primitive.py",
+    "StringConcatenate": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_string.py",
+    "ResolutionSelector": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_resolution.py",
+    "TextGenerate": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_textgen.py",
+    "PreviewAny": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_preview_any.py"
+  },
+  "workflows": {
+    "37625afe54d44ce18d1d448f0cfbd15f.json": {
+      "name": "qwen 2512 turbo",
+      "custom_nodes": [],
+      "review": []
+    },
+    "3b6da2434a25463084c06118dcd74bf5.json": {
+      "name": "Qwen 2512",
+      "custom_nodes": [],
+      "review": []
+    },
+    "7dda5a7153ce42ab9ff9da464bcde99a.json": {
+      "name": "Imported workflow",
+      "custom_nodes": [],
+      "review": []
+    },
+    "93ff8dfe40cb45adb8672731aea68328.json": {
+      "name": "Krea 2  Turbo",
+      "custom_nodes": [],
+      "review": []
+    }
+  }
+}
