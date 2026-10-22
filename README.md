@@ -32,7 +32,10 @@ python3 provision.py --inspect --workflows-dir ../comfyui-api-poc/workflows
 The same option works with `--install`, `--verify`, and `--dry-run`. Paths are
 relative to your current working directory; the default bundled `workflows/` is
 resolved relative to the script. Newly added dependencies need review in this
-repository's manifest. The app's workflow changes are not synchronized automatically.
+repository's manifest. The app is the testing area and source of truth; it owns
+workflow syncing and dependency updates. This repository receives the saved
+workflow snapshots and reviewed `dependencies.json`, then installs/verifies them
+on Pods. See the app's README and `update-comfy-provisioning` skill for syncing.
 
 ## Fresh Pod: deploy, clone, provision
 

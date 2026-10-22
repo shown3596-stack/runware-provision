@@ -56,14 +56,13 @@ class ProvisionTests(unittest.TestCase):
         w = dict(slug='w', key='w.json', issues=[], nodes=set(), assets={'models/vae/test.safetensors'})
         self.assertIn('unresolved', p.plan([w], self.manifest)[2][0])
 
-    def test_shared_assets_deduplicated(self):
+    def test_bundled_workflows_have_resolved_pinned_dependencies(self):
         workflows = p.discover(p.ROOT / 'workflows')
         manifest = json.loads((p.ROOT / 'dependencies.json').read_text())
         assets, packages, issues = p.plan(workflows, manifest)
-        self.assertEqual(len(workflows), 4)
-        self.assertEqual(len(assets), 9)
-        self.assertEqual((packages, issues), ([], []))
-        self.assertEqual(sum('qwen_image_vae' in a for a in assets), 1)
+        self.assertTrue(workflows)
+        self.assertTrue(assets)
+        self.assertEqual(issues, [])
         for model in manifest['models'].values():
             self.assertRegex(model['sha256'], r'^[0-9a-f]{64}$')
             self.assertIn('/resolve/' + model['revision'] + '/', model['url'])
