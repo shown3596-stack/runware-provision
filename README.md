@@ -68,6 +68,19 @@ is submitted. If auto-detection cannot identify one installation, add
 `/workspace/ComfyUI` and `/opt/ComfyUI`. An alternate local API location can be
 specified with `--comfy-url http://127.0.0.1:8188`.
 
+After installation, the tool automatically restarts the running ComfyUI process
+for the selected installation, then waits for its node/model checks to pass.
+It sends `SIGTERM`, allows up to 30 seconds for shutdown, and relaunches with the
+same Python command, arguments, working directory and environment. Existing
+listen/port settings are preserved; for SSH tunnels, use `--listen 127.0.0.1
+--port 8188` when initially starting ComfyUI. The replacement runs detached from
+SSH with output appended to `<ComfyUI>/.provision-comfyui.log`. Startup checks
+retry for about two minutes. Installation requires one identifiable running
+Python `main.py` process for that directory; unrelated Python processes are left
+alone. For templates managed by a service or supervisor, use `--no-restart`,
+restart through that manager after installation, then run `--verify`.
+`--verify` and `--dry-run` never restart ComfyUI.
+
 Use `--all` instead of `--workflow NAME` to provision every discovered export.
 Models are shared by destination path. Existing files are SHA-256 checked and
 skipped; reruns do not fetch them again. Interrupted downloads resume from
@@ -150,8 +163,8 @@ repository creates, stops, or terminates Pods.
   directory with `repo`, full 40-character `commit`, `nodes` (class-type list), and
   optional `review`. The tool installs `requirements.txt` with its own Python,
   records commit/requirements/interpreter identity, and skips repeat pip installs.
-  Existing mismatched or modified checkouts are rejected. Restart ComfyUI manually
-  after installation and rerun `--verify`; a folder alone does not prove it loaded.
+  Existing mismatched or modified checkouts are rejected. Installation restarts
+  ComfyUI before checking registered nodes; a folder alone does not prove it loaded.
 - **New or ambiguous dependencies:** add the exact `models/<directory>/<filename>`
   key under `models`, with publisher `source`, pinned `url`, `revision`, and
   `sha256` or exact `size_bytes`. Use `url: null` and `review: "reason"` when
@@ -164,7 +177,8 @@ repository creates, stops, or terminates Pods.
   by arbitrary custom code; review such nodes before marking them resolved.
 - **Server unreachable:** `--verify` is strict and returns failure when live checks
   cannot run. After downloads, this failure does not remove installed models.
-  Start/restart the server manually as indicated, then verify again. `--dry-run`
+  Check `.provision-comfyui.log` if the automatic restart fails, start/restart the
+  server manually as indicated, then verify again. `--dry-run`
   needs neither ComfyUI nor network and makes no filesystem changes.
 
 ## Local checks

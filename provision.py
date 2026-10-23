@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import signal
 import subprocess
 import sys
 import time
@@ -281,6 +282,71 @@ def verify_nodes(workflows, url, check_models=True):
           ' verified. GPU inference has not been tested.')
 
 
+def running_comfy(root, proc=Path('/proc')):
+    """Capture only a Python main.py process belonging to this installation."""
+    matches = []
+    for entry in proc.iterdir():
+        if not entry.name.isdigit() or int(entry.name) == os.getpid():
+            continue
+        try:
+            command = (entry / 'cmdline').read_bytes().rstrip(b'\0').split(b'\0')
+            command = [os.fsdecode(arg) for arg in command]
+            if not command or not Path(command[0]).name.startswith('python'):
+                continue
+            cwd = (entry / 'cwd').resolve(strict=True)
+            if not any(arg and (cwd / arg).resolve() == root / 'main.py'
+                       for arg in command[1:] if not arg.startswith('-')):
+                continue
+            environment = dict(os.fsdecode(item).split('=', 1)
+                               for item in (entry / 'environ').read_bytes().split(b'\0') if b'=' in item)
+            matches.append(dict(pid=int(entry.name), command=command, cwd=cwd, env=environment))
+        except (OSError, ValueError):
+            continue  # Processes may exit while /proc is being scanned.
+    if len(matches) != 1:
+        raise ValueError('Cannot identify exactly one running Python main.py for this ComfyUI installation. '
+                         'Start it first, or use --no-restart and restart it yourself before --verify.')
+    return matches[0]
+
+
+def process_alive(pid):
+    try:
+        # A terminated child can remain as a zombie until its parent reaps it.
+        return Path(f'/proc/{pid}/stat').read_text().rsplit(')', 1)[1].split()[0] != 'Z'
+    except FileNotFoundError:
+        return False
+
+
+def restart_comfy(root, process, workflows, url):
+    if running_comfy(root) != process:
+        raise ValueError('ComfyUI process changed during installation; rerun to capture its current launch settings.')
+    log_path = root / '.provision-comfyui.log'
+    # Open the log before stopping a working server, so a permissions error is harmless.
+    with log_path.open('ab') as log:
+        print(f'Restarting ComfyUI (PID {process["pid"]}); startup log: {log_path}', flush=True)
+        os.kill(process['pid'], signal.SIGTERM)
+        deadline = time.monotonic() + 30
+        while process_alive(process['pid']):
+            if time.monotonic() >= deadline:
+                raise ValueError('ComfyUI did not stop within 30s; no replacement was started. '
+                                 'Stop it manually and rerun --verify.')
+            time.sleep(0.5)
+        child = subprocess.Popen(process['command'], cwd=process['cwd'], env=process['env'],
+                                 stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT,
+                                 start_new_session=True)
+    deadline = time.monotonic() + 120
+    while True:
+        if child.poll() is not None:
+            raise ValueError(f'ComfyUI exited with code {child.returncode}; check {log_path}.')
+        try:
+            verify_nodes(workflows, url)
+            print(f'ComfyUI restarted (PID {child.pid}).', flush=True)
+            return
+        except ValueError as error:
+            if time.monotonic() >= deadline:
+                raise ValueError(f'ComfyUI did not become ready: {error} Check {log_path}.') from error
+            time.sleep(1)
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -294,6 +360,8 @@ def main(argv=None):
                         help='Workflow library directory (default: workflows/ beside this script)')
     parser.add_argument('--comfy-dir', default=os.environ.get('COMFYUI_DIR'))
     parser.add_argument('--comfy-url', default='http://127.0.0.1:8188', help='Read-only node verification endpoint')
+    parser.add_argument('--no-restart', action='store_true',
+                        help='Leave ComfyUI running after installation (restart manually if needed)')
     args = parser.parse_args(argv)
     if (args.install or args.verify) and not (args.workflow or args.all):
         parser.error('--install/--verify requires --workflow NAME or --all')
@@ -337,6 +405,7 @@ def main(argv=None):
     with (root / '.provision.lock').open('a') if args.install else nullcontext() as lock:
         if lock:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        process = running_comfy(root) if args.install and not args.no_restart else None
         errors = []
         for asset in assets:
             target = within(root, asset)
@@ -350,8 +419,11 @@ def main(argv=None):
             custom_node(root, name, manifest['custom_nodes'][name], verify=args.verify)
         if errors:
             raise ValueError('\n'.join(errors))
-        verify_nodes(workflows, args.comfy_url)
-    print(f'Complete in {time.monotonic() - start:.1f}s. ComfyUI was not restarted.')
+        if process:
+            restart_comfy(root, process, workflows, args.comfy_url)
+        else:
+            verify_nodes(workflows, args.comfy_url)
+    print(f'Complete in {time.monotonic() - start:.1f}s.')
     return 0
 
 

@@ -102,14 +102,70 @@ class ProvisionTests(unittest.TestCase):
             return subprocess.CompletedProcess(command, 0)
         args = ['--all', '--comfy-dir', str(comfy)]
         with patch.object(p, 'ROOT', self.root), patch.object(p, 'verify_nodes') as live, \
+                patch.object(p, 'running_comfy', return_value={'pid': 123}) as running, \
+                patch.object(p, 'restart_comfy') as restart, \
                 patch.object(p.shutil, 'which', return_value='/usr/bin/curl'), \
                 patch.object(p.subprocess, 'run', side_effect=curl) as run, \
                 contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(p.main(['--install', *args]), 0)
             self.assertEqual(p.main(['--install', *args]), 0)
+            self.assertEqual(p.main(['--install', '--no-restart', *args]), 0)
             self.assertEqual(p.main(['--verify', *args]), 0)
         self.assertEqual(run.call_count, 1)  # two workflows, two runs, one shared download
-        self.assertEqual(live.call_count, 5)  # installation preflights and final checks
+        self.assertEqual(live.call_count, 5)  # three preflights, opt-out and standalone verification
+        self.assertEqual(running.call_count, 2)
+        self.assertEqual(restart.call_count, 2)  # install restarts even when files are already present
+
+    def test_process_capture_preserves_launch_environment_and_rejects_ambiguity(self):
+        proc = self.root / 'proc'
+        proc.mkdir()
+        comfy = self.root / 'ComfyUI'
+        comfy.mkdir()
+        def process(pid, script):
+            entry = proc / str(pid)
+            entry.mkdir()
+            (entry / 'cwd').symlink_to(comfy, target_is_directory=True)
+            (entry / 'cmdline').write_bytes(
+                b'/venv/bin/python\0' + script + b'\0--listen\0' + b'127.0.0.1\0--port\0' + b'8188\0')
+            (entry / 'environ').write_bytes(b'PATH=/venv/bin:/usr/bin\0TOKEN=value=with=equals\0')
+        process(123, b'main.py')
+        process(124, b'other.py')
+        captured = p.running_comfy(comfy, proc)
+        self.assertEqual(captured['pid'], 123)
+        self.assertEqual(captured['command'], ['/venv/bin/python', 'main.py', '--listen', '127.0.0.1', '--port', '8188'])
+        self.assertEqual(captured['env']['TOKEN'], 'value=with=equals')
+        process(125, str(comfy / 'main.py').encode())
+        with self.assertRaisesRegex(ValueError, 'exactly one'):
+            p.running_comfy(comfy, proc)
+
+    def test_restart_waits_for_shutdown_then_readiness_and_detaches(self):
+        process = dict(pid=123, command=['/venv/bin/python', 'main.py', '--port', '8188'],
+                       cwd=self.root, env={'PATH': '/venv/bin'})
+        with patch.object(p, 'running_comfy', return_value=process), \
+                patch.object(p.os, 'kill') as kill, \
+                patch.object(p, 'process_alive', side_effect=[True, False]), \
+                patch.object(p.time, 'sleep'), \
+                patch.object(p.subprocess, 'Popen') as popen, \
+                patch.object(p, 'verify_nodes', side_effect=[ValueError('starting'), None]) as live:
+            popen.return_value.poll.return_value = None
+            p.restart_comfy(self.root, process, [], 'http://127.0.0.1:8188')
+        kill.assert_called_once_with(123, p.signal.SIGTERM)
+        self.assertEqual(live.call_count, 2)
+        self.assertEqual(popen.call_args.args[0], process['command'])
+        self.assertEqual(popen.call_args.kwargs['env'], process['env'])
+        self.assertEqual(popen.call_args.kwargs['cwd'], self.root)
+        self.assertTrue(popen.call_args.kwargs['start_new_session'])
+        self.assertTrue((self.root / '.provision-comfyui.log').exists())
+
+    def test_restart_does_not_launch_if_shutdown_times_out(self):
+        process = dict(pid=123)
+        with patch.object(p, 'running_comfy', return_value=process), \
+                patch.object(p.os, 'kill'), patch.object(p, 'process_alive', return_value=True), \
+                patch.object(p.time, 'monotonic', side_effect=[0, 31]), \
+                patch.object(p.subprocess, 'Popen') as popen:
+            with self.assertRaisesRegex(ValueError, 'did not stop'):
+                p.restart_comfy(self.root, process, [], 'http://127.0.0.1:8188')
+        popen.assert_not_called()
 
     def test_atomic_download_resume_and_second_run_skips_network(self):
         target = self.root / 'models' / 'test.safetensors'
