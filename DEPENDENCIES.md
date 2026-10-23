@@ -1,4 +1,39 @@
-# Workflow dependency audit — 22 October 2026
+# Workflow sync — 23 October 2026
+
+Synced the current app library unchanged: `qwen-2512.json` (Qwen 2512),
+`krea-2-turbo-fp8.json` (Krea 2 Turbo FP8), and `mage-flow-turbo.json`
+(Mage Flow Turbo). Their stable workflow IDs and parameter defaults are preserved.
+Chroma1 HD was removed from the app at the user's request and was not promoted.
+
+The four older UUID-named snapshots listed in the historical audit below are
+retained downstream. This includes Qwen Turbo and Krea INT8, which were deleted
+from the app, and older copies of Qwen 2512 and Krea FP8. Sync does not delete
+destination-only files. Use explicit readable filenames for current workflows
+because the retained Qwen snapshot duplicates its display name.
+
+The resulting seven snapshots reference **12 unique model files** (about
+**79.78 GB**) and **23 node types**, with no custom-node repositories. The three
+current app workflows alone reference 10 model files (about 63.92 GB).
+
+Mage uses `mage_flow_turbo_int8_convrot.safetensors`,
+`qwen3vl_4b_bf16.safetensors`, and `mage_flow_vae_bf16.safetensors` from
+[Comfy-Org/Mage-Flow](https://huggingface.co/Comfy-Org/Mage-Flow/tree/6ff68fbf3c667325e961d551691b246791d5eec0).
+Publisher API metadata supplied the exact byte sizes and SHA-256 checksums;
+all three downloads are pinned to that revision in `dependencies.json`.
+Its four-step Euler/simple sampler, CFG 1, original positive prompt, blank
+negative prompt, 1024-square defaults and PNG output settings are preserved.
+Custom dimensions should use multiples of 16, up to 8192 per dimension.
+
+`TextEncodeMageFlowEdit` and `SaveImageAdvanced` were inspected in
+[ComfyUI Mage nodes](https://github.com/Comfy-Org/ComfyUI/blob/d07dff4565ea9804277fff8cdfa0c817e08c3d44/comfy_extras/nodes_mage.py)
+and [image nodes](https://github.com/Comfy-Org/ComfyUI/blob/d07dff4565ea9804277fff8cdfa0c817e08c3d44/comfy_extras/nodes_images.py).
+This establishes source ownership, not a tested minimum runtime version.
+The template must expose those nodes and the `mage` encoder family; no automatic
+core upgrade is requested. The earlier model verification dates remain unchanged.
+No model payload downloads, Pod installation, live schema checks or GPU inference
+were performed during this sync.
+
+## Historical audit — 22 October 2026
 
 The four JSON files under `workflows/` are unchanged snapshots copied from the
 separate `comfyui-api-poc` workflow library. All four were inspected. Each contains a named

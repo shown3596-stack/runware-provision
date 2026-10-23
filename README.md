@@ -3,7 +3,7 @@
 Provision only the models needed by an existing workflow, on a Pod that already
 has ComfyUI. `provision.py` uses Python 3.10+ standard library and `curl`; `git`
 and pip are needed only for custom nodes. This is a standalone provisioning repository. It includes unchanged snapshots of
-the four workflows audited from `comfyui-api-poc`; the original app and workflow
+the workflows audited from `comfyui-api-poc`; the original app and workflow
 library remain in that separate repository.
 
 ## Inspect locally before renting a GPU
@@ -17,8 +17,14 @@ python3 provision.py --install --workflow qwen-2512-turbo --dry-run
 
 Use `python` instead if that is your Python 3 command. Names are discovered from
 `workflows/**/*.json`, including the app's `{name, workflow}` wrapper; exact names,
-file stems and generated slugs work. The current workflows are `qwen-2512-turbo`,
-`qwen-2512`, `imported-workflow`, and `krea-2-turbo`. There is no `flux-klein` export.
+file stems and generated slugs work. Current app snapshots are `qwen-2512.json`,
+`krea-2-turbo-fp8.json`, and `mage-flow-turbo.json`. Four older UUID-named snapshots
+are retained downstream, including workflows removed from the app. Use the
+explicit filenames for current selections; the old Qwen copy shares its name.
+`--all` includes these retained snapshots (about 79.78 GB total unique models).
+Mage requires core support for `TextEncodeMageFlowEdit`, `SaveImageAdvanced`, and
+the `mage` encoder family; source ownership is verified, live execution is not.
+There is no `flux-klein` export.
 See [the dependency report](DEPENDENCIES.md) and [shared manifest](dependencies.json).
 
 The bundled workflow snapshots make this repository usable on its own. To inspect
@@ -35,7 +41,8 @@ resolved relative to the script. Newly added dependencies need review in this
 repository's manifest. The app is the testing area and source of truth; it owns
 workflow syncing and dependency updates. This repository receives the saved
 workflow snapshots and reviewed `dependencies.json`, then installs/verifies them
-on Pods. See the app's README and `update-comfy-provisioning` skill for syncing.
+on Pods. See the app's README for the sync command and the shared `runpod`
+folder's `skills/update-comfy-provisioning/SKILL.md` for the agent workflow.
 
 ## Fresh Pod: deploy, clone, provision
 

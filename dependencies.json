@@ -3,7 +3,8 @@
   "notes": [
     "Sources and SHA256 verified against publisher Hugging Face file pages; model payloads were not downloaded.",
     "The exports do not identify original URLs or hashes. These are explicit publisher variants selected for this manifest, not proof of the provenance of the original Pod files.",
-    "ComfyUI is supplied by the template, not upgraded by this tool. Use live --verify to check node availability; inference compatibility still requires a smoke generation."
+    "ComfyUI is supplied by the template, not upgraded by this tool. Use live --verify to check node availability; inference compatibility still requires a smoke generation.",
+    "2026-10-23: Added Mage Flow Turbo model sources, exact sizes and SHA256 from publisher API metadata at revision 6ff68fbf3c667325e961d551691b246791d5eec0. Verified its two additional nodes in ComfyUI source at d07dff4565ea9804277fff8cdfa0c817e08c3d44. No model payloads downloaded; live runtime unverified. Earlier model checks retain their original verification date."
   ],
   "models": {
     "models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors": {
@@ -77,6 +78,33 @@
       "sha256": "76b5525a2babb2d96ca1fc37f5616f755cec51e7f71dac59294412f968565193",
       "approx_gb": 2.36,
       "review": null
+    },
+    "models/diffusion_models/mage_flow_turbo_int8_convrot.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/Mage-Flow/resolve/6ff68fbf3c667325e961d551691b246791d5eec0/diffusion_models/mage_flow_turbo_int8_convrot.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/Mage-Flow/blob/6ff68fbf3c667325e961d551691b246791d5eec0/diffusion_models/mage_flow_turbo_int8_convrot.safetensors",
+      "revision": "6ff68fbf3c667325e961d551691b246791d5eec0",
+      "sha256": "327c3967a5190ea52e453ec3dd81ba168e37a2a0ff2c763aa3e9260bbbe1913c",
+      "size_bytes": 4159146840,
+      "approx_gb": 4.159,
+      "review": null
+    },
+    "models/text_encoders/qwen3vl_4b_bf16.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/Mage-Flow/resolve/6ff68fbf3c667325e961d551691b246791d5eec0/text_encoders/qwen3vl_4b_bf16.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/Mage-Flow/blob/6ff68fbf3c667325e961d551691b246791d5eec0/text_encoders/qwen3vl_4b_bf16.safetensors",
+      "revision": "6ff68fbf3c667325e961d551691b246791d5eec0",
+      "sha256": "36f3ff447ef59201722e8f9ce6020c9819fdcfba6aa2608c4e09b1c0ce114e34",
+      "size_bytes": 8875719384,
+      "approx_gb": 8.876,
+      "review": null
+    },
+    "models/vae/mage_flow_vae_bf16.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/Mage-Flow/resolve/6ff68fbf3c667325e961d551691b246791d5eec0/vae/mage_flow_vae_bf16.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/Mage-Flow/blob/6ff68fbf3c667325e961d551691b246791d5eec0/vae/mage_flow_vae_bf16.safetensors",
+      "revision": "6ff68fbf3c667325e961d551691b246791d5eec0",
+      "sha256": "34e076dc1e8a15321e1e07be5111d59cf16dd10b804b7c7e20b4de29013427e0",
+      "size_bytes": 345053056,
+      "approx_gb": 0.345,
+      "review": null
     }
   },
   "custom_nodes": {},
@@ -101,7 +129,9 @@
     "StringConcatenate": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_string.py",
     "ResolutionSelector": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_resolution.py",
     "TextGenerate": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_textgen.py",
-    "PreviewAny": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_preview_any.py"
+    "PreviewAny": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_preview_any.py",
+    "TextEncodeMageFlowEdit": "https://github.com/Comfy-Org/ComfyUI/blob/d07dff4565ea9804277fff8cdfa0c817e08c3d44/comfy_extras/nodes_mage.py",
+    "SaveImageAdvanced": "https://github.com/Comfy-Org/ComfyUI/blob/d07dff4565ea9804277fff8cdfa0c817e08c3d44/comfy_extras/nodes_images.py"
   },
   "workflows": {
     "37625afe54d44ce18d1d448f0cfbd15f.json": {
@@ -121,6 +151,21 @@
     },
     "93ff8dfe40cb45adb8672731aea68328.json": {
       "name": "Krea 2  Turbo",
+      "custom_nodes": [],
+      "review": []
+    },
+    "qwen-2512.json": {
+      "name": "Qwen 2512",
+      "custom_nodes": [],
+      "review": []
+    },
+    "mage-flow-turbo.json": {
+      "name": "Mage Flow Turbo",
+      "custom_nodes": [],
+      "review": []
+    },
+    "krea-2-turbo-fp8.json": {
+      "name": "Krea 2 Turbo FP8",
       "custom_nodes": [],
       "review": []
     }
