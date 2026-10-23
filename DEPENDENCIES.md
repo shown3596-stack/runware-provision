@@ -5,15 +5,22 @@ Synced the current app library unchanged: `qwen-2512.json` (Qwen 2512),
 (Mage Flow Turbo). Their stable workflow IDs and parameter defaults are preserved.
 Chroma1 HD was removed from the app at the user's request and was not promoted.
 
-The four older UUID-named snapshots listed in the historical audit below are
-retained downstream. This includes Qwen Turbo and Krea INT8, which were deleted
-from the app, and older copies of Qwen 2512 and Krea FP8. Sync does not delete
-destination-only files. Use explicit readable filenames for current workflows
-because the retained Qwen snapshot duplicates its display name.
+Full-library sync now includes removal of workflows deleted from the app. This
+run removed the four obsolete UUID-named snapshots from the historical audit,
+including Qwen Turbo, Krea INT8, and older duplicate copies. It also removed the
+unused `krea2_turbo_int8_convrot.safetensors` and
+`Wuli-Qwen-Image-2512-Turbo-LoRA-2steps-V1.0-bf16.safetensors` model declarations,
+the four obsolete per-workflow entries, and the unused `ResolutionSelector`
+core-node mapping. Shared models and remaining graph/override references were
+preserved.
 
-The resulting seven snapshots reference **12 unique model files** (about
-**79.78 GB**) and **23 node types**, with no custom-node repositories. The three
-current app workflows alone reference 10 model files (about 63.92 GB).
+The resulting **three snapshots** reference **10 unique model files** (about
+**63.92 GB**) and **22 node types**, with no custom-node repositories. The full
+`--all --prune --check` passes, app source hashes match their pre-sync values,
+and manifest provenance notes/verification dates remain unchanged. These are
+local repository removals, not model-file deletion or package uninstallation
+on an existing Pod. The historical audit below records the removed library's
+original state and sources.
 
 Mage uses `mage_flow_turbo_int8_convrot.safetensors`,
 `qwen3vl_4b_bf16.safetensors`, and `mage_flow_vae_bf16.safetensors` from
@@ -35,8 +42,10 @@ were performed during this sync.
 
 ## Historical audit — 22 October 2026
 
-The four JSON files under `workflows/` are unchanged snapshots copied from the
-separate `comfyui-api-poc` workflow library. All four were inspected. Each contains a named
+At the time of this historical audit, the four UUID-named JSON files were
+unchanged snapshots copied from the separate `comfyui-api-poc` workflow library.
+All four were inspected; these older snapshots have since been removed from the
+current provisioning library. Each contains a named
 library wrapper around an **API-format** graph, rather than UI `nodes`/`links`.
 The original files were not modified. There are **9 unique model files** and
 **21 unique node types**. No checkpoint, ControlNet, embedding, input image,
@@ -49,7 +58,7 @@ upscaler, or external custom-node repository is explicitly referenced.
 | `imported-workflow` | `7dda5a7153ce42ab9ff9da464bcde99a.json` | 22 | 4 | 19.06 GB |
 | `krea-2-turbo` | `93ff8dfe40cb45adb8672731aea68328.json` | 22 | 4 | 19.46 GB |
 
-## Per-workflow models and settings
+### Per-workflow models and settings
 
 - **qwen-2512-turbo:** `qwen_image_2512_fp8_e4m3fn.safetensors`,
   `qwen_2.5_vl_7b_fp8_scaled.safetensors`, `qwen_image_vae.safetensors`, and
@@ -75,7 +84,7 @@ or workflow rewriting is performed. Both Krea exports append
 lists `monochrome ink wash style` for darkbrush. Review the trigger in a separate
 workflow copy if using that branch; this audit leaves the export unchanged.
 
-## Nodes and ownership
+### Nodes and ownership
 
 All workflows share `CLIPLoader`, `CLIPTextEncode`, `KSampler`,
 `LoraLoaderModelOnly`, `SaveImage`, `UNETLoader`, `VAEDecode`, `VAELoader`.
@@ -97,7 +106,7 @@ and [text generation](https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_ext
 Per-node source mappings are recorded in the manifest. Similar class/display names
 in custom repositories do not establish a need to install those repositories.
 
-## Verified download sources
+### Verified download sources
 
 Each file page published a download link, file-specific commit and SHA-256. The
 manifest pins these selections and stores the checksum and destination. Rounded
@@ -121,7 +130,7 @@ old Pod's bytes match these variants. Existing files must match the manifest's
 checksum to pass verification. Sources were inspected through web retrieval;
 shell access to Hugging Face was unavailable. No model payload was downloaded.
 
-## Shared dependencies and remaining uncertainty
+### Shared dependencies and remaining uncertainty
 
 - Qwen Image VAE: all four graphs, downloaded once.
 - Qwen 2512 FP8 diffusion + Qwen 2.5 encoder: both Qwen graphs.

@@ -85,7 +85,11 @@ class ProvisionTests(unittest.TestCase):
             [str(Path(p.sys.executable)), str(p.ROOT / 'provision.py'), '--list'],
             cwd=self.root, capture_output=True, text=True, check=True,
         )
-        self.assertIn('qwen-2512-turbo', result.stdout)
+        library = p.ROOT / 'workflows'
+        expected = {path.relative_to(library).as_posix() for path in library.rglob('*.json')}
+        listed = {line.rsplit('[', 1)[1].removesuffix(']') for line in result.stdout.splitlines() if line}
+        self.assertEqual(listed, expected)
+        self.assertTrue(listed)
 
     def test_complete_cli_install_twice_then_verify(self):
         workflows = self.root / 'workflows'

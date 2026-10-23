@@ -11,17 +11,16 @@ library remain in that separate repository.
 ```bash
 python3 provision.py --list
 python3 provision.py --inspect
-python3 provision.py --inspect --workflow qwen-2512-turbo
-python3 provision.py --install --workflow qwen-2512-turbo --dry-run
+python3 provision.py --inspect --workflow qwen-2512.json
+python3 provision.py --install --workflow qwen-2512.json --dry-run
 ```
 
 Use `python` instead if that is your Python 3 command. Names are discovered from
 `workflows/**/*.json`, including the app's `{name, workflow}` wrapper; exact names,
 file stems and generated slugs work. Current app snapshots are `qwen-2512.json`,
-`krea-2-turbo-fp8.json`, and `mage-flow-turbo.json`. Four older UUID-named snapshots
-are retained downstream, including workflows removed from the app. Use the
-explicit filenames for current selections; the old Qwen copy shares its name.
-`--all` includes these retained snapshots (about 79.78 GB total unique models).
+`krea-2-turbo-fp8.json`, and `mage-flow-turbo.json`. Full app-to-provision sync
+now includes pruning; four obsolete UUID-named snapshots were removed. `--all`
+selects the three current workflows: **10 unique model files**, about **63.92 GB**.
 Mage requires core support for `TextEncodeMageFlowEdit`, `SaveImageAdvanced`, and
 the `mage` encoder family; source ownership is verified, live execution is not.
 There is no `flux-klein` export.
@@ -44,6 +43,15 @@ workflow snapshots and reviewed `dependencies.json`, then installs/verifies them
 on Pods. See the app's README for the sync command and the shared `runpod`
 folder's `skills/update-comfy-provisioning/SKILL.md` for the agent workflow.
 
+Full app-authoritative sync uses `sync_provision.py --all --prune` (preview), then
+`--apply` and `--check` with the same flags. It removes snapshots deleted from the
+app and dependency declarations no remaining graph/override references, preserving
+shared models and node packages. Selective sync and sync without `--prune` retain
+other snapshots. A Pod receives the cleaned selection after this repository is published and
+its checkout is pulled during session startup. Repository pruning
+does not delete existing model files, custom-node directories or packages on a Pod.
+
+
 ## Fresh Pod: deploy, clone, provision
 
 1. Deploy an RTX A5000 24 GB Pod with your existing ComfyUI template and SSH key.
@@ -63,8 +71,8 @@ folder's `skills/update-comfy-provisioning/SKILL.md` for the agent workflow.
 git clone YOUR_PROVISION_REPOSITORY_URL provision
 cd provision
 # Use the same Python/activated environment as the template's ComfyUI process.
-python3 provision.py --install --workflow qwen-2512-turbo
-python3 provision.py --verify --workflow qwen-2512-turbo
+python3 provision.py --install --workflow qwen-2512.json
+python3 provision.py --verify --workflow qwen-2512.json
 ```
 
 Keep the template's ComfyUI server running on the Pod during provisioning and
@@ -125,8 +133,8 @@ extract only the `workflow` member to a **new local file** and import that file:
 python3 - <<'PY'
 import json
 from pathlib import Path
-p = Path('workflows/37625afe54d44ce18d1d448f0cfbd15f.json')
-Path('/tmp/qwen-2512-turbo-api.json').write_text(json.dumps(json.loads(p.read_text())['workflow']))
+p = Path('workflows/qwen-2512.json')
+Path('/tmp/qwen-2512-api.json').write_text(json.dumps(json.loads(p.read_text())['workflow']))
 PY
 ```
 

@@ -31,14 +31,6 @@
       "approx_gb": 0.254,
       "review": null
     },
-    "models/diffusion_models/krea2_turbo_int8_convrot.safetensors": {
-      "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/6b1d7191d84d5ded74d83a1a98211dad0ac8ae25/diffusion_models/krea2_turbo_int8_convrot.safetensors",
-      "source": "https://huggingface.co/Comfy-Org/Krea-2/blob/6b1d7191d84d5ded74d83a1a98211dad0ac8ae25/diffusion_models/krea2_turbo_int8_convrot.safetensors",
-      "revision": "6b1d7191d84d5ded74d83a1a98211dad0ac8ae25",
-      "sha256": "8e4eeda70dd5037ab1ba2bef6b417f9f901e26093117cf397f741fc1fdaaf3f1",
-      "approx_gb": 13.5,
-      "review": null
-    },
     "models/diffusion_models/krea2_turbo_fp8_scaled.safetensors": {
       "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/3da2809e72fa04ba266e3b51c2a366fd04500b5a/diffusion_models/krea2_turbo_fp8_scaled.safetensors",
       "source": "https://huggingface.co/Comfy-Org/Krea-2/blob/3da2809e72fa04ba266e3b51c2a366fd04500b5a/diffusion_models/krea2_turbo_fp8_scaled.safetensors",
@@ -69,14 +61,6 @@
       "revision": "c747488cc28339e752a8527b025be219fa232549",
       "sha256": "ad12117461cb41e2ea637fec8df6392ce8e8550c47fbe2b829ed3deb98262066",
       "approx_gb": 1.7,
-      "review": null
-    },
-    "models/loras/Wuli-Qwen-Image-2512-Turbo-LoRA-2steps-V1.0-bf16.safetensors": {
-      "url": "https://huggingface.co/Wuli-art/Qwen-Image-2512-Turbo-LoRA-2-Steps/resolve/1ae1b55d7a66923d67499e1dc1d0b8bd72b0ec65/Wuli-Qwen-Image-2512-Turbo-LoRA-2steps-V1.0-bf16.safetensors",
-      "source": "https://huggingface.co/Wuli-art/Qwen-Image-2512-Turbo-LoRA-2-Steps/blob/1ae1b55d7a66923d67499e1dc1d0b8bd72b0ec65/Wuli-Qwen-Image-2512-Turbo-LoRA-2steps-V1.0-bf16.safetensors",
-      "revision": "1ae1b55d7a66923d67499e1dc1d0b8bd72b0ec65",
-      "sha256": "76b5525a2babb2d96ca1fc37f5616f755cec51e7f71dac59294412f968565193",
-      "approx_gb": 2.36,
       "review": null
     },
     "models/diffusion_models/mage_flow_turbo_int8_convrot.safetensors": {
@@ -127,33 +111,12 @@
     "PrimitiveFloat": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_primitive.py",
     "PrimitiveStringMultiline": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_primitive.py",
     "StringConcatenate": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_string.py",
-    "ResolutionSelector": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_resolution.py",
     "TextGenerate": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_textgen.py",
     "PreviewAny": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_preview_any.py",
     "TextEncodeMageFlowEdit": "https://github.com/Comfy-Org/ComfyUI/blob/d07dff4565ea9804277fff8cdfa0c817e08c3d44/comfy_extras/nodes_mage.py",
     "SaveImageAdvanced": "https://github.com/Comfy-Org/ComfyUI/blob/d07dff4565ea9804277fff8cdfa0c817e08c3d44/comfy_extras/nodes_images.py"
   },
   "workflows": {
-    "37625afe54d44ce18d1d448f0cfbd15f.json": {
-      "name": "qwen 2512 turbo",
-      "custom_nodes": [],
-      "review": []
-    },
-    "3b6da2434a25463084c06118dcd74bf5.json": {
-      "name": "Qwen 2512",
-      "custom_nodes": [],
-      "review": []
-    },
-    "7dda5a7153ce42ab9ff9da464bcde99a.json": {
-      "name": "Imported workflow",
-      "custom_nodes": [],
-      "review": []
-    },
-    "93ff8dfe40cb45adb8672731aea68328.json": {
-      "name": "Krea 2  Turbo",
-      "custom_nodes": [],
-      "review": []
-    },
     "qwen-2512.json": {
       "name": "Qwen 2512",
       "custom_nodes": [],
