@@ -1,5 +1,54 @@
 # Workflow sync — 24 October 2026
 
+Latest release added `ltx-2-3-image-to-video.json` from the app, with its stable
+ID, wrapper, defaults, parameter markers and complete 51-node graph preserved.
+All eight snapshots match the authoritative app byte for byte; no snapshots or
+dependency declarations needed pruning. App source hashes are unchanged.
+The resulting library has **28 unique models** (about **198.73 GB**) and
+**53 node types**, with no custom-node repositories.
+
+Five model sources were verified against publisher API metadata and pinned with
+full revisions, exact byte sizes and SHA-256 in `dependencies.json`:
+
+| Destination | Publisher source | Exact bytes |
+| --- | --- | ---: |
+| `models/checkpoints/ltx-2.3-22b-dev-fp8.safetensors` | [Lightricks/LTX-2.3-fp8](https://huggingface.co/Lightricks/LTX-2.3-fp8/blob/91eda216f820e5ecb3d17dc9fe3b7cdaf56b587d/ltx-2.3-22b-dev-fp8.safetensors) | 29,145,431,166 |
+| `models/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors` | [Comfy-Org/ltx-2](https://huggingface.co/Comfy-Org/ltx-2/blob/ccde4ba417d7900669fd56dd292a883cee11ff37/split_files/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors) | 9,447,702,218 |
+| `models/latent_upscale_models/ltx-2.3-spatial-upscaler-x2-1.1.safetensors` | [Lightricks/LTX-2.3](https://huggingface.co/Lightricks/LTX-2.3/blob/c1521179de480464f366a98a9d9b2acc4cc097b9/ltx-2.3-spatial-upscaler-x2-1.1.safetensors) | 995,743,560 |
+| `models/loras/ltx_2.3_22b_distilled_1.1_lora_dynamic_fro09_avg_rank_111_bf16.safetensors` | [Comfy-Org/ltx-2.3](https://huggingface.co/Comfy-Org/ltx-2.3/blob/f20f3a54378001e5e6d642acc84719cc78addf4b/split_files/loras/ltx_2.3_22b_distilled_1.1_lora_dynamic_fro09_avg_rank_111_bf16.safetensors) | 2,741,024,390 |
+| `models/loras/gemma-3-12b-it-abliterated_lora_rank64_bf16.safetensors` | [Comfy-Org/ltx-2](https://huggingface.co/Comfy-Org/ltx-2/blob/ccde4ba417d7900669fd56dd292a883cee11ff37/split_files/loras/gemma-3-12b-it-abliterated_lora_rank64_bf16.safetensors) | 628,203,616 |
+
+LTX adds about 42.96 GB of unique models. The checkpoint is downloaded once even
+though three loaders reference it. The disabled prompt-enhancement branch remains
+included. No input image is treated as a downloadable model; `API_INPUT_IMAGE` is
+supplied by the local app's image-upload flow at generation time.
+
+Twenty-two additional core-node mappings were inspected at ComfyUI commit
+`7cebca52227c63b4180ceed448cbd7ad22903b6d`. The manifest links each source file:
+`nodes.py`, `nodes_lt.py`, `nodes_lt_audio.py`, `nodes_lt_upsampler.py`,
+`nodes_hunyuan.py`, `nodes_post_processing.py`, `nodes_math.py`, `nodes_video.py`
+and `nodes_textgen.py`. This verifies ownership, not a tested minimum runtime.
+The provisioning scanner now recognizes node-specific text-encoder and latent
+upscaler filenames, rejects unresolved or incorrect upscaler links, and checks
+both loader dropdowns during live model verification. No core/runtime upgrade
+was performed.
+
+The video workflow retains both sampling stages, audio, x2 upscaling, LoRA
+strengths, the disabled prompt enhancer and the image-conditioning switch.
+Defaults are 1024-square final dimensions, 25 fps and approximately 10 seconds
+(249 shared audio/video frames on the `8n+1` grid). Final dimensions use /64
+steps; both noise stages and the optional enhancer use the app's generation seed.
+The local helper supports the input image and video result; the image extension
+bridge excludes video workflows. No live Pod/GPU generation or model payload
+download was performed, so memory, kernels and image/video quality remain untested.
+
+Release checks passed: full sync/prune check, all-workflow installation dry run,
+17 provisioning tests (including two new LTX loader tests), 20 sync tests and
+four offline LTX parameter-substitution trials. Earlier verification dates are
+preserved; new model source checks are dated 2026-10-24.
+
+## Earlier sync — MOSS, 24 October 2026
+
 Latest sync added `moss-image-sft-4-step.json` unchanged from the app. The other
 six snapshots were unchanged; no snapshot deletions or dependency pruning were
 needed. All seven snapshots match the app byte for byte and source hashes are

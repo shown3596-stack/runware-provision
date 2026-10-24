@@ -271,5 +271,60 @@ class ProvisionTests(unittest.TestCase):
             p.verify_nodes(workflows, 'http://localhost:8188')
 
 
+    def test_ltx_loader_assets_and_reviewed_upscaler_links(self):
+        graph = {
+            'checkpoint': {'class_type': 'CheckpointLoaderSimple', 'inputs': {'ckpt_name': 'ltx.safetensors'}},
+            'audio': {'class_type': 'LTXVAudioVAELoader', 'inputs': {'ckpt_name': 'ltx.safetensors'}},
+            'encoder': {'class_type': 'LTXAVTextEncoderLoader', 'inputs': {
+                'ckpt_name': 'ltx.safetensors', 'text_encoder': 'gemma.safetensors'}},
+            'upscale-loader': {'class_type': 'LatentUpscaleModelLoader', 'inputs': {'model_name': 'upscaler.safetensors'}},
+            'upscale': {'class_type': 'LTXVLatentUpsampler', 'inputs': {'upscale_model': ['upscale-loader', 0]}},
+            'lora': {'class_type': 'LoraLoader', 'inputs': {'lora_name': 'enhancer.safetensors'}},
+        }
+        path = self.write('ltx.json', {'name': 'LTX', 'workflow': graph})
+        workflow = p.discover(self.root)[0]
+        self.assertEqual(workflow['issues'], [])
+        self.assertEqual(workflow['assets'], {
+            'models/checkpoints/ltx.safetensors', 'models/text_encoders/gemma.safetensors',
+            'models/latent_upscale_models/upscaler.safetensors', 'models/loras/enhancer.safetensors'})
+        for link in [['missing', 0], ['encoder', 0], ['upscale-loader', 1],
+                     ['upscale-loader', False], 'upscaler.safetensors']:
+            graph['upscale']['inputs']['upscale_model'] = link
+            path.write_text(json.dumps(graph))
+            self.assertTrue(any('reviewed LatentUpscaleModelLoader' in issue for issue in p.discover(self.root)[0]['issues']))
+        graph['upscale']['inputs']['upscale_model'] = ['upscale-loader', 0]
+        graph['encoder']['inputs']['text_encoder'] = 'API_ENCODER'
+        path.write_text(json.dumps(graph))
+        self.assertTrue(any('dynamic model selection' in issue for issue in p.discover(self.root)[0]['issues']))
+        graph['encoder']['inputs']['text_encoder'] = 'gemma.safetensors'
+        graph['upscale-loader']['class_type'] = 'UnreviewedLoader'
+        path.write_text(json.dumps(graph))
+        self.assertTrue(any('unclassified asset' in issue for issue in p.discover(self.root)[0]['issues']))
+
+    def test_ltx_loader_choices_checked_live_and_skipped_before_download(self):
+        graph = {
+            'encoder': {'class_type': 'LTXAVTextEncoderLoader', 'inputs': {'text_encoder': 'gemma.safetensors'}},
+            'upscale-loader': {'class_type': 'LatentUpscaleModelLoader', 'inputs': {'model_name': 'up.safetensors'}},
+        }
+        self.write('ltx.json', graph)
+        workflows = p.discover(self.root)
+        schema = {
+            'LTXAVTextEncoderLoader': {'input': {'required': {'text_encoder': [['gemma.safetensors'], {}]}}},
+            'LatentUpscaleModelLoader': {'input': {'required': {'model_name': ['COMBO', {'options': ['up.safetensors']}]}}},
+        }
+        def server():
+            return patch.object(p, 'urlopen', return_value=contextlib.closing(io.BytesIO(json.dumps(schema).encode())))
+        with server():
+            p.verify_nodes(workflows, 'http://localhost:8188')
+        for kind, field in [('LTXAVTextEncoderLoader', 'text_encoder'), ('LatentUpscaleModelLoader', 'model_name')]:
+            original = schema[kind]['input']['required'][field]
+            schema[kind]['input']['required'][field] = [[], {}]
+            with server(), self.assertRaisesRegex(ValueError, 'does not offer'):
+                p.verify_nodes(workflows, 'http://localhost:8188')
+            with server():
+                p.verify_nodes(workflows, 'http://localhost:8188', check_models=False)
+            schema[kind]['input']['required'][field] = original
+
+
 if __name__ == '__main__':
     unittest.main()

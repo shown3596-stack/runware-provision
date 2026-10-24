@@ -19,9 +19,10 @@ Use `python` instead if that is your Python 3 command. Names are discovered from
 `workflows/**/*.json`, including the app's `{name, workflow}` wrapper; exact names,
 file stems and generated slugs work. Current app snapshots are `qwen-2512.json`,
 `krea-2-turbo-fp8.json`, `mage-flow-turbo.json`, `ernie-image-turbo.json`,
-`qwen-image-2-1-turbo.json`, `z-image-turbo.json`, and `moss-image-sft-4-step.json`.
-Full app-to-provision sync includes pruning. `--all` selects these seven workflows:
-**23 unique model files**, about **155.77 GB**, including disabled prompt-enhancement branches.
+`qwen-image-2-1-turbo.json`, `z-image-turbo.json`, `moss-image-sft-4-step.json`, and
+`ltx-2-3-image-to-video.json`. Full app-to-provision sync includes pruning.
+`--all` selects these eight workflows: **28 unique model files**, about **198.73 GB**,
+including disabled prompt-enhancement branches.
 Mage requires core support for `TextEncodeMageFlowEdit`, `SaveImageAdvanced`, and
 the `mage` encoder family; source ownership is verified, live execution is not.
 Ernie, Qwen Image 2.1 and Z Image also need matching core model/encoder support;
@@ -31,6 +32,14 @@ and GPU smoke generation are still required for the chosen Pod template.
 MOSS uses the Comfy-Org SFT BF16 checkpoint and Qwen3.5 9B INT8 ConvRot encoder,
 akhaliq's frozen four-step v2.0 LoRA, and the shared FLUX.2 VAE. Its template must
 support the `moss_image` encoder family; live MOSS execution remains unverified.
+LTX 2.3 uses its full FP8 checkpoint (shared by the video/audio VAEs and AV text
+encoder), Gemma FP4 text encoder, x2 latent upscaler, distilled LoRA and optional
+Gemma prompt-enhancement LoRA. All five files are pinned with SHA-256 and exact
+sizes. The dependency scanner recognizes the LTX loader fields and checks the
+upsampler's model connection against its loader instead of treating it as a
+filename. Use the updated local helper app to select/upload the starting image
+and display/download the video; the extension bridge currently stores images only.
+Provisioning does not supply an example image or substitute `API_INPUT_IMAGE`.
 There is no `flux-klein` export.
 See [the dependency report](DEPENDENCIES.md) and [shared manifest](dependencies.json).
 
@@ -66,7 +75,7 @@ does not delete existing model files, custom-node directories or packages on a P
    Choose ephemeral container disk, no network volume, and zero volume disk if
    the template allows it. Budget **at least 50 GB free beyond the template** for
    Qwen or **30 GB** for one Krea workflow, plus outputs; all workflows need about
-   156 GB of unique models, so allow at least 180 GB free. Ephemeral disk can still
+   199 GB of unique models, so allow at least 230 GB free. Ephemeral disk can still
    have a charge while the Pod exists. Record the template image digest and
    ComfyUI commit for a setup that you have actually smoke-tested.
 2. Connect using the Pod's **direct SSH TCP** command from Runpod's Connect panel.

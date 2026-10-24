@@ -6,7 +6,8 @@
     "ComfyUI is supplied by the template, not upgraded by this tool. Use live --verify to check node availability; inference compatibility still requires a smoke generation.",
     "2026-10-23: Added Mage Flow Turbo model sources, exact sizes and SHA256 from publisher API metadata at revision 6ff68fbf3c667325e961d551691b246791d5eec0. Verified its two additional nodes in ComfyUI source at d07dff4565ea9804277fff8cdfa0c817e08c3d44. No model payloads downloaded; live runtime unverified. Earlier model checks retain their original verification date.",
     "2026-10-24: Verified publisher file-page SHA256 checksums and pinned repository revisions for Ernie Image Turbo, Qwen Image 2.1 Turbo and Z Image Turbo. Added reviewed ComfyUI core-node source mappings. Disabled prompt-enhancement branches are included in dependency coverage. No model payloads downloaded or live GPU/runtime verification performed; prior verification dates preserved.",
-    "2026-10-24: Added MOSS Image SFT 4 Step. Publisher API metadata verified the Comfy-Org SFT BF16 checkpoint and Qwen3.5 9B INT8 ConvRot encoder, plus akhaliq frozen four-step v2.0 LoRA; all new sources pinned with full-file SHA256 and exact sizes. Reuses existing FLUX.2 VAE. Reviewed upstream moss_image CLIP selection; no new custom node mappings needed. No model payload download or live inference performed; earlier verification dates preserved."
+    "2026-10-24: Added MOSS Image SFT 4 Step. Publisher API metadata verified the Comfy-Org SFT BF16 checkpoint and Qwen3.5 9B INT8 ConvRot encoder, plus akhaliq frozen four-step v2.0 LoRA; all new sources pinned with full-file SHA256 and exact sizes. Reuses existing FLUX.2 VAE. Reviewed upstream moss_image CLIP selection; no new custom node mappings needed. No model payload download or live inference performed; earlier verification dates preserved.",
+    "2026-10-24: LTX 2.3 image-to-video dependency review added five exact files pinned to publisher revisions with SHA256 and byte sizes. Checkpoint is shared by video VAE, audio VAE and AV text encoder loader; disabled prompt-enhancer Gemma LoRA remains included. Core ownership verified at 7cebca52227c63b4180ceed448cbd7ad22903b6d. No custom-node packages, payload downloads or live/GPU verification. App workflow copied without substitution; local app supplies the uploaded input image at generation time."
   ],
   "models": {
     "models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors": {
@@ -211,6 +212,56 @@
       "approx_gb": 1.189,
       "review": null,
       "verified_date": "2026-10-24"
+    },
+    "models/checkpoints/ltx-2.3-22b-dev-fp8.safetensors": {
+      "url": "https://huggingface.co/Lightricks/LTX-2.3-fp8/resolve/91eda216f820e5ecb3d17dc9fe3b7cdaf56b587d/ltx-2.3-22b-dev-fp8.safetensors",
+      "source": "https://huggingface.co/Lightricks/LTX-2.3-fp8/blob/91eda216f820e5ecb3d17dc9fe3b7cdaf56b587d/ltx-2.3-22b-dev-fp8.safetensors",
+      "revision": "91eda216f820e5ecb3d17dc9fe3b7cdaf56b587d",
+      "sha256": "28606c5b5a06ce56f896d4dfcb20f212739e07a68fbe48e53638188449d26450",
+      "size_bytes": 29145431166,
+      "approx_gb": 29.145,
+      "review": null,
+      "verified_date": "2026-10-24"
+    },
+    "models/latent_upscale_models/ltx-2.3-spatial-upscaler-x2-1.1.safetensors": {
+      "url": "https://huggingface.co/Lightricks/LTX-2.3/resolve/c1521179de480464f366a98a9d9b2acc4cc097b9/ltx-2.3-spatial-upscaler-x2-1.1.safetensors",
+      "source": "https://huggingface.co/Lightricks/LTX-2.3/blob/c1521179de480464f366a98a9d9b2acc4cc097b9/ltx-2.3-spatial-upscaler-x2-1.1.safetensors",
+      "revision": "c1521179de480464f366a98a9d9b2acc4cc097b9",
+      "sha256": "5f416311fa8172b65af67530758964708d29a317b830d689a51143b7f91913ed",
+      "size_bytes": 995743560,
+      "approx_gb": 0.996,
+      "review": null,
+      "verified_date": "2026-10-24"
+    },
+    "models/loras/ltx_2.3_22b_distilled_1.1_lora_dynamic_fro09_avg_rank_111_bf16.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/ltx-2.3/resolve/f20f3a54378001e5e6d642acc84719cc78addf4b/split_files/loras/ltx_2.3_22b_distilled_1.1_lora_dynamic_fro09_avg_rank_111_bf16.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/ltx-2.3/blob/f20f3a54378001e5e6d642acc84719cc78addf4b/split_files/loras/ltx_2.3_22b_distilled_1.1_lora_dynamic_fro09_avg_rank_111_bf16.safetensors",
+      "revision": "f20f3a54378001e5e6d642acc84719cc78addf4b",
+      "sha256": "31e0c0195fb841bf31af78e8b60858f489e87ddcea4a5239abc80943da65e3ac",
+      "size_bytes": 2741024390,
+      "approx_gb": 2.741,
+      "review": null,
+      "verified_date": "2026-10-24"
+    },
+    "models/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/ltx-2/resolve/ccde4ba417d7900669fd56dd292a883cee11ff37/split_files/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/ltx-2/blob/ccde4ba417d7900669fd56dd292a883cee11ff37/split_files/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors",
+      "revision": "ccde4ba417d7900669fd56dd292a883cee11ff37",
+      "sha256": "aaca463d11e6d8d2a4bdb0d6299214c15ef78a3f73e0ef8113d5a9d0219b3f6d",
+      "size_bytes": 9447702218,
+      "approx_gb": 9.448,
+      "review": null,
+      "verified_date": "2026-10-24"
+    },
+    "models/loras/gemma-3-12b-it-abliterated_lora_rank64_bf16.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/ltx-2/resolve/ccde4ba417d7900669fd56dd292a883cee11ff37/split_files/loras/gemma-3-12b-it-abliterated_lora_rank64_bf16.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/ltx-2/blob/ccde4ba417d7900669fd56dd292a883cee11ff37/split_files/loras/gemma-3-12b-it-abliterated_lora_rank64_bf16.safetensors",
+      "revision": "ccde4ba417d7900669fd56dd292a883cee11ff37",
+      "sha256": "87bcabeac9bec9f374232b5122d6511c2b2112d479e50176149e944b3712eb4a",
+      "size_bytes": 628203616,
+      "approx_gb": 0.628,
+      "review": null,
+      "verified_date": "2026-10-24"
     }
   },
   "custom_nodes": {},
@@ -245,7 +296,29 @@
     "StringReplace": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_string.py",
     "EmptyFlux2LatentImage": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_flux.py",
     "QwenImage21Cache": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_qwen.py",
-    "TextEncodeQwenImage21": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_qwen.py"
+    "TextEncodeQwenImage21": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_qwen.py",
+    "EmptyLTXVLatentVideo": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_lt.py",
+    "LTXVImgToVideoInplace": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_lt.py",
+    "LTXVCropGuides": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_lt.py",
+    "LTXVConditioning": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_lt.py",
+    "LTXVPreprocess": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_lt.py",
+    "LTXVConcatAVLatent": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_lt.py",
+    "LTXVSeparateAVLatent": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_lt.py",
+    "LTXVAudioVAELoader": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_lt_audio.py",
+    "LTXVAudioVAEDecode": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_lt_audio.py",
+    "LTXVEmptyLatentAudio": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_lt_audio.py",
+    "LTXAVTextEncoderLoader": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_lt_audio.py",
+    "LTXVLatentUpsampler": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_lt_upsampler.py",
+    "LatentUpscaleModelLoader": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_hunyuan.py",
+    "ResizeImageMaskNode": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_post_processing.py",
+    "ComfyMathExpression": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_math.py",
+    "CreateVideo": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_video.py",
+    "SaveVideo": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_video.py",
+    "TextGenerateLTX2Prompt": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_textgen.py",
+    "VAEDecodeTiled": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/nodes.py",
+    "LoraLoader": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/nodes.py",
+    "LoadImage": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/nodes.py",
+    "CheckpointLoaderSimple": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/nodes.py"
   },
   "workflows": {
     "qwen-2512.json": {
@@ -280,6 +353,11 @@
     },
     "moss-image-sft-4-step.json": {
       "name": "MOSS Image SFT 4 Step",
+      "custom_nodes": [],
+      "review": []
+    },
+    "ltx-2-3-image-to-video.json": {
+      "name": "LTX 2.3 Image to Video",
       "custom_nodes": [],
       "review": []
     }

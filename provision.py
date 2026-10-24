@@ -25,7 +25,21 @@ MODEL_INPUTS = {
     'clip_vision': 'clip_vision', 'style_model_name': 'style_models',
     'upscale_model': 'upscale_models',
 }
+# These names are node-specific: model_name is not a general loader filename.
+NODE_MODEL_INPUTS = {
+    ('LatentUpscaleModelLoader', 'model_name'): 'latent_upscale_models',
+    ('LTXAVTextEncoderLoader', 'text_encoder'): 'text_encoders',
+}
+MODEL_OBJECT_INPUTS = {
+    ('LTXVLatentUpsampler', 'upscale_model'): ('LatentUpscaleModelLoader', 0),
+}
 ASSET = re.compile(r'\.(safetensors|ckpt|pt|pth|bin|gguf|onnx)$', re.I)
+
+
+def model_directory(kind, field):
+    if (kind, field) in MODEL_OBJECT_INPUTS:
+        return None
+    return NODE_MODEL_INPUTS.get((kind, field), MODEL_INPUTS.get(field))
 
 
 def slug(name):
@@ -67,11 +81,21 @@ def discover(directory):
             nodes.add(kind)
             inputs = node.get('inputs', {}) if fmt == 'API' else node.get('widgets_values_named', {})
             for key, value in inputs.items():
-                if key in MODEL_INPUTS:
+                object_source = MODEL_OBJECT_INPUTS.get((kind, key))
+                if object_source:
+                    loader, slot = object_source
+                    if (fmt != 'API' or not isinstance(value, list) or len(value) != 2
+                            or not isinstance(value[0], str) or type(value[1]) is not int
+                            or value[1] != slot or not isinstance(graph.get(value[0]), dict)
+                            or graph[value[0]].get('class_type') != loader):
+                        issues.append(f'{kind}.{key}: expected a reviewed {loader} output link; got {value!r}')
+                    continue
+                asset_directory = model_directory(kind, key)
+                if asset_directory:
                     if not isinstance(value, str) or value.startswith('API_'):
                         issues.append(f'{kind}.{key}: dynamic model selection needs review: {value!r}')
                     else:
-                        assets.add(f'models/{MODEL_INPUTS[key]}/{value.replace(chr(92), "/")}')
+                        assets.add(f'models/{asset_directory}/{value.replace(chr(92), "/")}')
                 elif any(ASSET.search(s) for s in strings(value)):
                     issues.append(f'{kind}.{key}: unclassified asset reference: {value!r}')
                 if any('embedding:' in s.lower() for s in strings(value)):
@@ -269,9 +293,10 @@ def verify_nodes(workflows, url, check_models=True):
             schema = info[node['class_type']].get('input', {})
             fields = {**schema.get('required', {}), **schema.get('optional', {})}
             for key, value in node['inputs'].items():
-                if not check_models and key in MODEL_INPUTS:
+                directory = model_directory(node['class_type'], key)
+                if not check_models and directory:
                     continue
-                if key not in MODEL_INPUTS and not (node['class_type'] == 'CLIPLoader' and key == 'type'):
+                if not directory and not (node['class_type'] == 'CLIPLoader' and key == 'type'):
                     continue
                 spec = fields.get(key, [])
                 choices = spec[0] if spec and isinstance(spec[0], list) else (
