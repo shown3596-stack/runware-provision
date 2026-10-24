@@ -4,7 +4,8 @@
     "Sources and SHA256 verified against publisher Hugging Face file pages; model payloads were not downloaded.",
     "The exports do not identify original URLs or hashes. These are explicit publisher variants selected for this manifest, not proof of the provenance of the original Pod files.",
     "ComfyUI is supplied by the template, not upgraded by this tool. Use live --verify to check node availability; inference compatibility still requires a smoke generation.",
-    "2026-10-23: Added Mage Flow Turbo model sources, exact sizes and SHA256 from publisher API metadata at revision 6ff68fbf3c667325e961d551691b246791d5eec0. Verified its two additional nodes in ComfyUI source at d07dff4565ea9804277fff8cdfa0c817e08c3d44. No model payloads downloaded; live runtime unverified. Earlier model checks retain their original verification date."
+    "2026-10-23: Added Mage Flow Turbo model sources, exact sizes and SHA256 from publisher API metadata at revision 6ff68fbf3c667325e961d551691b246791d5eec0. Verified its two additional nodes in ComfyUI source at d07dff4565ea9804277fff8cdfa0c817e08c3d44. No model payloads downloaded; live runtime unverified. Earlier model checks retain their original verification date.",
+    "2026-10-24: Verified publisher file-page SHA256 checksums and pinned repository revisions for Ernie Image Turbo, Qwen Image 2.1 Turbo and Z Image Turbo. Added reviewed ComfyUI core-node source mappings. Disabled prompt-enhancement branches are included in dependency coverage. No model payloads downloaded or live GPU/runtime verification performed; prior verification dates preserved."
   ],
   "models": {
     "models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors": {
@@ -89,6 +90,96 @@
       "size_bytes": 345053056,
       "approx_gb": 0.345,
       "review": null
+    },
+    "models/diffusion_models/ernie-image-turbo.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/ERNIE-Image/resolve/82fe29a5cd056f8b1deebc50570f125bcd4f4bea/diffusion_models/ernie-image-turbo.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/ERNIE-Image/blob/82fe29a5cd056f8b1deebc50570f125bcd4f4bea/diffusion_models/ernie-image-turbo.safetensors",
+      "revision": "82fe29a5cd056f8b1deebc50570f125bcd4f4bea",
+      "sha256": "741a4cc0467d4b9f04490d7faa9a5869ff4aa97eb2914927a1df9abb070e8e52",
+      "approx_gb": 16.1,
+      "review": null,
+      "verified_date": "2026-10-24"
+    },
+    "models/text_encoders/ernie-image-prompt-enhancer.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/ERNIE-Image/resolve/82fe29a5cd056f8b1deebc50570f125bcd4f4bea/text_encoders/ernie-image-prompt-enhancer.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/ERNIE-Image/blob/82fe29a5cd056f8b1deebc50570f125bcd4f4bea/text_encoders/ernie-image-prompt-enhancer.safetensors",
+      "revision": "82fe29a5cd056f8b1deebc50570f125bcd4f4bea",
+      "sha256": "e823e002626858be92e6600609f72fde33c5f21d3c6574721ce9f41bf1c50771",
+      "approx_gb": 6.88,
+      "review": null,
+      "verified_date": "2026-10-24"
+    },
+    "models/vae/flux2-vae.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/ERNIE-Image/resolve/82fe29a5cd056f8b1deebc50570f125bcd4f4bea/vae/flux2-vae.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/ERNIE-Image/blob/82fe29a5cd056f8b1deebc50570f125bcd4f4bea/vae/flux2-vae.safetensors",
+      "revision": "82fe29a5cd056f8b1deebc50570f125bcd4f4bea",
+      "sha256": "d64f3a68e1cc4f9f4e29b6e0da38a0204fe9a49f2d4053f0ec1fa1ca02f9c4b5",
+      "approx_gb": 0.336,
+      "review": null,
+      "verified_date": "2026-10-24"
+    },
+    "models/diffusion_models/qwen_image_2.1_turbo_int8_convrot.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/df94239739eef7205973a145ffa6f441f7b64e84/diffusion_models/qwen_image_2.1_turbo_int8_convrot.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/df94239739eef7205973a145ffa6f441f7b64e84/diffusion_models/qwen_image_2.1_turbo_int8_convrot.safetensors",
+      "revision": "df94239739eef7205973a145ffa6f441f7b64e84",
+      "sha256": "8144a0182964aa8403ad6dbc011db837304167d235161b9aabaa8532e967314c",
+      "approx_gb": 7.26,
+      "review": null,
+      "verified_date": "2026-10-24"
+    },
+    "models/text_encoders/qwen3.5_9b_qwen_image_2.1_pe_t2i.int8_convrot.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/9a44dbdb47cefd046be9c0a13476192f34c8db8e/text_encoders/qwen3.5_9b_qwen_image_2.1_pe_t2i.int8_convrot.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/9a44dbdb47cefd046be9c0a13476192f34c8db8e/text_encoders/qwen3.5_9b_qwen_image_2.1_pe_t2i.int8_convrot.safetensors",
+      "revision": "9a44dbdb47cefd046be9c0a13476192f34c8db8e",
+      "sha256": "9182abae56fe05459840a86d22abd21f972061c92fce032630af680c8c5178d3",
+      "approx_gb": 9.47,
+      "review": null,
+      "verified_date": "2026-10-24"
+    },
+    "models/text_encoders/qwen3vl_8b_int8_convrot.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/e83187db03c1bf47495c2e283582761e7c26bcf9/text_encoders/qwen3vl_8b_int8_convrot.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/e83187db03c1bf47495c2e283582761e7c26bcf9/text_encoders/qwen3vl_8b_int8_convrot.safetensors",
+      "revision": "e83187db03c1bf47495c2e283582761e7c26bcf9",
+      "sha256": "8bfd0f6e12abf2d2d697ecc888e5e90b0d6741d6708f05799f53afa560452e8f",
+      "approx_gb": 9.35,
+      "review": null,
+      "verified_date": "2026-10-24"
+    },
+    "models/vae/qwen_image_2.1_vae_bf16.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/b8abad01e16a50633160da778bec582b58761463/vae/qwen_image_2.1_vae_bf16.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/b8abad01e16a50633160da778bec582b58761463/vae/qwen_image_2.1_vae_bf16.safetensors",
+      "revision": "b8abad01e16a50633160da778bec582b58761463",
+      "sha256": "bb21f7473051e1ac368515dd3f2e15cd44d7a11748ee8823e1ddca3e4876b7c9",
+      "approx_gb": 0.676,
+      "review": null,
+      "verified_date": "2026-10-24"
+    },
+    "models/diffusion_models/z_image_turbo_bf16.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/6fc90a3b1b653e935a0d175e260736de25b84df5/split_files/diffusion_models/z_image_turbo_bf16.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/z_image_turbo/blob/6fc90a3b1b653e935a0d175e260736de25b84df5/split_files/diffusion_models/z_image_turbo_bf16.safetensors",
+      "revision": "6fc90a3b1b653e935a0d175e260736de25b84df5",
+      "sha256": "2407613050b809ffdff18a4ac99af83ea6b95443ecebdf80e064a79c825574a6",
+      "approx_gb": 12.3,
+      "review": null,
+      "verified_date": "2026-10-24"
+    },
+    "models/text_encoders/qwen_3_4b.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/2f862278568d3f0a83167a16e5f11094da6dee72/split_files/text_encoders/qwen_3_4b.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/z_image_turbo/blob/2f862278568d3f0a83167a16e5f11094da6dee72/split_files/text_encoders/qwen_3_4b.safetensors",
+      "revision": "2f862278568d3f0a83167a16e5f11094da6dee72",
+      "sha256": "6c671498573ac2f7a5501502ccce8d2b08ea6ca2f661c458e708f36b36edfc5a",
+      "approx_gb": 8.04,
+      "review": null,
+      "verified_date": "2026-10-24"
+    },
+    "models/vae/ae.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/6fc90a3b1b653e935a0d175e260736de25b84df5/split_files/vae/ae.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/z_image_turbo/blob/6fc90a3b1b653e935a0d175e260736de25b84df5/split_files/vae/ae.safetensors",
+      "revision": "6fc90a3b1b653e935a0d175e260736de25b84df5",
+      "sha256": "afc8e28272cd15db3919bacdb6918ce9c1ed22e96cb12c4d5ed0fba823529e38",
+      "approx_gb": 0.335,
+      "review": null,
+      "verified_date": "2026-10-24"
     }
   },
   "custom_nodes": {},
@@ -114,7 +205,16 @@
     "TextGenerate": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_textgen.py",
     "PreviewAny": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_preview_any.py",
     "TextEncodeMageFlowEdit": "https://github.com/Comfy-Org/ComfyUI/blob/d07dff4565ea9804277fff8cdfa0c817e08c3d44/comfy_extras/nodes_mage.py",
-    "SaveImageAdvanced": "https://github.com/Comfy-Org/ComfyUI/blob/d07dff4565ea9804277fff8cdfa0c817e08c3d44/comfy_extras/nodes_images.py"
+    "SaveImageAdvanced": "https://github.com/Comfy-Org/ComfyUI/blob/d07dff4565ea9804277fff8cdfa0c817e08c3d44/comfy_extras/nodes_images.py",
+    "ManualSigmas": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_custom_sampler.py",
+    "KSamplerSelect": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_custom_sampler.py",
+    "RandomNoise": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_custom_sampler.py",
+    "SamplerCustomAdvanced": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_custom_sampler.py",
+    "CFGGuider": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_custom_sampler.py",
+    "StringReplace": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_string.py",
+    "EmptyFlux2LatentImage": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_flux.py",
+    "QwenImage21Cache": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_qwen.py",
+    "TextEncodeQwenImage21": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_qwen.py"
   },
   "workflows": {
     "qwen-2512.json": {
@@ -131,6 +231,21 @@
       "name": "Krea 2 Turbo FP8",
       "custom_nodes": [],
       "review": []
+    },
+    "qwen-image-2-1-turbo.json": {
+      "custom_nodes": [],
+      "review": [],
+      "name": "Qwen Image 2.1 Turbo"
+    },
+    "z-image-turbo.json": {
+      "custom_nodes": [],
+      "review": [],
+      "name": "Z Image Turbo"
+    },
+    "ernie-image-turbo.json": {
+      "custom_nodes": [],
+      "review": [],
+      "name": "Ernie Image Turbo"
     }
   }
 }

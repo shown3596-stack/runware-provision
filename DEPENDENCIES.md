@@ -1,4 +1,40 @@
-# Workflow sync — 23 October 2026
+# Workflow sync — 24 October 2026
+
+Applied `sync_provision.py --all --prune --apply` from the authoritative app
+library. Added `ernie-image-turbo.json`, `qwen-image-2-1-turbo.json`, and
+`z-image-turbo.json`; Qwen 2512, Krea 2 Turbo FP8 and Mage Flow Turbo were unchanged.
+No snapshots or dependency entries needed pruning this time. All six destination
+files match the app byte for byte, and app source hashes are unchanged.
+
+The library now references **20 unique model files** (about **134.67 GB**) and
+**31 node types**, with no custom-node repositories. Disabled branches remain
+included, including the Qwen Image 2.1 prompt enhancer. Workflow IDs, defaults,
+sampling settings and parameter markers were copied unchanged.
+
+Ten model declarations were added with SHA-256 checksums and full pinned revisions
+from publisher file pages in [Comfy-Org/ERNIE-Image](https://huggingface.co/Comfy-Org/ERNIE-Image),
+[Comfy-Org/Qwen-Image-2.1](https://huggingface.co/Comfy-Org/Qwen-Image-2.1), and
+[Comfy-Org/Z-Image-Turbo](https://huggingface.co/Comfy-Org/Z-Image-Turbo).
+The manifest records each exact source page, revision, destination, checksum and
+rounded publisher size; rounded sizes are informational. These new entries carry
+the 2026-10-24 source-verification date; earlier verification dates are preserved.
+No model payloads were downloaded.
+
+Nine core-node mappings were reviewed in upstream ComfyUI source:
+`StringReplace` in [nodes_string.py](https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_string.py),
+`EmptyFlux2LatentImage` in [nodes_flux.py](https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_flux.py),
+`TextEncodeQwenImage21` and `QwenImage21Cache` in
+[nodes_qwen.py](https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_qwen.py),
+and `ManualSigmas`, `KSamplerSelect`, `RandomNoise`, `SamplerCustomAdvanced` and
+`CFGGuider` in [nodes_custom_sampler.py](https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_custom_sampler.py).
+These mappings establish ownership, not runtime compatibility or a tested
+minimum ComfyUI version. No runtime upgrade was performed.
+
+Validation passed: full sync/prune check, all-workflow provisioning dry run,
+20 sync tests and 15 provisioning tests. No Pod installation, live schema checks
+or GPU generation were performed.
+
+## Previous sync — 23 October 2026
 
 Synced the current app library unchanged: `qwen-2512.json` (Qwen 2512),
 `krea-2-turbo-fp8.json` (Krea 2 Turbo FP8), and `mage-flow-turbo.json`

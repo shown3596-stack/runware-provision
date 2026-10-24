@@ -18,11 +18,16 @@ python3 provision.py --install --workflow qwen-2512.json --dry-run
 Use `python` instead if that is your Python 3 command. Names are discovered from
 `workflows/**/*.json`, including the app's `{name, workflow}` wrapper; exact names,
 file stems and generated slugs work. Current app snapshots are `qwen-2512.json`,
-`krea-2-turbo-fp8.json`, and `mage-flow-turbo.json`. Full app-to-provision sync
-now includes pruning; four obsolete UUID-named snapshots were removed. `--all`
-selects the three current workflows: **10 unique model files**, about **63.92 GB**.
+`krea-2-turbo-fp8.json`, `mage-flow-turbo.json`, `ernie-image-turbo.json`,
+`qwen-image-2-1-turbo.json`, and `z-image-turbo.json`. Full app-to-provision sync
+includes pruning. `--all` selects these six workflows: **20 unique model files**,
+about **134.67 GB**, including disabled prompt-enhancement branches.
 Mage requires core support for `TextEncodeMageFlowEdit`, `SaveImageAdvanced`, and
 the `mage` encoder family; source ownership is verified, live execution is not.
+Ernie, Qwen Image 2.1 and Z Image also need matching core model/encoder support;
+the reviewed core nodes include `EmptyFlux2LatentImage`, `TextEncodeQwenImage21`,
+`QwenImage21Cache`, `ManualSigmas`, and `StringReplace`. Live node/model checks
+and GPU smoke generation are still required for the chosen Pod template.
 There is no `flux-klein` export.
 See [the dependency report](DEPENDENCIES.md) and [shared manifest](dependencies.json).
 
@@ -58,7 +63,7 @@ does not delete existing model files, custom-node directories or packages on a P
    Choose ephemeral container disk, no network volume, and zero volume disk if
    the template allows it. Budget **at least 50 GB free beyond the template** for
    Qwen or **30 GB** for one Krea workflow, plus outputs; all workflows need about
-   67 GB of unique models, so allow at least 80 GB free. Ephemeral disk can still
+   135 GB of unique models, so allow at least 160 GB free. Ephemeral disk can still
    have a charge while the Pod exists. Record the template image digest and
    ComfyUI commit for a setup that you have actually smoke-tested.
 2. Connect using the Pod's **direct SSH TCP** command from Runpod's Connect panel.
@@ -120,7 +125,7 @@ Runpod's basic SSH proxy does not support tunnelling/SCP in the same way.
 See [Runpod SSH documentation](https://docs.runpod.io/pods/configuration/use-ssh).
 No public ComfyUI HTTP port is needed for this access method.
 
-These four files are **API graphs inside app library wrappers**, not editable UI
+These files are **API graphs inside app library wrappers**, not editable UI
 graph exports. For the simplest generation flow, keep this repository locally,
 install the existing app's `requirements.txt`, run `python app.py`, open
 http://localhost:8000, select a saved workflow, fill the form and Generate. See the README in the separate `comfyui-api-poc` repository for app setup. The app replaces `API_*` markers before
