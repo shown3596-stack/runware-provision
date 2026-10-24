@@ -1,5 +1,34 @@
 # Workflow sync — 24 October 2026
 
+Latest sync added `moss-image-sft-4-step.json` unchanged from the app. The other
+six snapshots were unchanged; no snapshot deletions or dependency pruning were
+needed. All seven snapshots match the app byte for byte and source hashes are
+unchanged. The library now has **23 unique models** (about **155.77 GB**) and
+**31 node types**, with no custom-node repositories.
+
+MOSS adds three pinned models with publisher SHA-256 and exact byte sizes:
+
+| Asset | Publisher revision | Size |
+| --- | --- | ---: |
+| SFT BF16 checkpoint | [Comfy-Org/MOSS-Image](https://huggingface.co/Comfy-Org/MOSS-Image/blob/24147db865fcdc207270f844777587223fed8d6e/diffusion_models/moss_image_sft_bf16.safetensors) | 10,164,655,808 bytes |
+| Qwen3.5 9B INT8 ConvRot encoder | [Comfy-Org/MOSS-Image](https://huggingface.co/Comfy-Org/MOSS-Image/blob/24147db865fcdc207270f844777587223fed8d6e/text_encoders/qwen3.5_9b_int8_convrot.safetensors) | 9,748,121,532 bytes |
+| Four-step v2.0 LoRA | [akhaliq/MOSS-Image-SFT-4-steps](https://huggingface.co/akhaliq/MOSS-Image-SFT-4-steps/blob/2ded95c37a029360245926fe72e475e30039bbfb/moss_image_sft_4step_v2.0.safetensors) | 1,189,176,752 bytes |
+
+Publisher API metadata supplied the pinned revisions, sizes and SHA-256 values
+recorded in `dependencies.json`; no model payloads were downloaded. The encoder
+selection is the Comfy-Org variant, not another publisher's identically named
+file. MOSS reuses the existing `flux2-vae.safetensors` declaration. The graph's
+LoRA strength 1, Euler/simple sampler, four steps, CFG 1 and defaults are unchanged.
+The upstream [CLIP loader](https://github.com/Comfy-Org/ComfyUI/blob/master/comfy/sd.py)
+was inspected for `moss_image` selection. Its node types already have reviewed core
+mappings. These checks do not establish GPU, memory or runtime compatibility.
+
+MOSS sync validation passed: full `--all --prune --check`, all-workflow provisioning
+dry run, 20 sync tests and 15 provisioning tests. No Pod installation, live schema
+checks or GPU generation were performed; earlier verification dates are preserved.
+
+## Earlier sync — 24 October 2026
+
 Applied `sync_provision.py --all --prune --apply` from the authoritative app
 library. Added `ernie-image-turbo.json`, `qwen-image-2-1-turbo.json`, and
 `z-image-turbo.json`; Qwen 2512, Krea 2 Turbo FP8 and Mage Flow Turbo were unchanged.

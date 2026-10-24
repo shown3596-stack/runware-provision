@@ -5,7 +5,8 @@
     "The exports do not identify original URLs or hashes. These are explicit publisher variants selected for this manifest, not proof of the provenance of the original Pod files.",
     "ComfyUI is supplied by the template, not upgraded by this tool. Use live --verify to check node availability; inference compatibility still requires a smoke generation.",
     "2026-10-23: Added Mage Flow Turbo model sources, exact sizes and SHA256 from publisher API metadata at revision 6ff68fbf3c667325e961d551691b246791d5eec0. Verified its two additional nodes in ComfyUI source at d07dff4565ea9804277fff8cdfa0c817e08c3d44. No model payloads downloaded; live runtime unverified. Earlier model checks retain their original verification date.",
-    "2026-10-24: Verified publisher file-page SHA256 checksums and pinned repository revisions for Ernie Image Turbo, Qwen Image 2.1 Turbo and Z Image Turbo. Added reviewed ComfyUI core-node source mappings. Disabled prompt-enhancement branches are included in dependency coverage. No model payloads downloaded or live GPU/runtime verification performed; prior verification dates preserved."
+    "2026-10-24: Verified publisher file-page SHA256 checksums and pinned repository revisions for Ernie Image Turbo, Qwen Image 2.1 Turbo and Z Image Turbo. Added reviewed ComfyUI core-node source mappings. Disabled prompt-enhancement branches are included in dependency coverage. No model payloads downloaded or live GPU/runtime verification performed; prior verification dates preserved.",
+    "2026-10-24: Added MOSS Image SFT 4 Step. Publisher API metadata verified the Comfy-Org SFT BF16 checkpoint and Qwen3.5 9B INT8 ConvRot encoder, plus akhaliq frozen four-step v2.0 LoRA; all new sources pinned with full-file SHA256 and exact sizes. Reuses existing FLUX.2 VAE. Reviewed upstream moss_image CLIP selection; no new custom node mappings needed. No model payload download or live inference performed; earlier verification dates preserved."
   ],
   "models": {
     "models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors": {
@@ -180,6 +181,36 @@
       "approx_gb": 0.335,
       "review": null,
       "verified_date": "2026-10-24"
+    },
+    "models/diffusion_models/moss_image_sft_bf16.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/MOSS-Image/resolve/24147db865fcdc207270f844777587223fed8d6e/diffusion_models/moss_image_sft_bf16.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/MOSS-Image/blob/24147db865fcdc207270f844777587223fed8d6e/diffusion_models/moss_image_sft_bf16.safetensors",
+      "revision": "24147db865fcdc207270f844777587223fed8d6e",
+      "sha256": "f96738d8116d78b7316b57c663d8c98591ddafab7488f48e3099b7655e34ab6f",
+      "size_bytes": 10164655808,
+      "approx_gb": 10.165,
+      "review": null,
+      "verified_date": "2026-10-24"
+    },
+    "models/text_encoders/qwen3.5_9b_int8_convrot.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/MOSS-Image/resolve/24147db865fcdc207270f844777587223fed8d6e/text_encoders/qwen3.5_9b_int8_convrot.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/MOSS-Image/blob/24147db865fcdc207270f844777587223fed8d6e/text_encoders/qwen3.5_9b_int8_convrot.safetensors",
+      "revision": "24147db865fcdc207270f844777587223fed8d6e",
+      "sha256": "32e3787472f708fa5f83624acbf5ef23f7fc89c439e05065ea57cfe5a97f025a",
+      "size_bytes": 9748121532,
+      "approx_gb": 9.748,
+      "review": null,
+      "verified_date": "2026-10-24"
+    },
+    "models/loras/moss_image_sft_4step_v2.0.safetensors": {
+      "url": "https://huggingface.co/akhaliq/MOSS-Image-SFT-4-steps/resolve/2ded95c37a029360245926fe72e475e30039bbfb/moss_image_sft_4step_v2.0.safetensors",
+      "source": "https://huggingface.co/akhaliq/MOSS-Image-SFT-4-steps/blob/2ded95c37a029360245926fe72e475e30039bbfb/moss_image_sft_4step_v2.0.safetensors",
+      "revision": "2ded95c37a029360245926fe72e475e30039bbfb",
+      "sha256": "154c7f1455c3bf9925945c2f1ea2e4f09d0d0c67256081384a094b2b585f913f",
+      "size_bytes": 1189176752,
+      "approx_gb": 1.189,
+      "review": null,
+      "verified_date": "2026-10-24"
     }
   },
   "custom_nodes": {},
@@ -246,6 +277,11 @@
       "custom_nodes": [],
       "review": [],
       "name": "Ernie Image Turbo"
+    },
+    "moss-image-sft-4-step.json": {
+      "name": "MOSS Image SFT 4 Step",
+      "custom_nodes": [],
+      "review": []
     }
   }
 }

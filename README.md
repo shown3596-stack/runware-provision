@@ -19,15 +19,18 @@ Use `python` instead if that is your Python 3 command. Names are discovered from
 `workflows/**/*.json`, including the app's `{name, workflow}` wrapper; exact names,
 file stems and generated slugs work. Current app snapshots are `qwen-2512.json`,
 `krea-2-turbo-fp8.json`, `mage-flow-turbo.json`, `ernie-image-turbo.json`,
-`qwen-image-2-1-turbo.json`, and `z-image-turbo.json`. Full app-to-provision sync
-includes pruning. `--all` selects these six workflows: **20 unique model files**,
-about **134.67 GB**, including disabled prompt-enhancement branches.
+`qwen-image-2-1-turbo.json`, `z-image-turbo.json`, and `moss-image-sft-4-step.json`.
+Full app-to-provision sync includes pruning. `--all` selects these seven workflows:
+**23 unique model files**, about **155.77 GB**, including disabled prompt-enhancement branches.
 Mage requires core support for `TextEncodeMageFlowEdit`, `SaveImageAdvanced`, and
 the `mage` encoder family; source ownership is verified, live execution is not.
 Ernie, Qwen Image 2.1 and Z Image also need matching core model/encoder support;
 the reviewed core nodes include `EmptyFlux2LatentImage`, `TextEncodeQwenImage21`,
 `QwenImage21Cache`, `ManualSigmas`, and `StringReplace`. Live node/model checks
 and GPU smoke generation are still required for the chosen Pod template.
+MOSS uses the Comfy-Org SFT BF16 checkpoint and Qwen3.5 9B INT8 ConvRot encoder,
+akhaliq's frozen four-step v2.0 LoRA, and the shared FLUX.2 VAE. Its template must
+support the `moss_image` encoder family; live MOSS execution remains unverified.
 There is no `flux-klein` export.
 See [the dependency report](DEPENDENCIES.md) and [shared manifest](dependencies.json).
 
@@ -63,7 +66,7 @@ does not delete existing model files, custom-node directories or packages on a P
    Choose ephemeral container disk, no network volume, and zero volume disk if
    the template allows it. Budget **at least 50 GB free beyond the template** for
    Qwen or **30 GB** for one Krea workflow, plus outputs; all workflows need about
-   135 GB of unique models, so allow at least 160 GB free. Ephemeral disk can still
+   156 GB of unique models, so allow at least 180 GB free. Ephemeral disk can still
    have a charge while the Pod exists. Record the template image digest and
    ComfyUI commit for a setup that you have actually smoke-tested.
 2. Connect using the Pod's **direct SSH TCP** command from Runpod's Connect panel.
