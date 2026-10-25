@@ -242,7 +242,7 @@ def git(path, *args):
 
 
 def custom_node(root, name, package, verify=False):
-    """Pinned git checkout + requirements stamp. No packages are needed by current exports."""
+    """Pinned git checkout and interpreter-specific requirements stamp."""
     target = within(root, 'custom_nodes/' + name)
     commit = package['commit']
     if not target.exists():
@@ -414,6 +414,10 @@ def main(argv=None):
     print(f'Unique model payload: ~{sum(manifest["models"].get(a, {}).get("approx_gb", 0) for a in assets):.2f} GB; existing valid files will be skipped.')
     if issues:
         raise ValueError('Unresolved dependencies:\n  ' + '\n  '.join(issues))
+    # Explicit per-workflow add-ons can supply UI nodes absent from the API graph.
+    # Their declared node classes must still register after installation/restart.
+    addon_nodes = {node for name in packages for node in manifest['custom_nodes'][name]['nodes']}
+    verification_workflows = [{**w, 'nodes': w['nodes'] | addon_nodes} for w in workflows]
     if args.dry_run:
         print('Dry run: no changes or network requests. Target: ' + (args.comfy_dir or 'auto-detect on Pod'))
         return 0
@@ -445,9 +449,9 @@ def main(argv=None):
         if errors:
             raise ValueError('\n'.join(errors))
         if process:
-            restart_comfy(root, process, workflows, args.comfy_url)
+            restart_comfy(root, process, verification_workflows, args.comfy_url)
         else:
-            verify_nodes(workflows, args.comfy_url)
+            verify_nodes(verification_workflows, args.comfy_url)
     print(f'Complete in {time.monotonic() - start:.1f}s.')
     return 0
 

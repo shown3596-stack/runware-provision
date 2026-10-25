@@ -1,4 +1,50 @@
-# Workflow sync — 24 October 2026
+# Workflow sync — 25 October 2026
+
+Added `qwen-image-2-1-360-panorama.json` unchanged from the app: source-image input,
+editable prompt and dimensions, positive-only `BasicGuider`, fixed eight-step
+Euler sigma schedule, Turbo LoRA strength 1, and 2880 × 1440 defaults. The malformed
+optional preview node from the original API export remains omitted; the saved
+PNG path is intact. Other eight snapshots are unchanged. All nine match the app
+byte for byte, with source hashes unchanged and no stale snapshots to prune.
+
+The library references **30 unique model files** (about **206.90 GB**) and
+**54 graph node types**, plus one explicitly requested native preview add-on.
+Two new models add about 8.17 GB; the encoder and VAE are shared:
+
+| Destination | Pinned publisher source | Exact bytes |
+| --- | --- | ---: |
+| `models/diffusion_models/qwen_image_2.1_int8_convrot.safetensors` | [Comfy-Org/Qwen-Image-2.1](https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/0217efd1d9c9452e84f6448903d6e21bfa171ffd/diffusion_models/qwen_image_2.1_int8_convrot.safetensors) | 7,256,783,064 |
+| `models/loras/qwen_image_2.1_turbo_lora_avg_rank_178_bf16.safetensors` | [Comfy-Org/Qwen-Image-2.1](https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/0217efd1d9c9452e84f6448903d6e21bfa171ffd/loras/qwen_image_2.1_turbo_lora_avg_rank_178_bf16.safetensors) | 913,314,512 |
+
+Publisher API metadata supplied full revisions, SHA-256 and exact sizes recorded
+in the manifest. New source checks are dated 2026-10-25; earlier verification
+dates are preserved. `BasicGuider` was verified in ComfyUI core source at
+`7cebca52227c63b4180ceed448cbd7ad22903b6d`.
+
+At the user's request, the workflow's explicit `custom_nodes` override includes
+[nomadoor/ComfyUI-Panorama-Stickers](https://github.com/nomadoor/ComfyUI-Panorama-Stickers/tree/ef900eb1a0e5b4b104a562ba91ae744d5f22608c),
+pinned to full commit `ef900eb1a0e5b4b104a562ba91ae744d5f22608c` (version 1.5.2).
+Its entrypoint exports `PanoramaStickers`, `PanoramaCutout`, `PanoramaPreview` and
+`PanoramaSeamPrep` and serves bundled assets from `web`. The reviewed repository
+has no `requirements.txt` or pyproject dependency list; its Python nodes use
+ComfyUI's NumPy/Pillow/Torch environment. PyAV is optional at import time for
+video preview. The exact checkout includes the frontend; no npm build is added.
+
+The add-on is for interactive viewing in native ComfyUI, not required by the
+saved API generation graph. To view a result, connect **Load Image** to
+**Panorama Preview** with coverage **360**. The local app still displays a flat
+panorama. The per-workflow override keeps this user-requested viewer in future
+pruning even though no API node references it. Installation and verification now
+check that declared add-on classes register with ComfyUI, rather than accepting
+only a successful checkout/stamp.
+
+Validation passed: full sync/prune check, all-workflow install dry run, 18
+provisioning tests (including a test that a missing explicit preview node fails
+live verification), 20 sync tests and eight offline substitution trials. No
+models or custom packages were installed, no Pod was changed, and no GPU or
+interactive browser verification was performed during this local sync.
+
+## Previous sync — LTX, 24 October 2026
 
 Latest release added `ltx-2-3-image-to-video.json` from the app, with its stable
 ID, wrapper, defaults, parameter markers and complete 51-node graph preserved.

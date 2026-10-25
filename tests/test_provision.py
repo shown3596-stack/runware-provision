@@ -325,6 +325,33 @@ class ProvisionTests(unittest.TestCase):
                 p.verify_nodes(workflows, 'http://localhost:8188', check_models=False)
             schema[kind]['input']['required'][field] = original
 
+    def test_explicit_preview_addon_must_register_even_without_graph_reference(self):
+        workflows = self.root / 'workflows'
+        workflows.mkdir()
+        (workflows / 'image.json').write_text(json.dumps({
+            '1': {'class_type': 'VAELoader', 'inputs': {'vae_name': 'test.safetensors'}}}))
+        self.manifest['custom_nodes'] = {'preview': {
+            'repo': 'https://example.invalid/preview.git', 'commit': 'a' * 40, 'nodes': ['PanoramaPreview']}}
+        self.manifest['workflows'] = {'image.json': {'custom_nodes': ['preview']}}
+        (self.root / 'dependencies.json').write_text(json.dumps(self.manifest))
+        comfy = self.root / 'ComfyUI'
+        model = comfy / 'models/vae/test.safetensors'
+        model.parent.mkdir(parents=True)
+        model.write_bytes(self.body)
+        (comfy / 'main.py').touch()
+        schema = {'VAELoader': {'input': {'required': {'vae_name': [['test.safetensors'], {}]}}}}
+        def server():
+            return patch.object(p, 'urlopen', return_value=contextlib.closing(io.BytesIO(json.dumps(schema).encode())))
+        args = ['--verify', '--all', '--comfy-dir', str(comfy)]
+        with patch.object(p, 'ROOT', self.root), patch.object(p, 'custom_node') as checkout, \
+                patch.object(p.shutil, 'which', return_value='/usr/bin/git'), contextlib.redirect_stdout(io.StringIO()):
+            with server(), self.assertRaisesRegex(ValueError, 'PanoramaPreview'):
+                p.main(args)
+            schema['PanoramaPreview'] = {'input': {'required': {}}}
+            with server():
+                self.assertEqual(p.main(args), 0)
+            self.assertTrue(all(call.kwargs['verify'] for call in checkout.call_args_list))
+
 
 if __name__ == '__main__':
     unittest.main()

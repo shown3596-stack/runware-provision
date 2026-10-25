@@ -20,9 +20,10 @@ Use `python` instead if that is your Python 3 command. Names are discovered from
 file stems and generated slugs work. Current app snapshots are `qwen-2512.json`,
 `krea-2-turbo-fp8.json`, `mage-flow-turbo.json`, `ernie-image-turbo.json`,
 `qwen-image-2-1-turbo.json`, `z-image-turbo.json`, `moss-image-sft-4-step.json`, and
-`ltx-2-3-image-to-video.json`. Full app-to-provision sync includes pruning.
-`--all` selects these eight workflows: **28 unique model files**, about **198.73 GB**,
-including disabled prompt-enhancement branches.
+`ltx-2-3-image-to-video.json`, and `qwen-image-2-1-360-panorama.json`.
+Full app-to-provision sync includes pruning. `--all` selects these nine workflows:
+**30 unique model files**, about **206.90 GB**, including disabled prompt-enhancement
+branches, and one pinned custom-node package for the native panorama viewer.
 Mage requires core support for `TextEncodeMageFlowEdit`, `SaveImageAdvanced`, and
 the `mage` encoder family; source ownership is verified, live execution is not.
 Ernie, Qwen Image 2.1 and Z Image also need matching core model/encoder support;
@@ -40,6 +41,17 @@ upsampler's model connection against its loader instead of treating it as a
 filename. Use the updated local helper app to select/upload the starting image
 and display/download the video; the extension bridge currently stores images only.
 Provisioning does not supply an example image or substitute `API_INPUT_IMAGE`.
+The Qwen 360 workflow defaults to a 2880 × 1440 equirectangular image; keep its
+2:1 output ratio when editing dimensions. It shares the Qwen 2.1 encoder/VAE but
+uses the base INT8 ConvRot diffusion model plus the separate Turbo LoRA.
+`ComfyUI-Panorama-Stickers` is explicitly included for this workflow at commit
+`ef900eb1a0e5b4b104a562ba91ae744d5f22608c`. Its bundled frontend is installed with
+the checkout; no Node build or additional pip requirements are declared upstream.
+Future install/verify checks require its four registered node classes even though
+the app's API graph contains only the saved-image path. For an interactive native
+ComfyUI view, load the generated PNG with **Load Image**, connect it to
+**Panorama Preview**, and select coverage **360**. This does not add an interactive
+viewer to the separate local app, which displays the flat panorama.
 There is no `flux-klein` export.
 See [the dependency report](DEPENDENCIES.md) and [shared manifest](dependencies.json).
 
@@ -75,7 +87,7 @@ does not delete existing model files, custom-node directories or packages on a P
    Choose ephemeral container disk, no network volume, and zero volume disk if
    the template allows it. Budget **at least 50 GB free beyond the template** for
    Qwen or **30 GB** for one Krea workflow, plus outputs; all workflows need about
-   199 GB of unique models, so allow at least 230 GB free. Ephemeral disk can still
+   207 GB of unique models, so allow at least 230 GB free. Ephemeral disk can still
    have a charge while the Pod exists. Record the template image digest and
    ComfyUI commit for a setup that you have actually smoke-tested.
 2. Connect using the Pod's **direct SSH TCP** command from Runpod's Connect panel.
@@ -185,7 +197,8 @@ repository creates, stops, or terminates Pods.
   exit code. Check network access, free disk space, and the linked model card
   for access/license requirements. The current manifest uses public sources.
 - **Missing nodes / incompatible versions:** examine ComfyUI startup logs and
-  `/object_info`. The current exports require no custom repositories: switches,
+  `/object_info`. The panorama workflow includes the pinned Panorama Stickers
+  repository for its native viewer. Other referenced nodes, including switches,
   primitives, resolution and text generation nodes are built into recent ComfyUI.
   An old template can still lack them or the `krea2` encoder type. Choose a
   compatible template/version and its matching Python requirements deliberately;

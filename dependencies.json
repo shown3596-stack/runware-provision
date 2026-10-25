@@ -7,7 +7,8 @@
     "2026-10-23: Added Mage Flow Turbo model sources, exact sizes and SHA256 from publisher API metadata at revision 6ff68fbf3c667325e961d551691b246791d5eec0. Verified its two additional nodes in ComfyUI source at d07dff4565ea9804277fff8cdfa0c817e08c3d44. No model payloads downloaded; live runtime unverified. Earlier model checks retain their original verification date.",
     "2026-10-24: Verified publisher file-page SHA256 checksums and pinned repository revisions for Ernie Image Turbo, Qwen Image 2.1 Turbo and Z Image Turbo. Added reviewed ComfyUI core-node source mappings. Disabled prompt-enhancement branches are included in dependency coverage. No model payloads downloaded or live GPU/runtime verification performed; prior verification dates preserved.",
     "2026-10-24: Added MOSS Image SFT 4 Step. Publisher API metadata verified the Comfy-Org SFT BF16 checkpoint and Qwen3.5 9B INT8 ConvRot encoder, plus akhaliq frozen four-step v2.0 LoRA; all new sources pinned with full-file SHA256 and exact sizes. Reuses existing FLUX.2 VAE. Reviewed upstream moss_image CLIP selection; no new custom node mappings needed. No model payload download or live inference performed; earlier verification dates preserved.",
-    "2026-10-24: LTX 2.3 image-to-video dependency review added five exact files pinned to publisher revisions with SHA256 and byte sizes. Checkpoint is shared by video VAE, audio VAE and AV text encoder loader; disabled prompt-enhancer Gemma LoRA remains included. Core ownership verified at 7cebca52227c63b4180ceed448cbd7ad22903b6d. No custom-node packages, payload downloads or live/GPU verification. App workflow copied without substitution; local app supplies the uploaded input image at generation time."
+    "2026-10-24: LTX 2.3 image-to-video dependency review added five exact files pinned to publisher revisions with SHA256 and byte sizes. Checkpoint is shared by video VAE, audio VAE and AV text encoder loader; disabled prompt-enhancer Gemma LoRA remains included. Core ownership verified at 7cebca52227c63b4180ceed448cbd7ad22903b6d. No custom-node packages, payload downloads or live/GPU verification. App workflow copied without substitution; local app supplies the uploaded input image at generation time.",
+    "2026-10-25: Qwen Image 2.1 360 Panorama adds pinned base INT8 ConvRot diffusion and turbo LoRA sources with publisher SHA256 and byte sizes; encoder/VAE remain shared. User requested pinned Panorama Stickers for the native ComfyUI interactive viewer. This is an explicit per-workflow add-on, not a node required by the API SaveImage graph: malformed optional preview node 95 remains omitted from the app snapshot. Add-on entrypoint, registration, packaged frontend and dependencies inspected; no requirements.txt or pyproject dependency list; NumPy/Pillow/Torch supplied by the ComfyUI runtime. No actual model or package install, browser/GPU/live schema verification performed. Earlier verification dates preserved."
   ],
   "models": {
     "models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors": {
@@ -262,9 +263,41 @@
       "approx_gb": 0.628,
       "review": null,
       "verified_date": "2026-10-24"
+    },
+    "models/diffusion_models/qwen_image_2.1_int8_convrot.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/0217efd1d9c9452e84f6448903d6e21bfa171ffd/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/0217efd1d9c9452e84f6448903d6e21bfa171ffd/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+      "revision": "0217efd1d9c9452e84f6448903d6e21bfa171ffd",
+      "sha256": "cb74113cb03faecd79611b01fd7fd642f0aa60d6f0b95086abee214d75eaa57d",
+      "size_bytes": 7256783064,
+      "approx_gb": 7.257,
+      "review": null,
+      "verified_date": "2026-10-25"
+    },
+    "models/loras/qwen_image_2.1_turbo_lora_avg_rank_178_bf16.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/0217efd1d9c9452e84f6448903d6e21bfa171ffd/loras/qwen_image_2.1_turbo_lora_avg_rank_178_bf16.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/blob/0217efd1d9c9452e84f6448903d6e21bfa171ffd/loras/qwen_image_2.1_turbo_lora_avg_rank_178_bf16.safetensors",
+      "revision": "0217efd1d9c9452e84f6448903d6e21bfa171ffd",
+      "sha256": "208dd43250e1e01467ba190572ae2e7107a7870ec1ff026bc65f791fa1e80e95",
+      "size_bytes": 913314512,
+      "approx_gb": 0.913,
+      "review": null,
+      "verified_date": "2026-10-25"
     }
   },
-  "custom_nodes": {},
+  "custom_nodes": {
+    "ComfyUI-Panorama-Stickers": {
+      "repo": "https://github.com/nomadoor/ComfyUI-Panorama-Stickers.git",
+      "commit": "ef900eb1a0e5b4b104a562ba91ae744d5f22608c",
+      "nodes": [
+        "PanoramaStickers",
+        "PanoramaCutout",
+        "PanoramaPreview",
+        "PanoramaSeamPrep"
+      ],
+      "review": null
+    }
+  },
   "core_nodes": {
     "CLIPLoader": "https://github.com/Comfy-Org/ComfyUI/blob/master/nodes.py",
     "CLIPTextEncode": "https://github.com/Comfy-Org/ComfyUI/blob/master/nodes.py",
@@ -318,7 +351,8 @@
     "VAEDecodeTiled": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/nodes.py",
     "LoraLoader": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/nodes.py",
     "LoadImage": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/nodes.py",
-    "CheckpointLoaderSimple": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/nodes.py"
+    "CheckpointLoaderSimple": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/nodes.py",
+    "BasicGuider": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_custom_sampler.py"
   },
   "workflows": {
     "qwen-2512.json": {
@@ -359,6 +393,13 @@
     "ltx-2-3-image-to-video.json": {
       "name": "LTX 2.3 Image to Video",
       "custom_nodes": [],
+      "review": []
+    },
+    "qwen-image-2-1-360-panorama.json": {
+      "name": "Qwen Image 2.1 360 Panorama",
+      "custom_nodes": [
+        "ComfyUI-Panorama-Stickers"
+      ],
       "review": []
     }
   }
