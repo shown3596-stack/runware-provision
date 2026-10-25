@@ -20,9 +20,10 @@ Use `python` instead if that is your Python 3 command. Names are discovered from
 file stems and generated slugs work. Current app snapshots are `qwen-2512.json`,
 `krea-2-turbo-fp8.json`, `mage-flow-turbo.json`, `ernie-image-turbo.json`,
 `qwen-image-2-1-turbo.json`, `z-image-turbo.json`, `moss-image-sft-4-step.json`, and
-`ltx-2-3-image-to-video.json`, and `qwen-image-2-1-360-panorama.json`.
-Full app-to-provision sync includes pruning. `--all` selects these nine workflows:
-**30 unique model files**, about **206.90 GB**, including disabled prompt-enhancement
+`ltx-2-3-image-to-video.json`, `ltx-2-3-distilled-fp8-image-to-video.json`, and
+`qwen-image-2-1-360-panorama.json`.
+Full app-to-provision sync includes pruning. `--all` selects these ten workflows:
+**31 unique model files**, about **236.43 GB**, including disabled prompt-enhancement
 branches, and one pinned custom-node package for the native panorama viewer.
 Mage requires core support for `TextEncodeMageFlowEdit`, `SaveImageAdvanced`, and
 the `mage` encoder family; source ownership is verified, live execution is not.
@@ -41,6 +42,18 @@ upsampler's model connection against its loader instead of treating it as a
 filename. Use the updated local helper app to select/upload the starting image
 and display/download the video; the extension bridge currently stores images only.
 Provisioning does not supply an example image or substitute `API_INPUT_IMAGE`.
+The separate **LTX 2.3 Distilled FP8 Image to Video** workflow uses the official
+v1.0 distilled FP8 checkpoint directly, with no distillation LoRA, eight base
+steps and three x2-upscale refinement steps at CFG 1. Its 29.532 GB checkpoint is
+pinned with SHA-256 and exact size; the encoder, upscaler and optional Gemma LoRA
+are shared with the existing LTX workflow. The original LTX workflow is retained.
+Select just this workflow for installation/verification:
+
+```bash
+python3 provision.py --install --workflow ltx-2-3-distilled-fp8-image-to-video
+python3 provision.py --verify --workflow ltx-2-3-distilled-fp8-image-to-video
+```
+
 The Qwen 360 workflow defaults to a 2880 × 1440 equirectangular image; keep its
 2:1 output ratio when editing dimensions. It shares the Qwen 2.1 encoder/VAE but
 uses the base INT8 ConvRot diffusion model plus the separate Turbo LoRA.
@@ -87,7 +100,7 @@ does not delete existing model files, custom-node directories or packages on a P
    Choose ephemeral container disk, no network volume, and zero volume disk if
    the template allows it. Budget **at least 50 GB free beyond the template** for
    Qwen or **30 GB** for one Krea workflow, plus outputs; all workflows need about
-   207 GB of unique models, so allow at least 230 GB free. Ephemeral disk can still
+   237 GB of unique models, so allow at least 260 GB free. Ephemeral disk can still
    have a charge while the Pod exists. Record the template image digest and
    ComfyUI commit for a setup that you have actually smoke-tested.
 2. Connect using the Pod's **direct SSH TCP** command from Runpod's Connect panel.

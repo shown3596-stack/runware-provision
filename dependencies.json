@@ -8,7 +8,8 @@
     "2026-10-24: Verified publisher file-page SHA256 checksums and pinned repository revisions for Ernie Image Turbo, Qwen Image 2.1 Turbo and Z Image Turbo. Added reviewed ComfyUI core-node source mappings. Disabled prompt-enhancement branches are included in dependency coverage. No model payloads downloaded or live GPU/runtime verification performed; prior verification dates preserved.",
     "2026-10-24: Added MOSS Image SFT 4 Step. Publisher API metadata verified the Comfy-Org SFT BF16 checkpoint and Qwen3.5 9B INT8 ConvRot encoder, plus akhaliq frozen four-step v2.0 LoRA; all new sources pinned with full-file SHA256 and exact sizes. Reuses existing FLUX.2 VAE. Reviewed upstream moss_image CLIP selection; no new custom node mappings needed. No model payload download or live inference performed; earlier verification dates preserved.",
     "2026-10-24: LTX 2.3 image-to-video dependency review added five exact files pinned to publisher revisions with SHA256 and byte sizes. Checkpoint is shared by video VAE, audio VAE and AV text encoder loader; disabled prompt-enhancer Gemma LoRA remains included. Core ownership verified at 7cebca52227c63b4180ceed448cbd7ad22903b6d. No custom-node packages, payload downloads or live/GPU verification. App workflow copied without substitution; local app supplies the uploaded input image at generation time.",
-    "2026-10-25: Qwen Image 2.1 360 Panorama adds pinned base INT8 ConvRot diffusion and turbo LoRA sources with publisher SHA256 and byte sizes; encoder/VAE remain shared. User requested pinned Panorama Stickers for the native ComfyUI interactive viewer. This is an explicit per-workflow add-on, not a node required by the API SaveImage graph: malformed optional preview node 95 remains omitted from the app snapshot. Add-on entrypoint, registration, packaged frontend and dependencies inspected; no requirements.txt or pyproject dependency list; NumPy/Pillow/Torch supplied by the ComfyUI runtime. No actual model or package install, browser/GPU/live schema verification performed. Earlier verification dates preserved."
+    "2026-10-25: Qwen Image 2.1 360 Panorama adds pinned base INT8 ConvRot diffusion and turbo LoRA sources with publisher SHA256 and byte sizes; encoder/VAE remain shared. User requested pinned Panorama Stickers for the native ComfyUI interactive viewer. This is an explicit per-workflow add-on, not a node required by the API SaveImage graph: malformed optional preview node 95 remains omitted from the app snapshot. Add-on entrypoint, registration, packaged frontend and dependencies inspected; no requirements.txt or pyproject dependency list; NumPy/Pillow/Torch supplied by the ComfyUI runtime. No actual model or package install, browser/GPU/live schema verification performed. Earlier verification dates preserved.",
+    "2026-10-25: Added the separate LTX 2.3 Distilled FP8 comparison workflow and official v1.0 distilled checkpoint, pinned to publisher revision 91eda216f820e5ecb3d17dc9fe3b7cdaf56b587d with SHA256 and exact size verified from publisher API metadata. Reuses existing encoder, upscaler, core-node mappings and disabled Gemma prompt-enhancement LoRA. Distillation LoRA removed only in the new graph; original workflow and dependencies retained. No model download, Pod installation or GPU verification performed; earlier verification dates preserved."
   ],
   "models": {
     "models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors": {
@@ -283,6 +284,16 @@
       "approx_gb": 0.913,
       "review": null,
       "verified_date": "2026-10-25"
+    },
+    "models/checkpoints/ltx-2.3-22b-distilled-fp8.safetensors": {
+      "url": "https://huggingface.co/Lightricks/LTX-2.3-fp8/resolve/91eda216f820e5ecb3d17dc9fe3b7cdaf56b587d/ltx-2.3-22b-distilled-fp8.safetensors",
+      "source": "https://huggingface.co/Lightricks/LTX-2.3-fp8/blob/91eda216f820e5ecb3d17dc9fe3b7cdaf56b587d/ltx-2.3-22b-distilled-fp8.safetensors",
+      "revision": "91eda216f820e5ecb3d17dc9fe3b7cdaf56b587d",
+      "sha256": "d9646b6f2d5c42d337b23671634c43bfeece6989644f51b4a3aa088465ccd3b2",
+      "size_bytes": 29531884062,
+      "approx_gb": 29.532,
+      "review": null,
+      "verified_date": "2026-10-25"
     }
   },
   "custom_nodes": {
@@ -400,6 +411,11 @@
       "custom_nodes": [
         "ComfyUI-Panorama-Stickers"
       ],
+      "review": []
+    },
+    "ltx-2-3-distilled-fp8-image-to-video.json": {
+      "name": "LTX 2.3 Distilled FP8 Image to Video",
+      "custom_nodes": [],
       "review": []
     }
   }

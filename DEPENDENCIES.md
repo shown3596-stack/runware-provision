@@ -1,3 +1,39 @@
+# LTX distilled selective sync — 25 October 2026
+
+Added `ltx-2-3-distilled-fp8-image-to-video.json` byte for byte from the local app
+library, preserving ID `9aaad34009854cafa70f41435d11c560`, parameters, default
+settings and the complete 50-node graph. The original LTX workflow and all eight
+other snapshots/dependency declarations are retained. No pruning was requested.
+
+The new workflow loads the official v1.0 distilled FP8 checkpoint directly;
+it removes the distillation LoRA only from its own graph. Euler/CFG 1 uses the
+official eight-step base and three-step refinement sigma schedules. Shared
+Gemma FP4 encoding, audio/video VAEs, x2 latent upscaling, the disabled optional
+Gemma enhancer and its LoRA, source image handling and output audio connection
+are preserved. No new core-node mappings or custom packages are needed.
+
+The single additional model is
+`models/checkpoints/ltx-2.3-22b-distilled-fp8.safetensors`:
+
+- Publisher: [Lightricks/LTX-2.3-fp8](https://huggingface.co/Lightricks/LTX-2.3-fp8/blob/91eda216f820e5ecb3d17dc9fe3b7cdaf56b587d/ltx-2.3-22b-distilled-fp8.safetensors).
+- Revision: `91eda216f820e5ecb3d17dc9fe3b7cdaf56b587d`.
+- SHA-256: `d9646b6f2d5c42d337b23671634c43bfeece6989644f51b4a3aa088465ccd3b2`.
+- Exact size: 29,531,884,062 bytes, verified with publisher revision API metadata.
+
+The library now has **10 workflows**, **31 unique models** (about **236.43 GB**)
+and the existing panorama add-on package. The distilled workflow alone
+references four model files totalling about 40.60 GB; existing valid shared files
+are reused. Earlier verification dates and original workflow dependencies stay
+unchanged.
+
+Selective preview, apply and check passed; the selected install dry run resolves
+all four models and existing core-node ownership. All 20 sync tests, 18
+provisioning tests and the all-workflow install dry run passed. All ten snapshots
+match the app; all nine prior snapshots and dependency entries are unchanged.
+No model payloads downloaded,
+Pod installation/restart or GPU generation performed. Git publication and Pod
+installation are separate from this local repository sync.
+
 # Workflow sync — 25 October 2026
 
 Added `qwen-image-2-1-360-panorama.json` unchanged from the app: source-image input,
