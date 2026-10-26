@@ -1,3 +1,23 @@
+# LTX single-stage selective sync — 26 October 2026
+
+Added `ltx-2-3-distilled-fp8-single-stage-image-to-video.json` unchanged from the
+app library, preserving ID `880ae5f372f74e6e857684d2f8e758e3` and the 37-node
+graph. It uses one eight-step Euler/CFG-1 sampler at final resolution; no latent
+upscaler, half-size stage or refinement sampler. Defaults are 512 square,
+2 seconds and 25 FPS; source conditioning, audio and optional disabled Gemma
+prompt enhancement remain. Both prior LTX workflows are retained.
+
+The new entry shares three already-pinned models (about 39.61 GB): distilled
+FP8 checkpoint, Gemma FP4 encoder and the disabled optional Gemma LoRA. It adds
+no unique models, sources, node ownership mappings or custom-node packages.
+The library now has 11 workflows, 31 unique models and the existing panorama
+add-on. Original dependency declarations and verification dates are preserved.
+
+Selective preview/apply/check, 20 sync tests, 18 provisioning tests, and both
+selected/all-workflow installation dry runs passed. All 11 snapshots match the
+app, and all ten prior library graphs retain their hashes. No model payloads downloaded, Pod services restarted or GPU jobs submitted.
+Publication and actual model installation remain separate from this local sync.
+
 # LTX distilled selective sync — 25 October 2026
 
 Added `ltx-2-3-distilled-fp8-image-to-video.json` byte for byte from the local app

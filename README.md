@@ -20,9 +20,10 @@ Use `python` instead if that is your Python 3 command. Names are discovered from
 file stems and generated slugs work. Current app snapshots are `qwen-2512.json`,
 `krea-2-turbo-fp8.json`, `mage-flow-turbo.json`, `ernie-image-turbo.json`,
 `qwen-image-2-1-turbo.json`, `z-image-turbo.json`, `moss-image-sft-4-step.json`, and
-`ltx-2-3-image-to-video.json`, `ltx-2-3-distilled-fp8-image-to-video.json`, and
+`ltx-2-3-image-to-video.json`, `ltx-2-3-distilled-fp8-image-to-video.json`,
+`ltx-2-3-distilled-fp8-single-stage-image-to-video.json`, and
 `qwen-image-2-1-360-panorama.json`.
-Full app-to-provision sync includes pruning. `--all` selects these ten workflows:
+Full app-to-provision sync includes pruning. `--all` selects these eleven workflows:
 **31 unique model files**, about **236.43 GB**, including disabled prompt-enhancement
 branches, and one pinned custom-node package for the native panorama viewer.
 Mage requires core support for `TextEncodeMageFlowEdit`, `SaveImageAdvanced`, and
@@ -46,7 +47,12 @@ The separate **LTX 2.3 Distilled FP8 Image to Video** workflow uses the official
 v1.0 distilled FP8 checkpoint directly, with no distillation LoRA, eight base
 steps and three x2-upscale refinement steps at CFG 1. Its 29.532 GB checkpoint is
 pinned with SHA-256 and exact size; the encoder, upscaler and optional Gemma LoRA
-are shared with the existing LTX workflow. The original LTX workflow is retained.
+are shared with the existing LTX workflow. The original LTX workflow is retained. The additional
+**LTX 2.3 Distilled FP8 Single Stage Image to Video** workflow samples directly
+at output resolution in eight steps, defaulting to 512 square / 2 seconds /
+25 FPS. It shares the distilled checkpoint, encoder and optional Gemma LoRA;
+its three model dependencies exclude the latent upscaler. Install it with
+`--workflow ltx-2-3-distilled-fp8-single-stage-image-to-video`.
 Select just this workflow for installation/verification:
 
 ```bash
