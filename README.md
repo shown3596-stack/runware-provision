@@ -19,12 +19,13 @@ Use `python` instead if that is your Python 3 command. Names are discovered from
 `workflows/**/*.json`, including the app's `{name, workflow}` wrapper; exact names,
 file stems and generated slugs work. Current app snapshots are `qwen-2512.json`,
 `krea-2-turbo-fp8.json`, `mage-flow-turbo.json`, `ernie-image-turbo.json`,
-`qwen-image-2-1-turbo.json`, `z-image-turbo.json`, `moss-image-sft-4-step.json`, and
+`qwen-image-2-1-turbo.json`, `z-image-turbo.json`, `moss-image-sft-4-step.json`,
+`moss-image-base-dmd-8-step.json`,
 `ltx-2-3-image-to-video.json`, `ltx-2-3-distilled-fp8-image-to-video.json`,
 `ltx-2-3-distilled-fp8-single-stage-image-to-video.json`, and
 `qwen-image-2-1-360-panorama.json`.
-Full app-to-provision sync includes pruning. `--all` selects these eleven workflows:
-**31 unique model files**, about **236.43 GB**, including disabled prompt-enhancement
+Full app-to-provision sync includes pruning. `--all` selects these twelve workflows:
+**33 unique model files**, about **247.79 GB**, including disabled prompt-enhancement
 branches, and one pinned custom-node package for the native panorama viewer.
 Mage requires core support for `TextEncodeMageFlowEdit`, `SaveImageAdvanced`, and
 the `mage` encoder family; source ownership is verified, live execution is not.
@@ -35,6 +36,13 @@ and GPU smoke generation are still required for the chosen Pod template.
 MOSS uses the Comfy-Org SFT BF16 checkpoint and Qwen3.5 9B INT8 ConvRot encoder,
 akhaliq's frozen four-step v2.0 LoRA, and the shared FLUX.2 VAE. Its template must
 support the `moss_image` encoder family; live MOSS execution remains unverified.
+The additional **MOSS Image Base DMD 8 Step** workflow loads Comfy-Org's Base
+BF16 checkpoint and lodestones' recommended `lora.safetensors` at strength 1,
+using eight Euler/simple steps, CFG 1 and native MOSS shift 5. It shares the
+encoder and VAE with SFT; its two new pinned files add about 11.35 GB. The
+adapter is installed as `moss_image_base_dmd_8step.safetensors`. Select it with
+`--workflow moss-image-base-dmd-8-step`. Source and graph checks passed; live
+LoRA application, GPU memory and output quality remain unverified.
 LTX 2.3 uses its full FP8 checkpoint (shared by the video/audio VAEs and AV text
 encoder), Gemma FP4 text encoder, x2 latent upscaler, distilled LoRA and optional
 Gemma prompt-enhancement LoRA. All five files are pinned with SHA-256 and exact

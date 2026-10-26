@@ -10,7 +10,8 @@
     "2026-10-24: LTX 2.3 image-to-video dependency review added five exact files pinned to publisher revisions with SHA256 and byte sizes. Checkpoint is shared by video VAE, audio VAE and AV text encoder loader; disabled prompt-enhancer Gemma LoRA remains included. Core ownership verified at 7cebca52227c63b4180ceed448cbd7ad22903b6d. No custom-node packages, payload downloads or live/GPU verification. App workflow copied without substitution; local app supplies the uploaded input image at generation time.",
     "2026-10-25: Qwen Image 2.1 360 Panorama adds pinned base INT8 ConvRot diffusion and turbo LoRA sources with publisher SHA256 and byte sizes; encoder/VAE remain shared. User requested pinned Panorama Stickers for the native ComfyUI interactive viewer. This is an explicit per-workflow add-on, not a node required by the API SaveImage graph: malformed optional preview node 95 remains omitted from the app snapshot. Add-on entrypoint, registration, packaged frontend and dependencies inspected; no requirements.txt or pyproject dependency list; NumPy/Pillow/Torch supplied by the ComfyUI runtime. No actual model or package install, browser/GPU/live schema verification performed. Earlier verification dates preserved.",
     "2026-10-25: Added the separate LTX 2.3 Distilled FP8 comparison workflow and official v1.0 distilled checkpoint, pinned to publisher revision 91eda216f820e5ecb3d17dc9fe3b7cdaf56b587d with SHA256 and exact size verified from publisher API metadata. Reuses existing encoder, upscaler, core-node mappings and disabled Gemma prompt-enhancement LoRA. Distillation LoRA removed only in the new graph; original workflow and dependencies retained. No model download, Pod installation or GPU verification performed; earlier verification dates preserved.",
-    "2026-10-26: Added the single-stage LTX 2.3 Distilled FP8 workflow, directly sampling at output dimensions with eight Euler steps and CFG 1. No latent upscaler or refinement sampler; shares the existing pinned distilled checkpoint, Gemma encoder and disabled Gemma prompt-enhancement LoRA. No new model sources, core-node mappings, payload downloads or GPU verification. Existing two-stage workflows and dependencies retained."
+    "2026-10-26: Added the single-stage LTX 2.3 Distilled FP8 workflow, directly sampling at output dimensions with eight Euler steps and CFG 1. No latent upscaler or refinement sampler; shares the existing pinned distilled checkpoint, Gemma encoder and disabled Gemma prompt-enhancement LoRA. No new model sources, core-node mappings, payload downloads or GPU verification. Existing two-stage workflows and dependencies retained.",
+    "2026-10-26: Added MOSS Image Base DMD 8 Step alongside the unchanged SFT 4 Step workflow. Uses Comfy-Org MOSS Base BF16 plus lodestones lora.safetensors (the model-card-recommended standard-sampler variant, not lora_dmd2 or the data-space generator). Publisher API metadata verified full revisions, SHA256 and exact sizes. Reuses the MOSS encoder and FLUX.2 VAE. Eight Euler/simple steps at CFG 1, LoRA strength 1; upstream native MOSS sampling uses shift 5 and multiplier 1. Core LoRA code supports MOSS separate q/k/v adapters against fused qkv. No payload download, Pod changes or live inference; previous verification dates preserved."
   ],
   "models": {
     "models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors": {
@@ -295,6 +296,26 @@
       "approx_gb": 29.532,
       "review": null,
       "verified_date": "2026-10-25"
+    },
+    "models/diffusion_models/moss_image_base_bf16.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/MOSS-Image/resolve/530a4c94f92c35ef6818b1b035a983fe9dcf5f54/diffusion_models/moss_image_base_bf16.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/MOSS-Image/blob/530a4c94f92c35ef6818b1b035a983fe9dcf5f54/diffusion_models/moss_image_base_bf16.safetensors",
+      "revision": "530a4c94f92c35ef6818b1b035a983fe9dcf5f54",
+      "sha256": "cacd158728a1fb9e57c408a922b54752ec71fceb566b3821269927964e62b41f",
+      "size_bytes": 10164655808,
+      "approx_gb": 10.165,
+      "review": null,
+      "verified_date": "2026-10-26"
+    },
+    "models/loras/moss_image_base_dmd_8step.safetensors": {
+      "url": "https://huggingface.co/lodestones/MOSS-Image-Base-8-steps-dmd/resolve/da05cb3b52899179e2bb5f7efe1058fefcbae21b/lora.safetensors",
+      "source": "https://huggingface.co/lodestones/MOSS-Image-Base-8-steps-dmd/blob/da05cb3b52899179e2bb5f7efe1058fefcbae21b/lora.safetensors",
+      "revision": "da05cb3b52899179e2bb5f7efe1058fefcbae21b",
+      "sha256": "f0e6cd07f222dfaea798afe3b796e2c2995cadfd44ad56e02ca616f0467aec28",
+      "size_bytes": 1189176800,
+      "approx_gb": 1.189,
+      "review": null,
+      "verified_date": "2026-10-26"
     }
   },
   "custom_nodes": {

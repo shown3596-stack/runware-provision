@@ -1,3 +1,37 @@
+# MOSS Base DMD selective sync — 26 October 2026
+
+Added `moss-image-base-dmd-8-step.json` from the app with stable ID
+`374aaa27a3e049908c8e4cc4328393b6`. Based on the existing MOSS SFT four-step
+graph, this entry switches to MOSS Base BF16, lodestones' model-card-recommended
+`lora.safetensors`, eight Euler/simple steps and its own output prefix. CFG 1,
+LoRA strength 1, encoder/VAE, parameters, defaults and output wiring are retained.
+Native MOSS supplies shift 5 and multiplier 1. The original SFT entry is unchanged.
+
+Publisher API metadata verified these new exact files:
+
+| Installed file | Revision | SHA-256 | Bytes |
+| --- | --- | --- | ---: |
+| `moss_image_base_bf16.safetensors` | `530a4c94f92c35ef6818b1b035a983fe9dcf5f54` | `cacd158728a1fb9e57c408a922b54752ec71fceb566b3821269927964e62b41f` | 10,164,655,808 |
+| `moss_image_base_dmd_8step.safetensors` (source `lora.safetensors`) | `da05cb3b52899179e2bb5f7efe1058fefcbae21b` | `f0e6cd07f222dfaea798afe3b796e2c2995cadfd44ad56e02ca616f0467aec28` | 1,189,176,800 |
+
+Sources: [Comfy-Org MOSS Base](https://huggingface.co/Comfy-Org/MOSS-Image/blob/530a4c94f92c35ef6818b1b035a983fe9dcf5f54/diffusion_models/moss_image_base_bf16.safetensors)
+and [lodestones DMD adapter](https://huggingface.co/lodestones/MOSS-Image-Base-8-steps-dmd/blob/da05cb3b52899179e2bb5f7efe1058fefcbae21b/lora.safetensors).
+The later DMD2 adapter and experimental data-space sampler are not selected.
+ComfyUI native sampling and MOSS fused-qkv LoRA mapping were inspected in
+`comfy/supported_models.py` and `comfy/lora.py` at revision
+`cdf272f3514353aab04dc2d9fceef57a260dc156`; no new node ownership declarations
+or custom packages are required.
+
+The library now has 12 workflows and 33 unique models (~247.79 GB). The new
+workflow's four dependencies total ~21.44 GB; only ~11.35 GB is additional when
+the shared encoder/VAE are present. Previous model entries and dates are preserved.
+
+Eight offline substitution trials, selective sync preview/apply/check, 20 sync
+tests, 18 provisioning tests and selected install dry run passed. Existing
+workflow hashes are unchanged. No model payload download, publication, Pod
+installation/restart or GPU generation was performed. Live LoRA application,
+runtime precision, memory and output quality checks remain pending.
+
 # LTX single-stage selective sync — 26 October 2026
 
 Added `ltx-2-3-distilled-fp8-single-stage-image-to-video.json` unchanged from the
