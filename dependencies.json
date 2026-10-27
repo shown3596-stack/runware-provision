@@ -13,7 +13,8 @@
     "2026-10-26: Added the single-stage LTX 2.3 Distilled FP8 workflow, directly sampling at output dimensions with eight Euler steps and CFG 1. No latent upscaler or refinement sampler; shares the existing pinned distilled checkpoint, Gemma encoder and disabled Gemma prompt-enhancement LoRA. No new model sources, core-node mappings, payload downloads or GPU verification. Existing two-stage workflows and dependencies retained.",
     "2026-10-26: Added MOSS Image Base DMD 8 Step alongside the unchanged SFT 4 Step workflow. Uses Comfy-Org MOSS Base BF16 plus lodestones lora.safetensors (the model-card-recommended standard-sampler variant, not lora_dmd2 or the data-space generator). Publisher API metadata verified full revisions, SHA256 and exact sizes. Reuses the MOSS encoder and FLUX.2 VAE. Eight Euler/simple steps at CFG 1, LoRA strength 1; upstream native MOSS sampling uses shift 5 and multiplier 1. Core LoRA code supports MOSS separate q/k/v adapters against fused qkv. No payload download, Pod changes or live inference; previous verification dates preserved.",
     "2026-10-26: Added a separate native single-pass LTX Video 2B 0.9.8 Distilled Image to Video workflow. Publisher API metadata pins regular-precision 2B checkpoint (bundled video VAE) and Comfy-Org scaled FP8 T5XXL text encoder, full revisions, SHA256 and exact sizes. Uses the published distilled eight-step sigma sequence, Euler, CFG 1 via BasicGuider, 0.8 image strength, 768x512 / 3s / 24fps defaults and silent MP4 output. All nodes already have reviewed core ownership. No additional custom nodes, upscaler, audio or model payload downloads; GPU speed/quality remain unverified. Existing workflows and dependency dates retained.",
-    "2026-10-26: Added Krea 2 Realism FP8 alongside the unchanged Krea 2 Turbo FP8 graph. Original RudySen Krea2Realism_V1.safetensors pinned from publisher API metadata with full revision, SHA256 and exact size. Reuses Krea encoder, VAE and disabled optional Darkbrush/prompt-enhancement branches. Publisher-recommended Euler/simple, six steps, CFG 1 and 1152x1792 defaults. No additional core/custom nodes, model payload download or GPU verification; existing workflow/dependency entries retained."
+    "2026-10-26: Added Krea 2 Realism FP8 alongside the unchanged Krea 2 Turbo FP8 graph. Original RudySen Krea2Realism_V1.safetensors pinned from publisher API metadata with full revision, SHA256 and exact size. Reuses Krea encoder, VAE and disabled optional Darkbrush/prompt-enhancement branches. Publisher-recommended Euler/simple, six steps, CFG 1 and 1152x1792 defaults. No additional core/custom nodes, model payload download or GPU verification; existing workflow/dependency entries retained.",
+    "2026-10-27: MiniMax H3 image graph: four Comfy-Org files pinned at repository revision e5eb578a89295337b8ff433a035929ce0279e0b6, publisher file-page SHA256 reviewed; core BasicScheduler and ModelAttentionBackend source reviewed. Graph execution, latent separation, model installation and GPU compatibility remain unverified."
   ],
   "models": {
     "models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors": {
@@ -348,6 +349,38 @@
       "approx_gb": 13.142,
       "review": null,
       "verified_date": "2026-10-26"
+    },
+    "models/diffusion_models/minimax_h3_fl2va_pruned_int8_convrot.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/e5eb578a89295337b8ff433a035929ce0279e0b6/diffusion_models/minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/MiniMax-H3/blob/e5eb578a89295337b8ff433a035929ce0279e0b6/diffusion_models/minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+      "revision": "e5eb578a89295337b8ff433a035929ce0279e0b6",
+      "sha256": "e889202c41dafb67b10d67b97f0d8541508036a6090af23425a5c2615d03c47a",
+      "approx_gb": 21,
+      "review": null
+    },
+    "models/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/e5eb578a89295337b8ff433a035929ce0279e0b6/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/MiniMax-H3/blob/e5eb578a89295337b8ff433a035929ce0279e0b6/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+      "revision": "e5eb578a89295337b8ff433a035929ce0279e0b6",
+      "sha256": "35a88d51044231fe332301d7a62aa81e3f2cba62febeb446e2c1e3e0ef76f2c6",
+      "approx_gb": 15.7,
+      "review": null
+    },
+    "models/vae/minimax_h3_video_vae_fp16.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/e5eb578a89295337b8ff433a035929ce0279e0b6/vae/minimax_h3_video_vae_fp16.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/MiniMax-H3/blob/e5eb578a89295337b8ff433a035929ce0279e0b6/vae/minimax_h3_video_vae_fp16.safetensors",
+      "revision": "e5eb578a89295337b8ff433a035929ce0279e0b6",
+      "sha256": "7c1f131492e7eddacaac9069a61b81bdd39de5cc96561e677c5eab1cdce5e522",
+      "approx_gb": 5.21,
+      "review": null
+    },
+    "models/loras/minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/e5eb578a89295337b8ff433a035929ce0279e0b6/loras/minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/MiniMax-H3/blob/e5eb578a89295337b8ff433a035929ce0279e0b6/loras/minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors",
+      "revision": "e5eb578a89295337b8ff433a035929ce0279e0b6",
+      "sha256": "2339acdf19bfe123f46b971ea35d367a84adb85de43627e1eceafa5a5b2b111e",
+      "approx_gb": 1.96,
+      "review": null
     }
   },
   "custom_nodes": {
@@ -417,7 +450,9 @@
     "LoraLoader": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/nodes.py",
     "LoadImage": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/nodes.py",
     "CheckpointLoaderSimple": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/nodes.py",
-    "BasicGuider": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_custom_sampler.py"
+    "BasicGuider": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_custom_sampler.py",
+    "BasicScheduler": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_custom_sampler.py",
+    "ModelAttentionBackend": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_model_advanced.py"
   },
   "workflows": {
     "qwen-2512.json": {

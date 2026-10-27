@@ -2,6 +2,7 @@
 """Inspect local ComfyUI exports; provision an existing Pod. Python 3.10+, stdlib only."""
 import argparse
 from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import nullcontext
 import fcntl
 import hashlib
@@ -208,33 +209,47 @@ def valid(path, model):
     return not model.get('sha256') or digest(path) == model['sha256']
 
 
-def download(target, model):
+def download(target, model, downloader="curl", connections=4):
     if target.exists():
         if valid(target, model):
             print(f'Present: {target.name}', flush=True)
             return
         raise ValueError(f'Existing file failed validation: {target}. Move/remove it and retry.')
     target.parent.mkdir(parents=True, exist_ok=True)
-    part = target.with_name(target.name + '.part')
+    part = target.with_name(target.name + ('.aria2.part' if downloader == 'aria2' else '.part'))
     if valid(part, model):
         part.replace(target)
+        if downloader == 'aria2':
+            part.with_name(part.name + '.aria2').unlink(missing_ok=True)
         return
     start = time.monotonic()
     print(f"Download: {target.name} (~{model.get('approx_gb', '?')} GB), resume at {part.stat().st_size if part.exists() else 0} bytes", flush=True)
-    command = ['curl', '--fail', '--location', '--retry', '3', '--connect-timeout', '30',
-               '--speed-limit', '1024', '--speed-time', '120', '--progress-bar',
-               '--continue-at', '-', '--output', str(part), model['url']]
+    if downloader == 'aria2':
+        command = ['aria2c', '--allow-overwrite=true', '--auto-file-renaming=false',
+                   '--continue=true', '--max-tries=4', '--retry-wait=3',
+                   '--connect-timeout=30', '--summary-interval=0',
+                   '--max-connection-per-server=' + str(connections),
+                   '--split=' + str(connections), '--min-split-size=16M',
+                   '--dir=' + str(part.parent), '--out=' + part.name, model['url']]
+    else:
+        command = ['curl', '--fail', '--location', '--retry', '3', '--connect-timeout', '30',
+                   '--speed-limit', '1024', '--speed-time', '120', '--progress-bar',
+                   '--continue-at', '-', '--output', str(part), model['url']]
     result = subprocess.run(command)
-    if result.returncode == 33:  # Server does not support byte ranges. Restart safely.
+    if downloader == 'curl' and result.returncode == 33:  # No range support.
         part.unlink(missing_ok=True)
         subprocess.run(command, check=True)
     elif result.returncode:
-        raise ValueError(f'Download failed (curl {result.returncode}); partial retained. Rerun to resume.')
+        raise ValueError(f'Download failed ({downloader} {result.returncode}); partial retained. Rerun to resume.')
+    downloaded = time.monotonic()
+    print(f'Downloaded {target.name} in {downloaded - start:.1f}s; validating checksum...', flush=True)
     if not valid(part, model):
         part.unlink(missing_ok=True)
+        if downloader == 'aria2':
+            part.with_name(part.name + '.aria2').unlink(missing_ok=True)
         raise ValueError(f'Validation failed: {target.name}; invalid partial removed, no final file published.')
     part.replace(target)
-    print(f'Validated {target.stat().st_size:,} bytes in {time.monotonic() - start:.1f}s', flush=True)
+    print(f'Validated {target.name}: {target.stat().st_size:,} bytes in {time.monotonic() - downloaded:.1f}s', flush=True)
 
 
 def git(path, *args):
@@ -387,7 +402,15 @@ def main(argv=None):
     parser.add_argument('--comfy-url', default='http://127.0.0.1:8188', help='Read-only node verification endpoint')
     parser.add_argument('--no-restart', action='store_true',
                         help='Leave ComfyUI running after installation (restart manually if needed)')
+    parser.add_argument('--download-jobs', type=int, default=3,
+                        help='Maximum simultaneous model downloads (default: 3)')
+    parser.add_argument('--downloader', choices=('curl', 'aria2'), default='curl',
+                        help='Transfer tool; aria2 enables segmented downloads (default: curl)')
+    parser.add_argument('--connections', type=int, default=4,
+                        help='aria2 connections per model, 1–16 (default: 4)')
     args = parser.parse_args(argv)
+    if not 1 <= args.download_jobs <= 16 or not 1 <= args.connections <= 16:
+        parser.error('--download-jobs and --connections must be between 1 and 16')
     if (args.install or args.verify) and not (args.workflow or args.all):
         parser.error('--install/--verify requires --workflow NAME or --all')
     start = time.monotonic()
@@ -423,8 +446,9 @@ def main(argv=None):
         return 0
     root = locate(args.comfy_dir)
     print(f'ComfyUI: {root}; Python: {sys.executable}', flush=True)
-    if args.install and assets and not shutil.which('curl'):
-        raise ValueError('curl is required for resumable model downloads.')
+    executable = 'aria2c' if args.downloader == 'aria2' else 'curl'
+    if args.install and assets and not shutil.which(executable):
+        raise ValueError(f'{executable} is required for the selected downloader.')
     if packages and not shutil.which('git'):
         raise ValueError('git is required for custom nodes.')
     if args.install and not packages:
@@ -436,14 +460,20 @@ def main(argv=None):
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         process = running_comfy(root) if args.install and not args.no_restart else None
         errors = []
-        for asset in assets:
-            target = within(root, asset)
-            if args.install:
-                download(target, manifest['models'][asset])
-            elif not valid(target, manifest['models'][asset]):
-                errors.append(f'Missing or invalid model: {target}')
-            else:
-                print(f'Validated: {target.name}')
+        if args.install:
+            # Executor shutdown waits for active transfers before releasing the Pod lock.
+            with ThreadPoolExecutor(max_workers=args.download_jobs) as pool:
+                futures = [pool.submit(download, within(root, asset), manifest['models'][asset],
+                                       args.downloader, args.connections) for asset in assets]
+                for future in futures:
+                    future.result()
+        else:
+            for asset in assets:
+                target = within(root, asset)
+                if not valid(target, manifest['models'][asset]):
+                    errors.append(f'Missing or invalid model: {target}')
+                else:
+                    print(f'Validated: {target.name}')
         for name in packages:
             custom_node(root, name, manifest['custom_nodes'][name], verify=args.verify)
         if errors:

@@ -1,0 +1,259 @@
+{
+  "name": "MiniMax H3 Turbo Text to Image",
+  "workflow": {
+    "48": {
+      "inputs": {
+        "filename_prefix": "image_minimax_h3_t2i",
+        "images": [
+          "58:10",
+          0
+        ]
+      },
+      "class_type": "SaveImage",
+      "_meta": {
+        "title": "Save Image",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "58:6": {
+      "inputs": {
+        "unet_name": "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+        "weight_dtype": "default"
+      },
+      "class_type": "UNETLoader",
+      "_meta": {
+        "title": "Load Diffusion Model",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "58:41": {
+      "inputs": {
+        "lora_name": "minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors",
+        "strength_model": 1,
+        "model": [
+          "58:6",
+          0
+        ]
+      },
+      "class_type": "LoraLoaderModelOnly",
+      "_meta": {
+        "title": "Turbo LoRA (8 step) - bypass for base 30 steps",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "58:12": {
+      "inputs": {
+        "text": "API_POSITIVE_PROMPT",
+        "clip": [
+          "58:13",
+          0
+        ]
+      },
+      "class_type": "CLIPTextEncode",
+      "_meta": {
+        "title": "CLIP Text Encode (Prompt)",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "58:13": {
+      "inputs": {
+        "clip_name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+        "type": "minimax",
+        "device": "default"
+      },
+      "class_type": "CLIPLoader",
+      "_meta": {
+        "title": "Load CLIP",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "58:11": {
+      "inputs": {
+        "vae_name": "minimax_h3_video_vae_fp16.safetensors"
+      },
+      "class_type": "VAELoader",
+      "_meta": {
+        "title": "Load VAE",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "58:46": {
+      "inputs": {
+        "width": "API_WIDTH",
+        "height": "API_HEIGHT",
+        "batch_size": 1
+      },
+      "class_type": "EmptyLatentImage",
+      "_meta": {
+        "title": "Empty Latent Image",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "58:52": {
+      "inputs": {
+        "switch": true,
+        "on_false": [
+          "58:6",
+          0
+        ],
+        "on_true": [
+          "58:41",
+          0
+        ]
+      },
+      "class_type": "ComfySwitchNode",
+      "_meta": {
+        "title": "If/Else Switch (Model)",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "58:16": {
+      "inputs": {
+        "model": [
+          "58:44",
+          0
+        ],
+        "conditioning": [
+          "58:12",
+          0
+        ]
+      },
+      "class_type": "BasicGuider",
+      "_meta": {
+        "title": "Basic Guider",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "58:15": {
+      "inputs": {
+        "noise_seed": 851629414332242
+      },
+      "class_type": "RandomNoise",
+      "_meta": {
+        "title": "RandomNoise",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "58:17": {
+      "inputs": {
+        "sampler_name": "res_multistep"
+      },
+      "class_type": "KSamplerSelect",
+      "_meta": {
+        "title": "KSamplerSelect",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "58:9": {
+      "inputs": {
+        "scheduler": "simple",
+        "steps": 8,
+        "denoise": 1,
+        "model": [
+          "58:44",
+          0
+        ]
+      },
+      "class_type": "BasicScheduler",
+      "_meta": {
+        "title": "BasicScheduler",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "58:44": {
+      "inputs": {
+        "attention": "comfy kitchen attention",
+        "model": [
+          "58:52",
+          0
+        ]
+      },
+      "class_type": "ModelAttentionBackend",
+      "_meta": {
+        "title": "Model Attention Backend",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "58:14": {
+      "inputs": {
+        "noise": [
+          "58:15",
+          0
+        ],
+        "guider": [
+          "58:16",
+          0
+        ],
+        "sampler": [
+          "58:17",
+          0
+        ],
+        "sigmas": [
+          "58:9",
+          0
+        ],
+        "latent_image": [
+          "58:46",
+          0
+        ]
+      },
+      "class_type": "SamplerCustomAdvanced",
+      "_meta": {
+        "title": "SamplerCustomAdvanced",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "58:39": {
+      "inputs": {
+        "av_latent": [
+          "58:14",
+          0
+        ]
+      },
+      "class_type": "LTXVSeparateAVLatent",
+      "_meta": {
+        "title": "Separate AV Latent",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "58:10": {
+      "inputs": {
+        "samples": [
+          "58:39",
+          0
+        ],
+        "vae": [
+          "58:11",
+          0
+        ]
+      },
+      "class_type": "VAEDecode",
+      "_meta": {
+        "title": "VAE Decode",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    }
+  },
+  "parameter_defaults": {
+    "API_POSITIVE_PROMPT": "POSITIVE_PROMPT",
+    "API_WIDTH": 1296,
+    "API_HEIGHT": 728
+  },
+  "id": "6017bfa8dd9b41208fca8d6d594fac40"
+}

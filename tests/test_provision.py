@@ -189,6 +189,44 @@ class ProvisionTests(unittest.TestCase):
         self.assertEqual(target.read_bytes(), self.body)
         self.assertFalse(part.exists())
 
+    def test_aria2_uses_separate_resumable_partial_and_validates(self):
+        target = self.root / 'model.safetensors'
+        part = target.with_name(target.name + '.aria2.part')
+        part.write_bytes(b'partial')
+        def aria(command, **kwargs):
+            self.assertIn('--continue=true', command)
+            self.assertIn('--split=4', command)
+            self.assertIn('--out=' + part.name, command)
+            part.write_bytes(self.body)
+            return subprocess.CompletedProcess(command, 0)
+        with patch.object(p.subprocess, 'run', side_effect=aria):
+            p.download(target, self.model, 'aria2', 4)
+        self.assertEqual(target.read_bytes(), self.body)
+        self.assertFalse(part.exists())
+
+    def test_install_runs_multiple_downloads_concurrently(self):
+        import threading
+        workflows = self.root / 'workflows'
+        workflows.mkdir()
+        (workflows / 'two.json').write_text(json.dumps({
+            '1': {'class_type': 'VAELoader', 'inputs': {'vae_name': 'test.safetensors'}},
+            '2': {'class_type': 'VAELoader', 'inputs': {'vae_name': 'other.safetensors'}},
+        }))
+        self.manifest['models']['models/vae/other.safetensors'] = self.model
+        (self.root / 'dependencies.json').write_text(json.dumps(self.manifest))
+        comfy = self.root / 'ComfyUI'
+        (comfy / 'models').mkdir(parents=True)
+        (comfy / 'main.py').touch()
+        barrier = threading.Barrier(2, timeout=3)
+        def transfer(target, model, downloader, connections):
+            barrier.wait()
+        with patch.object(p, 'ROOT', self.root), patch.object(p, 'verify_nodes'), \
+                patch.object(p.shutil, 'which', return_value='/usr/bin/curl'), \
+                patch.object(p, 'download', side_effect=transfer) as run:
+            self.assertEqual(p.main(['--install', '--all', '--no-restart', '--comfy-dir', str(comfy),
+                                     '--download-jobs', '2']), 0)
+        self.assertEqual(run.call_count, 2)
+
     def test_failure_keeps_partial_checksum_failure_never_publishes(self):
         target = self.root / 'test.safetensors'
         part = target.with_name(target.name + '.part')

@@ -6,6 +6,13 @@ and pip are needed only for custom nodes. This is a standalone provisioning repo
 the workflows audited from `comfyui-api-poc`; the original app and workflow
 library remain in that separate repository.
 
+## MiniMax H3 image workflow
+
+`minimax-h3-turbo-text-to-image` is available for selective provisioning (~43.87 GB
+of model files). Its supplied latent separation path has not been verified on a GPU;
+see [the dependency report](DEPENDENCIES.md) before using it. The total library now
+contains 15 workflows and 40 unique model files (~316.30 GB).
+
 ## Inspect locally before renting a GPU
 
 ```bash
@@ -172,6 +179,20 @@ skipped; reruns do not fetch them again. Interrupted downloads resume from
 large existing files takes some disk-read time. Sizes shown in GB are rounded
 publisher estimates, never used as exact validation sizes. SHA-256 is authoritative.
 Only run one installer per ComfyUI installation; a Pod file lock enforces this.
+
+The installer downloads up to three different models concurrently. Use
+`--download-jobs 1` to run sequentially, or set a value up to 16 to tune for
+available bandwidth and disk throughput. Download and checksum times are reported
+separately. Concurrent progress output may interleave.
+
+For multi-connection transfers of individual large files, install `aria2c` on
+the Pod and add `--downloader aria2 --connections 4`. Connections can be set
+from 1 to 16; the total potential connections are jobs multiplied by connections.
+The default remains curl, which requires no extra package. aria2 and curl use
+separate partial files, so resume with the same downloader after interruption.
+Both paths verify the complete file before publishing it. Performance depends on
+the source, Pod network and disk; more connections do not always help.
+
 
 ## Open ComfyUI and generate
 
