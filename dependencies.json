@@ -11,7 +11,9 @@
     "2026-10-25: Qwen Image 2.1 360 Panorama adds pinned base INT8 ConvRot diffusion and turbo LoRA sources with publisher SHA256 and byte sizes; encoder/VAE remain shared. User requested pinned Panorama Stickers for the native ComfyUI interactive viewer. This is an explicit per-workflow add-on, not a node required by the API SaveImage graph: malformed optional preview node 95 remains omitted from the app snapshot. Add-on entrypoint, registration, packaged frontend and dependencies inspected; no requirements.txt or pyproject dependency list; NumPy/Pillow/Torch supplied by the ComfyUI runtime. No actual model or package install, browser/GPU/live schema verification performed. Earlier verification dates preserved.",
     "2026-10-25: Added the separate LTX 2.3 Distilled FP8 comparison workflow and official v1.0 distilled checkpoint, pinned to publisher revision 91eda216f820e5ecb3d17dc9fe3b7cdaf56b587d with SHA256 and exact size verified from publisher API metadata. Reuses existing encoder, upscaler, core-node mappings and disabled Gemma prompt-enhancement LoRA. Distillation LoRA removed only in the new graph; original workflow and dependencies retained. No model download, Pod installation or GPU verification performed; earlier verification dates preserved.",
     "2026-10-26: Added the single-stage LTX 2.3 Distilled FP8 workflow, directly sampling at output dimensions with eight Euler steps and CFG 1. No latent upscaler or refinement sampler; shares the existing pinned distilled checkpoint, Gemma encoder and disabled Gemma prompt-enhancement LoRA. No new model sources, core-node mappings, payload downloads or GPU verification. Existing two-stage workflows and dependencies retained.",
-    "2026-10-26: Added MOSS Image Base DMD 8 Step alongside the unchanged SFT 4 Step workflow. Uses Comfy-Org MOSS Base BF16 plus lodestones lora.safetensors (the model-card-recommended standard-sampler variant, not lora_dmd2 or the data-space generator). Publisher API metadata verified full revisions, SHA256 and exact sizes. Reuses the MOSS encoder and FLUX.2 VAE. Eight Euler/simple steps at CFG 1, LoRA strength 1; upstream native MOSS sampling uses shift 5 and multiplier 1. Core LoRA code supports MOSS separate q/k/v adapters against fused qkv. No payload download, Pod changes or live inference; previous verification dates preserved."
+    "2026-10-26: Added MOSS Image Base DMD 8 Step alongside the unchanged SFT 4 Step workflow. Uses Comfy-Org MOSS Base BF16 plus lodestones lora.safetensors (the model-card-recommended standard-sampler variant, not lora_dmd2 or the data-space generator). Publisher API metadata verified full revisions, SHA256 and exact sizes. Reuses the MOSS encoder and FLUX.2 VAE. Eight Euler/simple steps at CFG 1, LoRA strength 1; upstream native MOSS sampling uses shift 5 and multiplier 1. Core LoRA code supports MOSS separate q/k/v adapters against fused qkv. No payload download, Pod changes or live inference; previous verification dates preserved.",
+    "2026-10-26: Added a separate native single-pass LTX Video 2B 0.9.8 Distilled Image to Video workflow. Publisher API metadata pins regular-precision 2B checkpoint (bundled video VAE) and Comfy-Org scaled FP8 T5XXL text encoder, full revisions, SHA256 and exact sizes. Uses the published distilled eight-step sigma sequence, Euler, CFG 1 via BasicGuider, 0.8 image strength, 768x512 / 3s / 24fps defaults and silent MP4 output. All nodes already have reviewed core ownership. No additional custom nodes, upscaler, audio or model payload downloads; GPU speed/quality remain unverified. Existing workflows and dependency dates retained.",
+    "2026-10-26: Added Krea 2 Realism FP8 alongside the unchanged Krea 2 Turbo FP8 graph. Original RudySen Krea2Realism_V1.safetensors pinned from publisher API metadata with full revision, SHA256 and exact size. Reuses Krea encoder, VAE and disabled optional Darkbrush/prompt-enhancement branches. Publisher-recommended Euler/simple, six steps, CFG 1 and 1152x1792 defaults. No additional core/custom nodes, model payload download or GPU verification; existing workflow/dependency entries retained."
   ],
   "models": {
     "models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors": {
@@ -314,6 +316,36 @@
       "sha256": "f0e6cd07f222dfaea798afe3b796e2c2995cadfd44ad56e02ca616f0467aec28",
       "size_bytes": 1189176800,
       "approx_gb": 1.189,
+      "review": null,
+      "verified_date": "2026-10-26"
+    },
+    "models/checkpoints/ltxv-2b-0.9.8-distilled.safetensors": {
+      "url": "https://huggingface.co/Lightricks/LTX-Video/resolve/8984fa25007f376c1a299016d0957a37a2f797bb/ltxv-2b-0.9.8-distilled.safetensors",
+      "source": "https://huggingface.co/Lightricks/LTX-Video/blob/8984fa25007f376c1a299016d0957a37a2f797bb/ltxv-2b-0.9.8-distilled.safetensors",
+      "revision": "8984fa25007f376c1a299016d0957a37a2f797bb",
+      "sha256": "76aa8c4786af752fa6f951947129d5290c3c6c0b2fadcadea6b5e114ae2cad8f",
+      "size_bytes": 6340744492,
+      "approx_gb": 6.341,
+      "review": null,
+      "verified_date": "2026-10-26"
+    },
+    "models/text_encoders/t5xxl_fp8_e4m3fn_scaled.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/stable-diffusion-3.5/resolve/934251d1e6168bcb45a069abc5bd5cdd5f8fea00/text_encoders/t5xxl_fp8_e4m3fn_scaled.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/stable-diffusion-3.5/blob/934251d1e6168bcb45a069abc5bd5cdd5f8fea00/text_encoders/t5xxl_fp8_e4m3fn_scaled.safetensors",
+      "revision": "934251d1e6168bcb45a069abc5bd5cdd5f8fea00",
+      "sha256": "a498f0485dc9536735258018417c3fd7758dc3bccc0a645feaa472b34955557a",
+      "size_bytes": 5157348688,
+      "approx_gb": 5.157,
+      "review": null,
+      "verified_date": "2026-10-26"
+    },
+    "models/diffusion_models/Krea2Realism_V1.safetensors": {
+      "url": "https://huggingface.co/RudySen/Krea2-Realism-Checkpoint/resolve/0ee8fad5208edb4cd7efd9f1f3a253a37104557a/Krea2Realism_V1.safetensors",
+      "source": "https://huggingface.co/RudySen/Krea2-Realism-Checkpoint/blob/0ee8fad5208edb4cd7efd9f1f3a253a37104557a/Krea2Realism_V1.safetensors",
+      "revision": "0ee8fad5208edb4cd7efd9f1f3a253a37104557a",
+      "sha256": "cc0d6a265cba48d9f4785ee00540695512816127f1d6de47d226a7aa15ca1787",
+      "size_bytes": 13141769680,
+      "approx_gb": 13.142,
       "review": null,
       "verified_date": "2026-10-26"
     }

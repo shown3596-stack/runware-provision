@@ -23,10 +23,16 @@ file stems and generated slugs work. Current app snapshots are `qwen-2512.json`,
 `moss-image-base-dmd-8-step.json`,
 `ltx-2-3-image-to-video.json`, `ltx-2-3-distilled-fp8-image-to-video.json`,
 `ltx-2-3-distilled-fp8-single-stage-image-to-video.json`, and
-`qwen-image-2-1-360-panorama.json`.
-Full app-to-provision sync includes pruning. `--all` selects these twelve workflows:
-**33 unique model files**, about **247.79 GB**, including disabled prompt-enhancement
+`qwen-image-2-1-360-panorama.json`, plus
+`ltx-video-2b-0-9-8-distilled-image-to-video.json` and `krea-2-realism-fp8.json`.
+Full app-to-provision sync includes pruning. `--all` selects these fourteen workflows:
+**36 unique model files**, about **272.43 GB**, including disabled prompt-enhancement
 branches, and one pinned custom-node package for the native panorama viewer.
+**Krea 2 Realism FP8** adds RudySen's original 13.14 GB FP8 checkpoint and shares
+the existing Krea encoder/VAE and disabled optional Darkbrush LoRA. It defaults
+to six Euler/simple steps, CFG 1 and 1152 × 1792. Install with
+`--workflow krea-2-realism-fp8`. Its original Krea 2 Turbo counterpart remains
+available; GPU execution and memory use have not been verified here.
 Mage requires core support for `TextEncodeMageFlowEdit`, `SaveImageAdvanced`, and
 the `mage` encoder family; source ownership is verified, live execution is not.
 Ernie, Qwen Image 2.1 and Z Image also need matching core model/encoder support;
@@ -43,6 +49,13 @@ encoder and VAE with SFT; its two new pinned files add about 11.35 GB. The
 adapter is installed as `moss_image_base_dmd_8step.safetensors`. Select it with
 `--workflow moss-image-base-dmd-8-step`. Source and graph checks passed; live
 LoRA application, GPU memory and output quality remain unverified.
+**LTX Video 2B 0.9.8 Distilled Image to Video** is a separate, silent eight-step
+single-pass option for quick animation tests. It uses the regular 2B checkpoint
+(bundled VAE) and scaled FP8 T5XXL encoder: two pinned downloads totaling about
+11.50 GB, with no additional custom nodes. Defaults are 768 × 512, approximately
+3 seconds and 24 FPS. Install with
+`--workflow ltx-video-2b-0-9-8-distilled-image-to-video`. GPU speed and output
+quality are not yet verified; existing LTX 2.3 entries are retained.
 LTX 2.3 uses its full FP8 checkpoint (shared by the video/audio VAEs and AV text
 encoder), Gemma FP4 text encoder, x2 latent upscaler, distilled LoRA and optional
 Gemma prompt-enhancement LoRA. All five files are pinned with SHA-256 and exact

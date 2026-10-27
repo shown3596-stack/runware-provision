@@ -1,3 +1,69 @@
+# Krea 2 Realism FP8 selective sync — 26 October 2026
+
+Added `krea-2-realism-fp8.json` unchanged from the new app entry, ID
+`28989ad1e1db4dc083cf9ec2678355a8`. It copies the existing Krea 2 Turbo graph
+and swaps the diffusion file, changes eight steps to six, and gives output its
+own prefix. Euler/simple, CFG 1, shared encoder/VAE, zeroed negative conditioning
+and disabled optional Darkbrush/prompt-enhancement branches remain intact.
+The new wrapper defaults to 1152 × 1792 and a natural-language photo prompt,
+following the publisher's approximately 2MP/six-step recommendation.
+
+One new pinned file:
+
+- Destination: `models/diffusion_models/Krea2Realism_V1.safetensors`.
+- Publisher: [RudySen/Krea2-Realism-Checkpoint](https://huggingface.co/RudySen/Krea2-Realism-Checkpoint/blob/0ee8fad5208edb4cd7efd9f1f3a253a37104557a/Krea2Realism_V1.safetensors).
+- Revision: `0ee8fad5208edb4cd7efd9f1f3a253a37104557a`.
+- SHA-256: `cc0d6a265cba48d9f4785ee00540695512816127f1d6de47d226a7aa15ca1787`.
+- Size: 13,141,769,680 bytes; checked against publisher API metadata.
+
+This selects the original FP8 release. W4A8 and INT8 ConvRot variants are not
+added. No new core ownership declarations or custom nodes are needed. The new
+workflow's four declared assets total ~19.11 GB; ~13.14 GB is additional when
+the shared files are present. The library now has 14 workflows and 36 model
+files (~272.43 GB). Prior workflow and dependency entries are unchanged.
+
+Eight offline substitutions, graph/link review, selective preview/apply/check,
+20 sync tests, 18 provisioning tests and selected/all install dry runs pass.
+All 26 previous app/provision workflow files retain their hashes, and the new
+snapshots match byte for byte. Publication, actual model installation and GPU
+validation remain pending. No model payload downloaded or service restarted.
+
+# LTX Video 2B distilled selective sync — 26 October 2026
+
+Added `ltx-video-2b-0-9-8-distilled-image-to-video.json` from the app, ID
+`f57f93030a584707b6884ff43164131f`, as an additional 18-node native workflow.
+One eight-step Euler pass uses the published distilled sigma sequence and CFG 1
+through BasicGuider. Defaults are 768 × 512, about 3 seconds / 24 FPS (73 frames),
+image strength 0.8, and silent H.264 MP4. Upload, dimension, timing and silent
+bridge handling use existing helper contracts without code changes.
+
+Two new sources were checked against publisher API metadata and pinned:
+
+| Destination | Revision | SHA-256 | Bytes |
+| --- | --- | --- | ---: |
+| `models/checkpoints/ltxv-2b-0.9.8-distilled.safetensors` | `8984fa25007f376c1a299016d0957a37a2f797bb` | `76aa8c4786af752fa6f951947129d5290c3c6c0b2fadcadea6b5e114ae2cad8f` | 6,340,744,492 |
+| `models/text_encoders/t5xxl_fp8_e4m3fn_scaled.safetensors` | `934251d1e6168bcb45a069abc5bd5cdd5f8fea00` | `a498f0485dc9536735258018417c3fd7758dc3bccc0a645feaa472b34955557a` | 5,157,348,688 |
+
+Publisher repositories are `Lightricks/LTX-Video` and
+`Comfy-Org/stable-diffusion-3.5`. The checkpoint includes its video VAE; no
+separate VAE, audio, upscaler or custom-node package is needed. All graph node
+types already have reviewed core ownership declarations. This entry uses the
+regular checkpoint and scaled FP8 T5 encoder with `CLIPLoader` type `ltxv`.
+It is an authored single-pass graph, not an API export of the publisher's
+multiscale custom-node example. That UI example and the 2B config are preserved
+in the shared `examples/workflows/` folder for comparison.
+
+The library now contains 13 workflows and 35 unique model files (~259.28 GB).
+The new entry adds ~11.50 GB. All prior graph hashes and dependency entries are
+unchanged. Six parameter substitution trials and focused new-graph checks pass,
+including full 64-bit seeds, input routing, silent video adaptation, dimension
+validation and the 8n+1 frame grid. Selective preview/apply/check, selected/all
+install dry runs and 54 sync/provision/media/video-bridge logic tests pass.
+One existing ASGI video endpoint test times out, including when run by itself
+with its original LTX 2.3 fixture; it does not use the new graph. No helper code
+was changed. Publication, Pod model installation and live GPU validation remain
+pending; no model payload was downloaded and no service restarted.
+
 # MOSS Base DMD selective sync — 26 October 2026
 
 Added `moss-image-base-dmd-8-step.json` from the app with stable ID
