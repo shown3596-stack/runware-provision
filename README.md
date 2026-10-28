@@ -10,8 +10,15 @@ library remain in that separate repository.
 
 `minimax-h3-turbo-text-to-image` is available for selective provisioning (~43.87 GB
 of model files). Its supplied latent separation path has not been verified on a GPU;
-see [the dependency report](DEPENDENCIES.md) before using it. The total library now
-contains 15 workflows and 40 unique model files (~316.30 GB).
+see [the dependency report](DEPENDENCIES.md) before using it. At that sync the library contained 15 workflows and 40 unique model files (~316.30 GB).
+
+## Rapid MOSS SFT 4 Step
+
+`rapid-moss-sft-4-step` installs the quantized MOSS models, RapidMOSS adapter and
+its custom nodes (~12.20 GB of models). The current Pod has these dependencies;
+GPU generation is not yet verified. See [the dependency report](DEPENDENCIES.md).
+The installer supports individually checksum-pinned source files for custom nodes
+published as repository subdirectories.
 
 ## Inspect locally before renting a GPU
 

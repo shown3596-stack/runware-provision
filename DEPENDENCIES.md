@@ -1,3 +1,33 @@
+# Rapid MOSS SFT 4 Step — 27 October 2026
+
+Selective sync adds `rapid-moss-sft-4-step.json` (ID
+`4a76a6a398fc453489c33b21acb6c064`). It preserves the supplied RapidMOSS
+adapter, four steps, ScheduledCFGGuidance and zeroed negative conditioning.
+The positive prompt and dimensions are editable, defaulting to the supplied text
+and 1328 × 1024; the helper supplies fresh seeds. The malformed API export's three
+missing class names and UNKNOWN inputs were resolved using the connected Pod's
+actual `/object_info` schemas. Original: `../workflow-imports/rapid-moss-sft.original.json`.
+
+The manifest pins the six required model/adapter files (~12.20 GB) and the three
+custom node packages to the versions installed on the current Pod. The adapter
+files are explicit extra models because the graph selects an adapter directory,
+not its internal files. RapidMOSS and MOSS-Image are published as repository
+subdirectories: the installer now downloads and checks their individually pinned
+source files. KJNodes remains a pinned Git checkout. Existing files with mismatched
+checksums are refused rather than overwritten. Installed model/adapter files and
+node classes were verified on the connected Pod; the parameterized graph was also
+checked against its live schema and dropdown choices. Offline substitution,
+selective sync/check, installer and sync tests and dry runs passed.
+
+GPU generation, native batching, output quality and performance remain untested.
+The adapter author recommends BasicGuider; the supplied ScheduledCFGGuidance
+settings are preserved pending an actual test. Start with one image. When live
+inference is authorized, check the queue, submit a small generation through the
+normal helper, and record prompt ID, exact seed, output and errors; do not silently
+retry uncertain jobs. This sync is local; publish the provisioning repository before
+using it on a replacement Pod. The new workflow is disabled by default for automatic
+provisioning; explicitly select it when required.
+
 # MiniMax H3 Turbo Text to Image — 27 October 2026
 
 Selective sync adds `minimax-h3-turbo-text-to-image.json`, ID

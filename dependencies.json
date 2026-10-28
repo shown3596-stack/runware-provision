@@ -14,7 +14,8 @@
     "2026-10-26: Added MOSS Image Base DMD 8 Step alongside the unchanged SFT 4 Step workflow. Uses Comfy-Org MOSS Base BF16 plus lodestones lora.safetensors (the model-card-recommended standard-sampler variant, not lora_dmd2 or the data-space generator). Publisher API metadata verified full revisions, SHA256 and exact sizes. Reuses the MOSS encoder and FLUX.2 VAE. Eight Euler/simple steps at CFG 1, LoRA strength 1; upstream native MOSS sampling uses shift 5 and multiplier 1. Core LoRA code supports MOSS separate q/k/v adapters against fused qkv. No payload download, Pod changes or live inference; previous verification dates preserved.",
     "2026-10-26: Added a separate native single-pass LTX Video 2B 0.9.8 Distilled Image to Video workflow. Publisher API metadata pins regular-precision 2B checkpoint (bundled video VAE) and Comfy-Org scaled FP8 T5XXL text encoder, full revisions, SHA256 and exact sizes. Uses the published distilled eight-step sigma sequence, Euler, CFG 1 via BasicGuider, 0.8 image strength, 768x512 / 3s / 24fps defaults and silent MP4 output. All nodes already have reviewed core ownership. No additional custom nodes, upscaler, audio or model payload downloads; GPU speed/quality remain unverified. Existing workflows and dependency dates retained.",
     "2026-10-26: Added Krea 2 Realism FP8 alongside the unchanged Krea 2 Turbo FP8 graph. Original RudySen Krea2Realism_V1.safetensors pinned from publisher API metadata with full revision, SHA256 and exact size. Reuses Krea encoder, VAE and disabled optional Darkbrush/prompt-enhancement branches. Publisher-recommended Euler/simple, six steps, CFG 1 and 1152x1792 defaults. No additional core/custom nodes, model payload download or GPU verification; existing workflow/dependency entries retained.",
-    "2026-10-27: MiniMax H3 image graph: four Comfy-Org files pinned at repository revision e5eb578a89295337b8ff433a035929ce0279e0b6, publisher file-page SHA256 reviewed; core BasicScheduler and ModelAttentionBackend source reviewed. Graph execution, latent separation, model installation and GPU compatibility remain unverified."
+    "2026-10-27: MiniMax H3 image graph: four Comfy-Org files pinned at repository revision e5eb578a89295337b8ff433a035929ce0279e0b6, publisher file-page SHA256 reviewed; core BasicScheduler and ModelAttentionBackend source reviewed. Graph execution, latent separation, model installation and GPU compatibility remain unverified.",
+    "2026-10-27: Rapid MOSS SFT adds exact nif0 quantized components and darask0 adapter files pinned with SHA256; custom node packages pinned to versions installed and schema-checked on the current Pod. No GPU generation verified."
   ],
   "models": {
     "models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors": {
@@ -381,6 +382,60 @@
       "sha256": "2339acdf19bfe123f46b971ea35d367a84adb85de43627e1eceafa5a5b2b111e",
       "approx_gb": 1.96,
       "review": null
+    },
+    "models/diffusion_models/moss_image_sft_int8_convrot.safetensors": {
+      "url": "https://huggingface.co/nif0/MOSS-Image-SFT-ComfyUI/resolve/61af6917a6c23f513b0cb8167db6ca5b652263ca/diffusion_models/moss_image_sft_int8_convrot.safetensors",
+      "source": "https://huggingface.co/nif0/MOSS-Image-SFT-ComfyUI/blob/61af6917a6c23f513b0cb8167db6ca5b652263ca/diffusion_models/moss_image_sft_int8_convrot.safetensors",
+      "revision": "61af6917a6c23f513b0cb8167db6ca5b652263ca",
+      "sha256": "ffd98820ac8f0f57c48386bd98852720de50c3acb502f73fd641d0cd9df6d0af",
+      "size_bytes": 5413724040,
+      "approx_gb": 5.414,
+      "review": null
+    },
+    "models/text_encoders/qwen3.5_9b_moss_image_sft_w4a8_gptq.safetensors": {
+      "url": "https://huggingface.co/nif0/MOSS-Image-SFT-ComfyUI/resolve/61af6917a6c23f513b0cb8167db6ca5b652263ca/text_encoders/qwen3.5_9b_moss_image_sft_w4a8_gptq.safetensors",
+      "source": "https://huggingface.co/nif0/MOSS-Image-SFT-ComfyUI/blob/61af6917a6c23f513b0cb8167db6ca5b652263ca/text_encoders/qwen3.5_9b_moss_image_sft_w4a8_gptq.safetensors",
+      "revision": "61af6917a6c23f513b0cb8167db6ca5b652263ca",
+      "sha256": "b5f31a430e4912decb152f3a0761350f52282176823b597edd43b2e3f6403da4",
+      "size_bytes": 5428937108,
+      "approx_gb": 5.429,
+      "review": null
+    },
+    "models/vae/moss_image_vae_bf16.safetensors": {
+      "url": "https://huggingface.co/nif0/MOSS-Image-SFT-ComfyUI/resolve/61af6917a6c23f513b0cb8167db6ca5b652263ca/vae/moss_image_vae_bf16.safetensors",
+      "source": "https://huggingface.co/nif0/MOSS-Image-SFT-ComfyUI/blob/61af6917a6c23f513b0cb8167db6ca5b652263ca/vae/moss_image_vae_bf16.safetensors",
+      "revision": "61af6917a6c23f513b0cb8167db6ca5b652263ca",
+      "sha256": "81a27c7135775f149648fa35a58eec6d78a3e6a9bb9273885b51895cbc212d5d",
+      "size_bytes": 124774710,
+      "approx_gb": 0.125,
+      "review": null
+    },
+    "models/rapid_moss/rapid-moss-4step/lora.safetensors": {
+      "url": "https://huggingface.co/darask0/MOSS-Image_4-step_adapter_lora/resolve/c88f33bcb3251eb39943d0635e74b650732977c8/lora.safetensors",
+      "source": "https://huggingface.co/darask0/MOSS-Image_4-step_adapter_lora/blob/c88f33bcb3251eb39943d0635e74b650732977c8/lora.safetensors",
+      "revision": "c88f33bcb3251eb39943d0635e74b650732977c8",
+      "sha256": "4a4c8e2d6244a0fcdc2822b87b3435226ae57c289aef99fc2ac54edeab9e09bb",
+      "size_bytes": 1189176832,
+      "approx_gb": 1.189,
+      "review": null
+    },
+    "models/rapid_moss/rapid-moss-4step/time_embedding.safetensors": {
+      "url": "https://huggingface.co/darask0/MOSS-Image_4-step_adapter_lora/resolve/c88f33bcb3251eb39943d0635e74b650732977c8/time_embedding.safetensors",
+      "source": "https://huggingface.co/darask0/MOSS-Image_4-step_adapter_lora/blob/c88f33bcb3251eb39943d0635e74b650732977c8/time_embedding.safetensors",
+      "revision": "c88f33bcb3251eb39943d0635e74b650732977c8",
+      "sha256": "2ebabc91e2a9e68c00e948dd80b05235a826e808817b5b2600b441457570d244",
+      "size_bytes": 41017896,
+      "approx_gb": 0.041,
+      "review": null
+    },
+    "models/rapid_moss/rapid-moss-4step/dataspace.safetensors": {
+      "url": "https://huggingface.co/darask0/MOSS-Image_4-step_adapter_lora/resolve/c88f33bcb3251eb39943d0635e74b650732977c8/dataspace.safetensors",
+      "source": "https://huggingface.co/darask0/MOSS-Image_4-step_adapter_lora/blob/c88f33bcb3251eb39943d0635e74b650732977c8/dataspace.safetensors",
+      "revision": "c88f33bcb3251eb39943d0635e74b650732977c8",
+      "sha256": "d19f0e695bb26886cfce57441fd412f358e159d6eec8555ec1a71daaf30a7968",
+      "size_bytes": 65784,
+      "approx_gb": 0.0,
+      "review": null
     }
   },
   "custom_nodes": {
@@ -392,6 +447,67 @@
         "PanoramaCutout",
         "PanoramaPreview",
         "PanoramaSeamPrep"
+      ],
+      "review": null
+    },
+    "rapid-moss": {
+      "repo": "https://huggingface.co/darask0/MOSS-Image_4-step_adapter_lora",
+      "commit": "c88f33bcb3251eb39943d0635e74b650732977c8",
+      "nodes": [
+        "RapidMOSSAdapter"
+      ],
+      "review": null,
+      "files": {
+        "__init__.py": {
+          "url": "https://huggingface.co/darask0/MOSS-Image_4-step_adapter_lora/resolve/c88f33bcb3251eb39943d0635e74b650732977c8/comfyui/rapid-moss/__init__.py",
+          "sha256": "7d1c52e999d89ba5cc77619c179d5917cedb8ba6f6445f5b27f765d2107a6f65"
+        },
+        "nodes.py": {
+          "url": "https://huggingface.co/darask0/MOSS-Image_4-step_adapter_lora/resolve/c88f33bcb3251eb39943d0635e74b650732977c8/comfyui/rapid-moss/nodes.py",
+          "sha256": "b249628889790f6bed1687e611e51adcf7df05d12f12d26550e4f0739a348c91"
+        }
+      }
+    },
+    "moss-image": {
+      "repo": "https://github.com/OpenMOSS/MOSS-Image.git",
+      "commit": "2b46b1e0e13b5aaec253879e0d006a42564b8b27",
+      "nodes": [
+        "MOSSImageUNETLoader",
+        "MOSSImageCLIPLoader"
+      ],
+      "review": null,
+      "files": {
+        "__init__.py": {
+          "url": "https://raw.githubusercontent.com/OpenMOSS/MOSS-Image/2b46b1e0e13b5aaec253879e0d006a42564b8b27/comfyui/moss-image/__init__.py",
+          "sha256": "c222ad151562acb05c6106f19571b1d8eab514b3b6985995b90ade6ef1489716"
+        },
+        "hf.py": {
+          "url": "https://raw.githubusercontent.com/OpenMOSS/MOSS-Image/2b46b1e0e13b5aaec253879e0d006a42564b8b27/comfyui/moss-image/hf.py",
+          "sha256": "92646e2fa41f1a67d26217be878c1e4398ca1b1a6c7fe04fe53fdb6bb86762c4"
+        },
+        "loaders.py": {
+          "url": "https://raw.githubusercontent.com/OpenMOSS/MOSS-Image/2b46b1e0e13b5aaec253879e0d006a42564b8b27/comfyui/moss-image/loaders.py",
+          "sha256": "ce69fb72a0e319c2ee3d4cfc372c36caa055903cbd246c050f06619e74e2839b"
+        },
+        "model.py": {
+          "url": "https://raw.githubusercontent.com/OpenMOSS/MOSS-Image/2b46b1e0e13b5aaec253879e0d006a42564b8b27/comfyui/moss-image/model.py",
+          "sha256": "4713649cddae2da1ee8ab75504ff24796451e67fac72f5b7f928e27bac90c96c"
+        },
+        "nodes.py": {
+          "url": "https://raw.githubusercontent.com/OpenMOSS/MOSS-Image/2b46b1e0e13b5aaec253879e0d006a42564b8b27/comfyui/moss-image/nodes.py",
+          "sha256": "2c4b1e884c828446a537633fafa572029681f5e8b120a542cd6c225f001fe9cf"
+        },
+        "text_encoder.py": {
+          "url": "https://raw.githubusercontent.com/OpenMOSS/MOSS-Image/2b46b1e0e13b5aaec253879e0d006a42564b8b27/comfyui/moss-image/text_encoder.py",
+          "sha256": "3f205d536630043e1180be609cb7ae6da71383817979ebbd74b22ca36e800f8f"
+        }
+      }
+    },
+    "ComfyUI-KJNodes": {
+      "repo": "https://github.com/kijai/ComfyUI-KJNodes.git",
+      "commit": "c7bf01955ace61df749ce728f339cbbd80464b5c",
+      "nodes": [
+        "ScheduledCFGGuidance"
       ],
       "review": null
     }
@@ -511,6 +627,13 @@
       "name": "LTX 2.3 Distilled FP8 Single Stage Image to Video",
       "custom_nodes": [],
       "review": []
+    },
+    "rapid-moss-sft-4-step.json": {
+      "extra_models": [
+        "models/rapid_moss/rapid-moss-4step/lora.safetensors",
+        "models/rapid_moss/rapid-moss-4step/time_embedding.safetensors",
+        "models/rapid_moss/rapid-moss-4step/dataspace.safetensors"
+      ]
     }
   }
 }

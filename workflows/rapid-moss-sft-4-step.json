@@ -1,0 +1,202 @@
+{
+  "name": "Rapid MOSS SFT 4 Step",
+  "workflow": {
+    "2": {
+      "inputs": {
+        "model": [
+          "11",
+          0
+        ],
+        "adapter": "rapid-moss-4step",
+        "steps": 4,
+        "lora_strength": 1
+      },
+      "_meta": {
+        "title": ""
+      },
+      "class_type": "RapidMOSSAdapter"
+    },
+    "3": {
+      "inputs": {
+        "text": "API_POSITIVE_PROMPT",
+        "clip": [
+          "10",
+          0
+        ]
+      },
+      "class_type": "CLIPTextEncode",
+      "_meta": {
+        "title": "Prompt",
+        "cnr_id": "comfy-core",
+        "ver": "0.41.2"
+      }
+    },
+    "5": {
+      "inputs": {
+        "noise_seed": 1027502279379077
+      },
+      "class_type": "RandomNoise",
+      "_meta": {
+        "title": "RandomNoise",
+        "cnr_id": "comfy-core",
+        "ver": "0.41.2"
+      }
+    },
+    "6": {
+      "inputs": {
+        "width": "API_WIDTH",
+        "height": "API_HEIGHT",
+        "batch_size": 1
+      },
+      "class_type": "EmptyFlux2LatentImage",
+      "_meta": {
+        "title": "Empty Flux 2 Latent",
+        "cnr_id": "comfy-core",
+        "ver": "0.41.2"
+      }
+    },
+    "7": {
+      "inputs": {
+        "noise": [
+          "5",
+          0
+        ],
+        "guider": [
+          "13",
+          0
+        ],
+        "sampler": [
+          "2",
+          1
+        ],
+        "sigmas": [
+          "2",
+          2
+        ],
+        "latent_image": [
+          "6",
+          0
+        ]
+      },
+      "class_type": "SamplerCustomAdvanced",
+      "_meta": {
+        "title": "SamplerCustomAdvanced",
+        "cnr_id": "comfy-core",
+        "ver": "0.41.2"
+      }
+    },
+    "8": {
+      "inputs": {
+        "samples": [
+          "7",
+          0
+        ],
+        "vae": [
+          "12",
+          0
+        ]
+      },
+      "class_type": "VAEDecode",
+      "_meta": {
+        "title": "VAE Decode",
+        "cnr_id": "comfy-core",
+        "ver": "0.41.2"
+      }
+    },
+    "9": {
+      "inputs": {
+        "filename_prefix": "rapid-moss",
+        "images": [
+          "8",
+          0
+        ]
+      },
+      "class_type": "SaveImage",
+      "_meta": {
+        "title": "Save Image",
+        "cnr_id": "comfy-core",
+        "ver": "0.41.2"
+      }
+    },
+    "10": {
+      "inputs": {
+        "clip_name": "qwen3.5_9b_moss_image_sft_w4a8_gptq.safetensors",
+        "device": "default"
+      },
+      "_meta": {
+        "title": "",
+        "cnr_id": "moss-image",
+        "ver": "0.1.1"
+      },
+      "class_type": "MOSSImageCLIPLoader"
+    },
+    "11": {
+      "inputs": {
+        "unet_name": "moss_image_sft_int8_convrot.safetensors",
+        "weight_dtype": "default"
+      },
+      "_meta": {
+        "title": "",
+        "cnr_id": "moss-image",
+        "ver": "0.1.1"
+      },
+      "class_type": "MOSSImageUNETLoader"
+    },
+    "12": {
+      "inputs": {
+        "vae_name": "moss_image_vae_bf16.safetensors"
+      },
+      "class_type": "VAELoader",
+      "_meta": {
+        "title": "Load VAE",
+        "cnr_id": "comfy-core",
+        "ver": "0.41.2"
+      }
+    },
+    "13": {
+      "inputs": {
+        "cfg": 1,
+        "start_percent": 0,
+        "end_percent": 1,
+        "model": [
+          "2",
+          0
+        ],
+        "positive": [
+          "3",
+          0
+        ],
+        "negative": [
+          "14",
+          0
+        ]
+      },
+      "class_type": "ScheduledCFGGuidance",
+      "_meta": {
+        "title": "Scheduled CFG Guidance",
+        "cnr_id": "comfyui-kjnodes",
+        "ver": "1.5.2"
+      }
+    },
+    "14": {
+      "inputs": {
+        "conditioning": [
+          "3",
+          0
+        ]
+      },
+      "class_type": "ConditioningZeroOut",
+      "_meta": {
+        "title": "Conditioning Zero Out",
+        "cnr_id": "comfy-core",
+        "ver": "0.41.2"
+      }
+    }
+  },
+  "parameter_defaults": {
+    "API_POSITIVE_PROMPT": "A vertical overhead phone selfie of a 24-year-old adult woman wearing an opaque fitted red long-sleeved athletic top zipped to a high collar and black fitted shorts. The red fabric follows a large rounded bust, tapers inward at a narrow waist and widens over a rounded hip; natural curved wrinkles cross the lower stomach. No exposed midriff or cleavage, no tattoos.\nThe camera is held high above and points down. Her entire face is visible near the upper-left, with BOTH eyes, nose, mouth and chin inside the image; only the crown is clipped. The head leans mildly toward the camera. Her torso slopes gently toward the lower-right, with the waist and rounded hip toward the bottom-right. This is a mild diagonal frame, roughly ten degrees, not a sideways rotated photo. The raised camera arm extends to image-right in a red sleeve. She looks up with a small closed smile. Dark fringe, cheek-length straight sections, ponytails, dark eyeliner and pink lips, a white earbud. Her free hand at lower-left holds a pale pink insulated mug with a broad metal rim. Light cupboard doors behind, warm wooden floor below, black rounded chair at left. Soft indoor light and a little motion softness and phone grain, relaxed everyday snapshot.",
+    "API_WIDTH": 1328,
+    "API_HEIGHT": 1024
+  },
+  "id": "4a76a6a398fc453489c33b21acb6c064"
+}

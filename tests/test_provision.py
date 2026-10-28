@@ -275,6 +275,31 @@ class ProvisionTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             p.within(self.root, 'link/escape')
 
+    def test_pinned_node_files_install_verify_and_reject_changed_files(self):
+        package = {'commit': 'a' * 40, 'files': {
+            'nodes.py': {'url': 'https://example.invalid/' + 'a' * 40 + '/nodes.py',
+                         'sha256': hashlib.sha256(self.body).hexdigest()}}}
+        def curl(command, **kwargs):
+            Path(command[command.index('--output') + 1]).write_bytes(self.body)
+            return subprocess.CompletedProcess(command, 0)
+        with patch.object(p.subprocess, 'run', side_effect=curl) as run:
+            p.custom_node(self.root, 'test-node', package)
+            p.custom_node(self.root, 'test-node', package)
+            p.custom_node(self.root, 'test-node', package, verify=True)
+            self.assertEqual(run.call_count, 1)
+            (self.root / 'custom_nodes/test-node/nodes.py').write_text('changed')
+            with self.assertRaises(ValueError):
+                p.custom_node(self.root, 'test-node', package, verify=True)
+            with self.assertRaises(ValueError):
+                p.custom_node(self.root, 'test-node', package)
+
+    def test_invalid_pinned_node_paths_fail_planning(self):
+        self.manifest['custom_nodes']['bad'] = {'repo': 'https://example.invalid/repo',
+            'commit': 'a' * 40, 'nodes': ['Test'], 'files': {'../escape.py': {
+                'url': 'https://example.invalid/' + 'a' * 40 + '/escape.py', 'sha256': 'a' * 64}}}
+        workflow = dict(slug='test', key='test.json', issues=[], nodes={'Test'}, assets=set())
+        self.assertTrue(any('invalid pinned file' in issue for issue in p.plan([workflow], self.manifest)[2]))
+
     def test_custom_node_pinned_requirements_install_only_once(self):
         target = self.root / 'custom_nodes' / 'example'
         target.mkdir(parents=True)

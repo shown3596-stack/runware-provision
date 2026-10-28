@@ -149,6 +149,17 @@ def plan(workflows, manifest):
         p = manifest['custom_nodes'].get(name, {})
         if not p.get('repo') or not re.fullmatch(r'[a-fA-F0-9]{40}', p.get('commit', '')) or p.get('review'):
             issues.append(f'{name}: custom-node repository/commit unresolved.')
+        if 'files' in p:
+            files = p['files']
+            if not isinstance(files, dict) or not files:
+                issues.append(f'{name}: custom-node file list unresolved.')
+            else:
+                for filename, item in files.items():
+                    if (not isinstance(filename, str) or Path(filename).is_absolute() or '..' in Path(filename).parts
+                            or not isinstance(item, dict) or not item.get('url')
+                            or not re.fullmatch(r'[a-f0-9]{64}', item.get('sha256', ''))
+                            or p.get('commit', '') not in item['url']):
+                        issues.append(f'{name}: invalid pinned file {filename!r}.')
     return sorted(assets), sorted(packages), issues
 
 
@@ -260,6 +271,16 @@ def custom_node(root, name, package, verify=False):
     """Pinned git checkout and interpreter-specific requirements stamp."""
     target = within(root, 'custom_nodes/' + name)
     commit = package['commit']
+    if 'files' in package:
+        for filename, item in package['files'].items():
+            destination = within(target, filename)
+            if verify:
+                if not valid(destination, item):
+                    raise ValueError(f'{name}: missing or invalid pinned file {filename}.')
+            else:
+                download(destination, item)
+        print(f'Custom node present: {name} @ {commit}')
+        return
     if not target.exists():
         if verify:
             raise ValueError(f'Missing custom node: {name}')
