@@ -14,9 +14,10 @@ see [the dependency report](DEPENDENCIES.md) before using it. At that sync the l
 
 ## Rapid MOSS SFT 4 Step
 
-`rapid-moss-sft-4-step` installs the quantized MOSS models, RapidMOSS adapter and
-its custom nodes (~12.20 GB of models). The current Pod has these dependencies;
-GPU generation is not yet verified. See [the dependency report](DEPENDENCIES.md).
+`rapid-moss-sft-4-step` uses the BF16 SFT diffusion model, quantized text
+encoder, RapidMOSS adapter and custom nodes (~16.95 GB of models). The BF16
+diffusion model is shared with MOSS Image SFT 4 Step. GPU generation has not
+been verified and Pod model availability must be checked after reconnecting. See [the dependency report](DEPENDENCIES.md).
 The installer supports individually checksum-pinned source files for custom nodes
 published as repository subdirectories.
 

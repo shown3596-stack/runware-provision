@@ -1,3 +1,20 @@
+# Rapid MOSS BF16 correction — 28 October 2026
+
+The saved Rapid MOSS SFT 4 Step graph now selects the shared Comfy-Org
+`moss_image_sft_bf16.safetensors` instead of the supplied nif0 INT8 diffusion
+file. The [adapter author](https://huggingface.co/darask0/MOSS-Image_4-step_adapter_lora/blob/main/comfyui/rapid-moss/README.md)
+recommends SFT BF16 and does not validate INT8 diffusion models. The existing
+MOSSImageUNETLoader, quantized text encoder, VAE, adapter and four-step sampling
+remain as supplied. ScheduledCFGGuidance stays at CFG 1; the author recommends
+BasicGuider, so this specific guidance path still requires a live comparison.
+The selective sync retains the unused INT8 manifest record without pruning.
+The six required model/adapter files total ~16.95 GB; the BF16 model is shared
+with MOSS Image SFT 4 Step. GPU execution, batching and RAM/VRAM use have not
+been verified. The earlier Pod inspection established loader filename choices,
+not actual BF16 inference. Provision or verify the corrected selection on a
+prepared Pod and run a single-image smoke test when authorized. This revision is
+local until published. Earlier 27 October details describe the original graph.
+
 # Rapid MOSS SFT 4 Step — 27 October 2026
 
 Selective sync adds `rapid-moss-sft-4-step.json` (ID
