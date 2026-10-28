@@ -309,6 +309,35 @@ def custom_node(root, name, package, verify=False):
     print(f'Custom node present: {name} @ {commit}')
 
 
+def bundled_memory_node(root, verify=False):
+    """Install only our own checksum-tracked bundled node; never replace user files."""
+    source = ROOT / 'bundled_nodes' / 'prompt_fusion_memory' / '__init__.py'
+    if not source.is_file():
+        raise ValueError('Bundled Prompt Fusion memory node is missing from provisioning checkout.')
+    target = within(root, 'custom_nodes/prompt_fusion_memory')
+    code, stamp = target / '__init__.py', target / '.prompt-fusion-node.json'
+    expected = digest(source)
+    if code.is_file() and digest(code) == expected:
+        if verify:
+            return
+    elif verify:
+        raise ValueError('Prompt Fusion memory output node is missing or differs from provisioning.')
+    elif target.exists():
+        try:
+            prior = json.loads(stamp.read_text())['sha256']
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            raise ValueError('Existing prompt_fusion_memory node is not managed by provisioning.') from error
+        if not code.is_file() or digest(code) != prior:
+            raise ValueError('Existing prompt_fusion_memory node was modified; resolve it before updating.')
+    else:
+        target.mkdir(parents=True)
+    temporary = target / '__init__.py.provision.tmp'
+    shutil.copyfile(source, temporary)
+    temporary.replace(code)
+    stamp.write_text(json.dumps({'sha256': expected}) + '\n')
+    print('Prompt Fusion memory output node installed.', flush=True)
+
+
 def verify_nodes(workflows, url, check_models=True):
     try:
         with urlopen(url.rstrip('/') + '/object_info', timeout=30) as response:
@@ -456,11 +485,13 @@ def main(argv=None):
     for name in packages:
         print(f"Custom node: {name}: {manifest['custom_nodes'].get(name)}")
     print(f'Unique model payload: ~{sum(manifest["models"].get(a, {}).get("approx_gb", 0) for a in assets):.2f} GB; existing valid files will be skipped.')
+    print('Bundled node: prompt_fusion_memory (RAM-only image and video results).')
     if issues:
         raise ValueError('Unresolved dependencies:\n  ' + '\n  '.join(issues))
     # Explicit per-workflow add-ons can supply UI nodes absent from the API graph.
     # Their declared node classes must still register after installation/restart.
     addon_nodes = {node for name in packages for node in manifest['custom_nodes'][name]['nodes']}
+    addon_nodes.update({'PromptFusionMemoryImage', 'PromptFusionMemoryVideo'})
     verification_workflows = [{**w, 'nodes': w['nodes'] | addon_nodes} for w in workflows]
     if args.dry_run:
         print('Dry run: no changes or network requests. Target: ' + (args.comfy_dir or 'auto-detect on Pod'))
@@ -480,6 +511,7 @@ def main(argv=None):
         if lock:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         process = running_comfy(root) if args.install and not args.no_restart else None
+        bundled_memory_node(root, verify=args.verify)
         errors = []
         if args.install:
             # Executor shutdown waits for active transfers before releasing the Pod lock.

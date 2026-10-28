@@ -105,7 +105,7 @@ class ProvisionTests(unittest.TestCase):
             Path(command[command.index('--output') + 1]).write_bytes(self.body)
             return subprocess.CompletedProcess(command, 0)
         args = ['--all', '--comfy-dir', str(comfy)]
-        with patch.object(p, 'ROOT', self.root), patch.object(p, 'verify_nodes') as live, \
+        with patch.object(p, 'ROOT', self.root), patch.object(p, 'bundled_memory_node'), patch.object(p, 'verify_nodes') as live, \
                 patch.object(p, 'running_comfy', return_value={'pid': 123}) as running, \
                 patch.object(p, 'restart_comfy') as restart, \
                 patch.object(p.shutil, 'which', return_value='/usr/bin/curl'), \
@@ -220,7 +220,7 @@ class ProvisionTests(unittest.TestCase):
         barrier = threading.Barrier(2, timeout=3)
         def transfer(target, model, downloader, connections):
             barrier.wait()
-        with patch.object(p, 'ROOT', self.root), patch.object(p, 'verify_nodes'), \
+        with patch.object(p, 'ROOT', self.root), patch.object(p, 'bundled_memory_node'), patch.object(p, 'verify_nodes'), \
                 patch.object(p.shutil, 'which', return_value='/usr/bin/curl'), \
                 patch.object(p, 'download', side_effect=transfer) as run:
             self.assertEqual(p.main(['--install', '--all', '--no-restart', '--comfy-dir', str(comfy),
@@ -274,6 +274,18 @@ class ProvisionTests(unittest.TestCase):
         (self.root / 'link').symlink_to('/tmp')
         with self.assertRaises(ValueError):
             p.within(self.root, 'link/escape')
+
+    def test_bundled_memory_node_installs_verifies_and_preserves_user_edits(self):
+        p.bundled_memory_node(self.root)
+        node = self.root / 'custom_nodes/prompt_fusion_memory/__init__.py'
+        self.assertEqual(node.read_bytes(), (p.ROOT / 'bundled_nodes/prompt_fusion_memory/__init__.py').read_bytes())
+        p.bundled_memory_node(self.root, verify=True)
+        node.write_text('user modification')
+        with self.assertRaisesRegex(ValueError, 'modified'):
+            p.bundled_memory_node(self.root)
+        with self.assertRaisesRegex(ValueError, 'differs'):
+            p.bundled_memory_node(self.root, verify=True)
+        self.assertEqual(node.read_text(), 'user modification')
 
     def test_pinned_node_files_install_verify_and_reject_changed_files(self):
         package = {'commit': 'a' * 40, 'files': {
@@ -403,10 +415,11 @@ class ProvisionTests(unittest.TestCase):
         model.write_bytes(self.body)
         (comfy / 'main.py').touch()
         schema = {'VAELoader': {'input': {'required': {'vae_name': [['test.safetensors'], {}]}}}}
+        schema.update({name: {'input': {'required': {}}} for name in ('PromptFusionMemoryImage', 'PromptFusionMemoryVideo')})
         def server():
             return patch.object(p, 'urlopen', return_value=contextlib.closing(io.BytesIO(json.dumps(schema).encode())))
         args = ['--verify', '--all', '--comfy-dir', str(comfy)]
-        with patch.object(p, 'ROOT', self.root), patch.object(p, 'custom_node') as checkout, \
+        with patch.object(p, 'ROOT', self.root), patch.object(p, 'bundled_memory_node'), patch.object(p, 'custom_node') as checkout, \
                 patch.object(p.shutil, 'which', return_value='/usr/bin/git'), contextlib.redirect_stdout(io.StringIO()):
             with server(), self.assertRaisesRegex(ValueError, 'PanoramaPreview'):
                 p.main(args)
