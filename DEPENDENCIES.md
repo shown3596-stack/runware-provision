@@ -1,3 +1,29 @@
+# RapidMOSS native-loader repair — 28 October 2026
+
+Real user jobs `a599dd41-a59c-4772-8bfe-93c595df0b7e` and
+`0866cfc6-1cad-4c18-8426-a369f65db748` produced noisy images with the previous
+BF16 graph. The Pod log reported missing separate `layers.*.proj.{q,k,v}.weight`
+and unexpected fused `layers.*.proj.qkv.weight` for the Comfy-Org BF16 checkpoint
+under `MOSSImageUNETLoader`, leaving core model weights unloaded. This is the
+concrete cause addressed, not a claim based on image appearance alone.
+
+The app and selected provisioning snapshot now use ComfyUI's native `UNETLoader`
+for the same BF16 checkpoint, native `CLIPLoader` with `moss_image` and Comfy-Org
+INT8 encoder, shared `flux2-vae.safetensors`, and `BasicGuider` as the RapidMOSS
+author recommends. The native adapter detects `comfy.ldm.moss_image.model.MOSSImage`
+and handles fused QKV. The original prompt, dimensions, output, adapter, four
+steps, and strength remain unchanged. Prior custom-loader graph is preserved in
+`../workflow-imports/rapid-moss-sft-bf16-custom-loader.json`.
+
+Source review, live Pod log diagnosis, eight offline substitutions, link checks,
+selective app/provision parity, 20 sync tests, 22 provisioning tests, 12 native
+batch tests and installation dry runs passed. These do not prove visual quality
+or GPU inference. After supplying the missing native encoder and VAE to the Pod,
+refresh Prompt Fusion workflows and test a single image; check for no missing or
+unexpected model weights in ComfyUI logs and record the output and prompt ID.
+Native batch output quality is unverified. Publishing the corrected provisioning
+snapshot remains a separate action; selective sync retains unrelated dependencies.
+
 # Rapid MOSS BF16 correction — 28 October 2026
 
 The saved Rapid MOSS SFT 4 Step graph now selects the shared Comfy-Org

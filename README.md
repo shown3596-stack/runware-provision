@@ -14,10 +14,10 @@ see [the dependency report](DEPENDENCIES.md) before using it. At that sync the l
 
 ## Rapid MOSS SFT 4 Step
 
-`rapid-moss-sft-4-step` uses the BF16 SFT diffusion model, quantized text
-encoder, RapidMOSS adapter and custom nodes (~16.95 GB of models). The BF16
-diffusion model is shared with MOSS Image SFT 4 Step. GPU generation has not
-been verified and Pod model availability must be checked after reconnecting. See [the dependency report](DEPENDENCIES.md).
+`rapid-moss-sft-4-step` uses native MOSS loading, BF16 SFT, the Comfy-Org
+INT8 text encoder, FLUX.2 VAE and RapidMOSS adapter. Its model files are shared
+with MOSS Image SFT 4 Step except for the adapter. The native-loader repair has
+not yet been GPU-tested; see the dependency report before use. See [the dependency report](DEPENDENCIES.md).
 The installer supports individually checksum-pinned source files for custom nodes
 published as repository subdirectories.
 

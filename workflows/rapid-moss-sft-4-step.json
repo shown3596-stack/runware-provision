@@ -119,32 +119,29 @@
       }
     },
     "10": {
+      "class_type": "CLIPLoader",
       "inputs": {
-        "clip_name": "qwen3.5_9b_moss_image_sft_w4a8_gptq.safetensors",
+        "clip_name": "qwen3.5_9b_int8_convrot.safetensors",
+        "type": "moss_image",
         "device": "default"
       },
       "_meta": {
-        "title": "",
-        "cnr_id": "moss-image",
-        "ver": "0.1.1"
-      },
-      "class_type": "MOSSImageCLIPLoader"
+        "title": "Load Qwen3.5 MOSS text encoder (native)"
+      }
     },
     "11": {
+      "class_type": "UNETLoader",
       "inputs": {
         "unet_name": "moss_image_sft_bf16.safetensors",
         "weight_dtype": "default"
       },
       "_meta": {
-        "title": "",
-        "cnr_id": "moss-image",
-        "ver": "0.1.1"
-      },
-      "class_type": "MOSSImageUNETLoader"
+        "title": "Load MOSS-Image SFT BF16 (native)"
+      }
     },
     "12": {
       "inputs": {
-        "vae_name": "moss_image_vae_bf16.safetensors"
+        "vae_name": "flux2-vae.safetensors"
       },
       "class_type": "VAELoader",
       "_meta": {
@@ -154,42 +151,19 @@
       }
     },
     "13": {
+      "class_type": "BasicGuider",
       "inputs": {
-        "cfg": 1,
-        "start_percent": 0,
-        "end_percent": 1,
         "model": [
           "2",
           0
         ],
-        "positive": [
-          "3",
-          0
-        ],
-        "negative": [
-          "14",
-          0
-        ]
-      },
-      "class_type": "ScheduledCFGGuidance",
-      "_meta": {
-        "title": "Scheduled CFG Guidance",
-        "cnr_id": "comfyui-kjnodes",
-        "ver": "1.5.2"
-      }
-    },
-    "14": {
-      "inputs": {
         "conditioning": [
           "3",
           0
         ]
       },
-      "class_type": "ConditioningZeroOut",
       "_meta": {
-        "title": "Conditioning Zero Out",
-        "cnr_id": "comfy-core",
-        "ver": "0.41.2"
+        "title": "Basic Guider"
       }
     }
   },
