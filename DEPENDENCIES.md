@@ -1,3 +1,22 @@
+# MOSS Image SFT 4 Step: editable steps — 28 October 2026
+
+The existing `moss-image-sft-4-step.json` sampler now exposes `API_STEPS` with
+its original default of 4. Prompt Fusion's existing generic integer control
+passes the value through the bridge; queued snapshots and generated metadata
+retain it. No model, CFG, sampler, image dimensions, or other workflow changed.
+The selected app/provision snapshots match and use existing dependencies.
+
+Eight offline substitutions and a bridge test check default 4, chosen 6, actual
+mocked ComfyUI submission, captured metadata, workflow edit isolation and invalid
+values. No live GPU comparison was performed. The selected Pod was unreachable
+when checked; provision and verify the workflow before using it, refresh Prompt
+Fusion's workflow list, and compare 4 and 6 at the same dimensions and prompts.
+The preference for this workflow is currently disabled; enable it in session
+setup after the corrected provisioning snapshot is published. Steps affect time
+and quality; author suggestions at higher resolution are starting points rather
+than verified results on this Pod. The generic validation currently accepts
+integer steps from 1 to 10000.
+
 # RapidMOSS native-loader repair — 28 October 2026
 
 Real user jobs `a599dd41-a59c-4772-8bfe-93c595df0b7e` and
