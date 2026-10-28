@@ -21,6 +21,14 @@ not yet been GPU-tested; see the dependency report before use. See [the dependen
 The installer supports individually checksum-pinned source files for custom nodes
 published as repository subdirectories.
 
+## Prompt Fusion output handling
+
+Provisioning installs the bundled `prompt_fusion_memory` node and verifies its
+image and video classes after ComfyUI restarts. Prompt Fusion can then retrieve
+outputs from Pod RAM without generated files in the ComfyUI output directory.
+Direct ComfyUI workflows retain their own save behavior. This RAM output path
+has offline coverage but has not yet been smoke-tested on a real Pod/GPU.
+
 ## Inspect locally before renting a GPU
 
 ```bash
