@@ -1,3 +1,16 @@
+# Krea 2 Realism FP8: editable steps — 29 October 2026
+
+`krea-2-realism-fp8.json` now exposes its existing KSampler steps through
+`API_STEPS`, default 6. The workflow ID, model, conditioning, sampler, CFG and
+dimension defaults are unchanged. Prompt Fusion uses its existing generic
+integer control; the queued snapshot and result metadata retain the chosen
+count. The app and provision snapshots match; no dependency changes were made.
+Offline checks verify the six-step default, eight-step submission through the
+memory-only output path, captured metadata, snapshot isolation and invalid input.
+Eight parameter-substitution trials, sync and provisioning tests and a selective
+dry run also pass. No GPU comparison has been performed; try six and eight with
+the same dimensions and similar prompts when a prepared Pod is available.
+
 # MOSS Image SFT 4 Step: editable steps — 28 October 2026
 
 The existing `moss-image-sft-4-step.json` sampler now exposes `API_STEPS` with

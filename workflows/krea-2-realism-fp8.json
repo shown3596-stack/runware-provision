@@ -44,7 +44,7 @@
     "30:3": {
       "inputs": {
         "seed": "API_SEED",
-        "steps": 6,
+        "steps": "API_STEPS",
         "cfg": 1,
         "sampler_name": "euler",
         "scheduler": "simple",
@@ -313,7 +313,8 @@
   "parameter_defaults": {
     "API_POSITIVE_PROMPT": "A natural-light photograph of an adult wearing a blue linen shirt and dark trousers, standing in a sunlit garden, realistic skin texture, soft shadows, detailed foliage and a candid expression.",
     "API_WIDTH": 1152,
-    "API_HEIGHT": 1792
+    "API_HEIGHT": 1792,
+    "API_STEPS": 6
   },
   "id": "28989ad1e1db4dc083cf9ec2678355a8"
 }
