@@ -1,0 +1,170 @@
+{
+  "name": "Krea 2 Turbo FP8 4-Step LoRA",
+  "workflow": {
+    "1": {
+      "inputs": {
+        "unet_name": "krea2_turbo_fp8_scaled.safetensors",
+        "weight_dtype": "default"
+      },
+      "class_type": "UNETLoader",
+      "_meta": {
+        "title": "Load Diffusion Model",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "2": {
+      "inputs": {
+        "lora_name": "krea2_turbo_4step_rank_64_lora_comfyui.safetensors",
+        "strength_model": 1,
+        "model": [
+          "1",
+          0
+        ]
+      },
+      "class_type": "LoraLoaderModelOnly",
+      "_meta": {
+        "title": "Load LoRA",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "3": {
+      "inputs": {
+        "clip_name": "qwen3vl_4b_bf16.safetensors",
+        "type": "krea2",
+        "device": "default"
+      },
+      "class_type": "CLIPLoader",
+      "_meta": {
+        "title": "Load CLIP",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "4": {
+      "inputs": {
+        "text": "API_POSITIVE_PROMPT",
+        "clip": [
+          "3",
+          0
+        ]
+      },
+      "class_type": "CLIPTextEncode",
+      "_meta": {
+        "title": "CLIP Text Encode (Prompt)",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "5": {
+      "inputs": {
+        "conditioning": [
+          "4",
+          0
+        ]
+      },
+      "class_type": "ConditioningZeroOut",
+      "_meta": {
+        "title": "Conditioning Zero Out",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "6": {
+      "inputs": {
+        "width": "API_WIDTH",
+        "height": "API_HEIGHT",
+        "batch_size": 1
+      },
+      "class_type": "EmptyLatentImage",
+      "_meta": {
+        "title": "Empty Latent Image",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "7": {
+      "inputs": {
+        "seed": 171550366473504,
+        "steps": 4,
+        "cfg": 1,
+        "sampler_name": "euler",
+        "scheduler": "simple",
+        "denoise": 1,
+        "model": [
+          "2",
+          0
+        ],
+        "positive": [
+          "4",
+          0
+        ],
+        "negative": [
+          "5",
+          0
+        ],
+        "latent_image": [
+          "6",
+          0
+        ]
+      },
+      "class_type": "KSampler",
+      "_meta": {
+        "title": "KSampler",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "8": {
+      "inputs": {
+        "vae_name": "qwen_image_vae.safetensors"
+      },
+      "class_type": "VAELoader",
+      "_meta": {
+        "title": "Load VAE",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "9": {
+      "inputs": {
+        "samples": [
+          "7",
+          0
+        ],
+        "vae": [
+          "8",
+          0
+        ]
+      },
+      "class_type": "VAEDecode",
+      "_meta": {
+        "title": "VAE Decode",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    },
+    "10": {
+      "inputs": {
+        "filename_prefix": "krea2_turbo_4step_lora",
+        "images": [
+          "9",
+          0
+        ]
+      },
+      "class_type": "SaveImage",
+      "_meta": {
+        "title": "Save Image",
+        "cnr_id": "comfy-core",
+        "ver": "0.43.0"
+      }
+    }
+  },
+  "parameter_defaults": {
+    "API_POSITIVE_PROMPT": "POSITIVE PROMPT",
+    "API_WIDTH": 1024,
+    "API_HEIGHT": 1024
+  },
+  "id": "f3c446383d81447799b5d3519b39d5a3"
+}

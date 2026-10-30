@@ -1,3 +1,33 @@
+# Krea 2 Turbo FP8 Realism LoRA selective sync — 30 October 2026
+
+Added `krea-2-turbo-fp8-realism-lora.json`, ID
+`150d5fa5a18c49a8bd544c2db0eba96b`. This uses the shared Krea Turbo FP8
+checkpoint, FP8 text encoder and Qwen VAE, with the realism LoRA enabled at
+0.8, eight Euler/simple steps, CFG 1 and prompt refinement disabled. Its
+square selector resolves to 1024 × 1024; the app exposes width and height.
+The distinct Krea 2 Realism checkpoint workflow is retained.
+
+The LoRA is pinned to [gokaygokay/Krea-2-Realism-LoRA](https://huggingface.co/gokaygokay/Krea-2-Realism-LoRA),
+revision `32f0436ac10e985134364e7555898c9f121a46ce`, SHA-256
+`6c38a7934c54a56e0f67753660a4500a094d6dce28a0ee4a0d1dc9f4975d32d2`,
+469,288,512 bytes. The installed Pod file was checksum-verified earlier;
+this graph has not been GPU-tested in this sync.
+
+# Krea 2 Turbo FP8 4-Step LoRA selective sync — 30 October 2026
+
+Added `krea-2-turbo-fp8-4-step-lora.json`, ID
+`f3c446383d81447799b5d3519b39d5a3`, retaining four Euler/simple steps,
+CFG 1 and zeroed negative conditioning. The FP8 Turbo diffusion model, BF16
+Qwen3 VL encoder and Qwen VAE are shared with existing workflows.
+
+The new ComfyUI-format adapter is pinned to publisher revision
+`9adb4934b88a2ea35aac4e443a668fe0dffbc190`, SHA-256
+`7590b2d2772f45d7b1252124c63918b1b807e93fbf9eab20546fa7233b4dc482`
+and size 438,140,968 bytes, from
+[lvladikov/Krea2-Turbo-Distill-4step-LoRA](https://huggingface.co/lvladikov/Krea2-Turbo-Distill-4step-LoRA).
+The publisher describes this as a four-step Turbo adapter. This particular graph
+and FP8 combination have not been GPU-tested in this sync.
+
 # Krea 2 Turbo BF16 3-Step LoRA selective sync — 29 October 2026
 
 Added `krea-2-turbo-bf16-3-step-lora.json` from the app with ID
