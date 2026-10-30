@@ -1,3 +1,24 @@
+# Krea 2 Turbo BF16 3-Step LoRA selective sync — 29 October 2026
+
+Added `krea-2-turbo-bf16-3-step-lora.json` from the app with ID
+`230b2790938a420db70fb932eb3cf0f9`. The graph retains three Euler/simple
+steps, CFG 1, zeroed negative conditioning and the original 1024-square defaults.
+The publisher identifies the supplied BF16 model and ComfyUI-format rank-64
+adapter for this workflow; the adapter is a checkpoint from ongoing training.
+
+Two newly declared files are pinned to publisher repository revisions and SHA-256
+from Hugging Face metadata; the BF16 text encoder and Qwen VAE are shared:
+
+- `models/diffusion_models/krea2_turbo_bf16.safetensors`: Comfy-Org/Krea-2,
+  revision `1171f4dc7e325bf3734586942e737872506c73e1`, SHA-256
+  `78bbf8f4165eda19cea3cb06c78089221932a39e2eed8af9da741f942c47ffb3`, 26,283,332,608 bytes.
+- `models/loras/krea2_turbo_3step_rank_64_lora_comfyui.safetensors`:
+  lvladikov/Krea2-Turbo-Distill-3step-LoRA, revision
+  `4e24ec56cba92ba735b72d2a78de35281d017a0d`, SHA-256
+  `619e8a2a7491b2b80a822fac65339a20704d79fd416a262385ac80ca6c5f5a2f`, 438,141,072 bytes.
+
+No model payloads were downloaded; GPU execution and memory use are unverified.
+
 # Krea 2 Realism FP8: editable steps — 29 October 2026
 
 `krea-2-realism-fp8.json` now exposes its existing KSampler steps through

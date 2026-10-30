@@ -436,6 +436,24 @@
       "size_bytes": 65784,
       "approx_gb": 0.0,
       "review": null
+    },
+    "models/loras/krea2_turbo_3step_rank_64_lora_comfyui.safetensors": {
+      "url": "https://huggingface.co/lvladikov/Krea2-Turbo-Distill-3step-LoRA/resolve/4e24ec56cba92ba735b72d2a78de35281d017a0d/krea2_turbo_3step_rank_64_lora_comfyui.safetensors",
+      "source": "https://huggingface.co/lvladikov/Krea2-Turbo-Distill-3step-LoRA/blob/4e24ec56cba92ba735b72d2a78de35281d017a0d/krea2_turbo_3step_rank_64_lora_comfyui.safetensors",
+      "revision": "4e24ec56cba92ba735b72d2a78de35281d017a0d",
+      "sha256": "619e8a2a7491b2b80a822fac65339a20704d79fd416a262385ac80ca6c5f5a2f",
+      "size_bytes": 438141072,
+      "approx_gb": 0.44,
+      "review": null
+    },
+    "models/diffusion_models/krea2_turbo_bf16.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/1171f4dc7e325bf3734586942e737872506c73e1/diffusion_models/krea2_turbo_bf16.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/Krea-2/blob/1171f4dc7e325bf3734586942e737872506c73e1/diffusion_models/krea2_turbo_bf16.safetensors",
+      "revision": "1171f4dc7e325bf3734586942e737872506c73e1",
+      "sha256": "78bbf8f4165eda19cea3cb06c78089221932a39e2eed8af9da741f942c47ffb3",
+      "size_bytes": 26283332608,
+      "approx_gb": 26.28,
+      "review": null
     }
   },
   "custom_nodes": {

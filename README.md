@@ -6,6 +6,13 @@ and pip are needed only for custom nodes. This is a standalone provisioning repo
 the workflows audited from `comfyui-api-poc`; the original app and workflow
 library remain in that separate repository.
 
+## Krea 2 Turbo BF16 3-Step LoRA
+
+The `krea-2-turbo-bf16-3-step-lora` workflow uses the BF16 Krea Turbo
+model and a three-step rank-64 adapter. It shares the Qwen3 VL BF16 text
+encoder and Qwen VAE with existing workflows. See the dependency report for
+pinned sources and limitations; GPU execution has not been verified.
+
 ## MiniMax H3 image workflow
 
 `minimax-h3-turbo-text-to-image` is available for selective provisioning (~43.87 GB
