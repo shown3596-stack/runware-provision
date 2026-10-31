@@ -6,24 +6,23 @@ and pip are needed only for custom nodes. This is a standalone provisioning repo
 the workflows audited from `comfyui-api-poc`; the original app and workflow
 library remain in that separate repository.
 
-## Krea 2 Turbo FP8 Realism LoRA
+## CyberRealistic Z Image Turbo v8 Q4 GGUF
 
-`krea-2-turbo-fp8-realism-lora` uses Turbo FP8 with a separate realism
-adapter at strength 0.8. It differs from the Krea 2 Realism FP8 checkpoint
-workflow. See the dependency report for its pinned source and settings.
+`cyberrealistic-z-image-turbo-v8-q4-gguf` uses community GGUF model and
+text encoder weights through Z-Image Power Nodes and ComfyUI-GGUF. It enables
+turbo creativity and noise injection. See the dependency report for sources,
+seed limitations and validation status.
+
+## CyberRealistic Krea 2 v4 FP8
+
+`cyberrealistic-krea-2-v4-fp8` uses the v4 FP8 checkpoint with shared Krea
+encoder and Qwen VAE. See the dependency report for source and checksum.
 
 ## Krea 2 Turbo FP8 4-Step LoRA
 
 `krea-2-turbo-fp8-4-step-lora` uses the FP8 Turbo model and a four-step
 adapter, with the BF16 Qwen3 VL encoder and Qwen VAE. See the dependency
 report for pinned sources. GPU execution has not been verified in this sync.
-
-## Krea 2 Turbo BF16 3-Step LoRA
-
-The `krea-2-turbo-bf16-3-step-lora` workflow uses the BF16 Krea Turbo
-model and a three-step rank-64 adapter. It shares the Qwen3 VL BF16 text
-encoder and Qwen VAE with existing workflows. See the dependency report for
-pinned sources and limitations; GPU execution has not been verified.
 
 ## MiniMax H3 image workflow
 

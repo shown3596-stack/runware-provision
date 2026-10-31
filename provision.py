@@ -30,6 +30,8 @@ MODEL_INPUTS = {
 NODE_MODEL_INPUTS = {
     ('LatentUpscaleModelLoader', 'model_name'): 'latent_upscale_models',
     ('LTXAVTextEncoderLoader', 'text_encoder'): 'text_encoders',
+    ('LoadZImageModel //ZImagePowerNodes', 'checkpoint'): 'diffusion_models',
+    ('LoadQwen34bModel //ZImagePowerNodes', 'checkpoint'): 'text_encoders',
 }
 MODEL_OBJECT_INPUTS = {
     ('LTXVLatentUpsampler', 'upscale_model'): ('LatentUpscaleModelLoader', 0),

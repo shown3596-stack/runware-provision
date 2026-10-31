@@ -1,0 +1,134 @@
+{
+  "name": "CyberRealistic Z Image Turbo v8 Q4 GGUF",
+  "workflow": {
+    "5": {
+      "inputs": {
+        "vae_name": "ae.safetensors"
+      },
+      "class_type": "VAELoader",
+      "_meta": {
+        "title": "Load VAE"
+      }
+    },
+    "17": {
+      "inputs": {
+        "samples": [
+          "58",
+          0
+        ],
+        "vae": [
+          "5",
+          0
+        ]
+      },
+      "class_type": "VAEDecode",
+      "_meta": {
+        "title": "VAE Decode"
+      }
+    },
+    "32": {
+      "inputs": {
+        "filename_prefix": "ComfyUI",
+        "images": [
+          "17",
+          0
+        ]
+      },
+      "class_type": "SaveImage",
+      "_meta": {
+        "title": "Save Image"
+      }
+    },
+    "48": {
+      "inputs": {
+        "checkpoint": "zit_CyberRealistic_v8-Q4_K.gguf",
+        "file_filter": false
+      },
+      "class_type": "LoadZImageModel //ZImagePowerNodes",
+      "_meta": {
+        "title": "⚗️🔬| Load Z-Image Model (safetensors / gguf)"
+      }
+    },
+    "49": {
+      "inputs": {
+        "width": "API_WIDTH",
+        "height": "API_HEIGHT",
+        "batch_size": 1
+      },
+      "class_type": "EmptyLatentImage",
+      "_meta": {
+        "title": "Empty Latent Image"
+      }
+    },
+    "50": {
+      "inputs": {
+        "checkpoint": "Qwen3-4B-Q4_K_M.gguf",
+        "file_filter": false,
+        "run_on_gpu": true
+      },
+      "class_type": "LoadQwen34bModel //ZImagePowerNodes",
+      "_meta": {
+        "title": "⚗️🔬| Load Qwen3-4B Model (safetensors / gguf)"
+      }
+    },
+    "57": {
+      "inputs": {
+        "text": "API_POSITIVE_PROMPT",
+        "clip": [
+          "50",
+          0
+        ]
+      },
+      "class_type": "CLIPTextEncode",
+      "_meta": {
+        "title": "CLIP Text Encode (Prompt)"
+      }
+    },
+    "58": {
+      "inputs": {
+        "seed": 591293496760843,
+        "steps": 8,
+        "ibias": 0.0,
+        "divider": null,
+        "turbo_creativity": true,
+        "old_scheduler": false,
+        "noise_injection": true,
+        "alternative_refiner": false,
+        "latent_input": [
+          "49",
+          0
+        ],
+        "model": [
+          "48",
+          0
+        ],
+        "positive": [
+          "57",
+          0
+        ]
+      },
+      "class_type": "ZSamplerTurbo2Simple //ZImagePowerNodes",
+      "_meta": {
+        "title": "⚡| Z-Sampler Turbo v2 (Simple)"
+      }
+    },
+    "61": {
+      "inputs": {
+        "style": "none",
+        "gallery": null,
+        "spacer": null,
+        "text": ""
+      },
+      "class_type": "StylePromptEncoder2 //ZImagePowerNodes",
+      "_meta": {
+        "title": "⚡| Style & Prompt Encoder"
+      }
+    }
+  },
+  "parameter_defaults": {
+    "API_POSITIVE_PROMPT": "A close-up portrait of a woman in her late 40s, sitting in a dimly lit diner at night, lit only by a single neon sign outside the window casting green and pink reflections on her face, visible pores, fine lines around her eyes, individual eyelashes, a small scar on her chin, natural skin texture without waxy polish, shot on a 85mm lens at f/2, shallow depth of field, cinematic color grading",
+    "API_WIDTH": 1024,
+    "API_HEIGHT": 1024
+  },
+  "id": "2a76ecde380742fda593e815aee403d5"
+}

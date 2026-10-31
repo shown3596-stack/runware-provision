@@ -437,24 +437,6 @@
       "approx_gb": 0.0,
       "review": null
     },
-    "models/loras/krea2_turbo_3step_rank_64_lora_comfyui.safetensors": {
-      "url": "https://huggingface.co/lvladikov/Krea2-Turbo-Distill-3step-LoRA/resolve/4e24ec56cba92ba735b72d2a78de35281d017a0d/krea2_turbo_3step_rank_64_lora_comfyui.safetensors",
-      "source": "https://huggingface.co/lvladikov/Krea2-Turbo-Distill-3step-LoRA/blob/4e24ec56cba92ba735b72d2a78de35281d017a0d/krea2_turbo_3step_rank_64_lora_comfyui.safetensors",
-      "revision": "4e24ec56cba92ba735b72d2a78de35281d017a0d",
-      "sha256": "619e8a2a7491b2b80a822fac65339a20704d79fd416a262385ac80ca6c5f5a2f",
-      "size_bytes": 438141072,
-      "approx_gb": 0.44,
-      "review": null
-    },
-    "models/diffusion_models/krea2_turbo_bf16.safetensors": {
-      "url": "https://huggingface.co/Comfy-Org/Krea-2/resolve/1171f4dc7e325bf3734586942e737872506c73e1/diffusion_models/krea2_turbo_bf16.safetensors",
-      "source": "https://huggingface.co/Comfy-Org/Krea-2/blob/1171f4dc7e325bf3734586942e737872506c73e1/diffusion_models/krea2_turbo_bf16.safetensors",
-      "revision": "1171f4dc7e325bf3734586942e737872506c73e1",
-      "sha256": "78bbf8f4165eda19cea3cb06c78089221932a39e2eed8af9da741f942c47ffb3",
-      "size_bytes": 26283332608,
-      "approx_gb": 26.28,
-      "review": null
-    },
     "models/loras/krea2_turbo_4step_rank_64_lora_comfyui.safetensors": {
       "url": "https://huggingface.co/lvladikov/Krea2-Turbo-Distill-4step-LoRA/resolve/9adb4934b88a2ea35aac4e443a668fe0dffbc190/krea2_turbo_4step_rank_64_lora_comfyui.safetensors",
       "source": "https://huggingface.co/lvladikov/Krea2-Turbo-Distill-4step-LoRA/blob/9adb4934b88a2ea35aac4e443a668fe0dffbc190/krea2_turbo_4step_rank_64_lora_comfyui.safetensors",
@@ -464,13 +446,31 @@
       "approx_gb": 0.44,
       "review": null
     },
-    "models/loras/krea2_realism_lora.safetensors": {
-      "url": "https://huggingface.co/gokaygokay/Krea-2-Realism-LoRA/resolve/32f0436ac10e985134364e7555898c9f121a46ce/krea2_realism_lora.safetensors",
-      "source": "https://huggingface.co/gokaygokay/Krea-2-Realism-LoRA/blob/32f0436ac10e985134364e7555898c9f121a46ce/krea2_realism_lora.safetensors",
-      "revision": "32f0436ac10e985134364e7555898c9f121a46ce",
-      "sha256": "6c38a7934c54a56e0f67753660a4500a094d6dce28a0ee4a0d1dc9f4975d32d2",
-      "size_bytes": 469288512,
-      "approx_gb": 0.47,
+    "models/diffusion_models/krea2Cyberrealistic_v40_fp8.safetensors": {
+      "url": "https://huggingface.co/gimly13/krea2-turbo-cyberrealistic-v4-nvfp4-gguf/resolve/b23d853be3444e621a74e5955727643abf8bf416/krea2_Cyberrealistic_v4_fp8.safetensors",
+      "source": "https://cyberdelia.nl/models/cyberrealistic-krea-2",
+      "revision": "b23d853be3444e621a74e5955727643abf8bf416",
+      "sha256": "abb1af0bdb2245b969ad0e202e05e1eda8be28f74700b689cbae7f95d5bf36f8",
+      "size_bytes": 13485173736,
+      "approx_gb": 13.49,
+      "review": null
+    },
+    "models/diffusion_models/zit_CyberRealistic_v8-Q4_K.gguf": {
+      "url": "https://huggingface.co/gimly13/z-image-cyberrealistic-v8-gguf/resolve/4871efa8407aad73585053a373461c5abaae1723/zit_CyberRealistic_v8-Q4_K.gguf",
+      "source": "https://huggingface.co/gimly13/z-image-cyberrealistic-v8-gguf/blob/4871efa8407aad73585053a373461c5abaae1723/zit_CyberRealistic_v8-Q4_K.gguf",
+      "revision": "4871efa8407aad73585053a373461c5abaae1723",
+      "sha256": "a5ce7463f8fa20451cb9dac6b9007907fbcb0f63803b190a7cde4ee54bfb2f4b",
+      "size_bytes": 5151107136,
+      "approx_gb": 5.15,
+      "review": null
+    },
+    "models/text_encoders/Qwen3-4B-Q4_K_M.gguf": {
+      "url": "https://huggingface.co/gimly13/z-image-cyberrealistic-v8-gguf/resolve/4871efa8407aad73585053a373461c5abaae1723/clip/Qwen3-4B-Q4_K_M.gguf",
+      "source": "https://huggingface.co/gimly13/z-image-cyberrealistic-v8-gguf/blob/4871efa8407aad73585053a373461c5abaae1723/clip/Qwen3-4B-Q4_K_M.gguf",
+      "revision": "4871efa8407aad73585053a373461c5abaae1723",
+      "sha256": "f6f851777709861056efcdad3af01da38b31223a3ba26e61a4f8bf3a2195813a",
+      "size_bytes": 2497281312,
+      "approx_gb": 2.5,
       "review": null
     }
   },
@@ -546,6 +546,26 @@
         "ScheduledCFGGuidance"
       ],
       "review": null
+    },
+    "ComfyUI-ZImagePowerNodes": {
+      "repo": "https://github.com/martin-rizzo/ComfyUI-ZImagePowerNodes.git",
+      "commit": "beae4785f0696ffda312583c588c6ec1c7deb6bb",
+      "nodes": [
+        "LoadZImageModel //ZImagePowerNodes",
+        "LoadQwen34bModel //ZImagePowerNodes",
+        "ZSamplerTurbo2Simple //ZImagePowerNodes",
+        "StylePromptEncoder2 //ZImagePowerNodes"
+      ],
+      "review": null
+    },
+    "ComfyUI-GGUF": {
+      "repo": "https://github.com/city96/ComfyUI-GGUF.git",
+      "commit": "6ea2651e7df66d7585f6ffee804b20e92fb38b8a",
+      "nodes": [
+        "UnetLoaderGGUF",
+        "CLIPLoaderGGUF"
+      ],
+      "review": null
     }
   },
   "core_nodes": {
@@ -617,11 +637,6 @@
       "custom_nodes": [],
       "review": []
     },
-    "krea-2-turbo-fp8.json": {
-      "name": "Krea 2 Turbo FP8",
-      "custom_nodes": [],
-      "review": []
-    },
     "qwen-image-2-1-turbo.json": {
       "custom_nodes": [],
       "review": [],
@@ -669,6 +684,11 @@
         "models/rapid_moss/rapid-moss-4step/lora.safetensors",
         "models/rapid_moss/rapid-moss-4step/time_embedding.safetensors",
         "models/rapid_moss/rapid-moss-4step/dataspace.safetensors"
+      ]
+    },
+    "cyberrealistic-z-image-turbo-v8-q4-gguf.json": {
+      "custom_nodes": [
+        "ComfyUI-GGUF"
       ]
     }
   }

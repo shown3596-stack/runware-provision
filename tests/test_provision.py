@@ -56,6 +56,15 @@ class ProvisionTests(unittest.TestCase):
         w = dict(slug='w', key='w.json', issues=[], nodes=set(), assets={'models/vae/test.safetensors'})
         self.assertIn('unresolved', p.plan([w], self.manifest)[2][0])
 
+    def test_zimage_power_node_loaders_map_distinct_gguf_directories(self):
+        self.write('z.json', {
+            '1': {'class_type': 'LoadZImageModel //ZImagePowerNodes', 'inputs': {'checkpoint': 'model.gguf'}},
+            '2': {'class_type': 'LoadQwen34bModel //ZImagePowerNodes', 'inputs': {'checkpoint': 'text.gguf'}},
+        })
+        workflow = p.discover(self.root)[0]
+        self.assertEqual(workflow['assets'], {'models/diffusion_models/model.gguf', 'models/text_encoders/text.gguf'})
+        self.assertEqual(workflow['issues'], [])
+
     def test_bundled_workflows_have_resolved_pinned_dependencies(self):
         workflows = p.discover(p.ROOT / 'workflows')
         manifest = json.loads((p.ROOT / 'dependencies.json').read_text())

@@ -1,9 +1,9 @@
 {
-  "name": "Krea 2 Turbo BF16 3-Step LoRA",
+  "name": "CyberRealistic Krea 2 v4 FP8",
   "workflow": {
     "1": {
       "inputs": {
-        "unet_name": "krea2_turbo_bf16.safetensors",
+        "unet_name": "krea2Cyberrealistic_v40_fp8.safetensors",
         "weight_dtype": "default"
       },
       "class_type": "UNETLoader",
@@ -13,25 +13,9 @@
         "ver": "0.43.0"
       }
     },
-    "2": {
-      "inputs": {
-        "lora_name": "krea2_turbo_3step_rank_64_lora_comfyui.safetensors",
-        "strength_model": 1,
-        "model": [
-          "1",
-          0
-        ]
-      },
-      "class_type": "LoraLoaderModelOnly",
-      "_meta": {
-        "title": "Load LoRA",
-        "cnr_id": "comfy-core",
-        "ver": "0.43.0"
-      }
-    },
     "3": {
       "inputs": {
-        "clip_name": "qwen3vl_4b_bf16.safetensors",
+        "clip_name": "qwen3vl_4b_fp8_scaled.safetensors",
         "type": "krea2",
         "device": "default"
       },
@@ -86,14 +70,14 @@
     },
     "7": {
       "inputs": {
-        "seed": 906076937342770,
-        "steps": 3,
+        "seed": 701284126993192,
+        "steps": 8,
         "cfg": 1,
         "sampler_name": "euler",
         "scheduler": "simple",
         "denoise": 1,
         "model": [
-          "2",
+          "1",
           0
         ],
         "positive": [
@@ -147,7 +131,7 @@
     },
     "10": {
       "inputs": {
-        "filename_prefix": "krea2_turbo_3step_lora",
+        "filename_prefix": "CyberRealistic_Krea2_v4",
         "images": [
           "9",
           0
@@ -162,9 +146,9 @@
     }
   },
   "parameter_defaults": {
-    "API_POSITIVE_PROMPT": "POSITIVE_PROMPT.",
+    "API_POSITIVE_PROMPT": "POSITIVE_PROMPT",
     "API_WIDTH": 1024,
     "API_HEIGHT": 1024
   },
-  "id": "230b2790938a420db70fb932eb3cf0f9"
+  "id": "f9fe064c8ca84874b578dcf52e0b592b"
 }

@@ -8,7 +8,7 @@
           0
         ],
         "adapter": "rapid-moss-4step",
-        "steps": 4,
+        "steps": "API_STEPS",
         "lora_strength": 1
       },
       "_meta": {
@@ -170,7 +170,8 @@
   "parameter_defaults": {
     "API_POSITIVE_PROMPT": "A vertical overhead phone selfie of a 24-year-old adult woman wearing an opaque fitted red long-sleeved athletic top zipped to a high collar and black fitted shorts. The red fabric follows a large rounded bust, tapers inward at a narrow waist and widens over a rounded hip; natural curved wrinkles cross the lower stomach. No exposed midriff or cleavage, no tattoos.\nThe camera is held high above and points down. Her entire face is visible near the upper-left, with BOTH eyes, nose, mouth and chin inside the image; only the crown is clipped. The head leans mildly toward the camera. Her torso slopes gently toward the lower-right, with the waist and rounded hip toward the bottom-right. This is a mild diagonal frame, roughly ten degrees, not a sideways rotated photo. The raised camera arm extends to image-right in a red sleeve. She looks up with a small closed smile. Dark fringe, cheek-length straight sections, ponytails, dark eyeliner and pink lips, a white earbud. Her free hand at lower-left holds a pale pink insulated mug with a broad metal rim. Light cupboard doors behind, warm wooden floor below, black rounded chair at left. Soft indoor light and a little motion softness and phone grain, relaxed everyday snapshot.",
     "API_WIDTH": 1328,
-    "API_HEIGHT": 1024
+    "API_HEIGHT": 1024,
+    "API_STEPS": 4
   },
   "id": "4a76a6a398fc453489c33b21acb6c064"
 }

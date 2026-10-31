@@ -1,3 +1,50 @@
+# CyberRealistic Z Image Turbo v8 Q4 GGUF — 31 October 2026
+
+Added `cyberrealistic-z-image-turbo-v8-q4-gguf.json`, ID
+`2a76ecde380742fda593e815aee403d5`. It uses the submitted Z-Image Power
+Nodes graph at eight steps, with turbo creativity and noise injection enabled
+at the user's request. Positive prompt and dimensions are editable; there is
+no negative-conditioning input. The model publisher recommends dimensions
+on a 32-pixel grid, which the app enforces.
+
+The [community GGUF package](https://huggingface.co/gimly13/z-image-cyberrealistic-v8-gguf)
+is pinned at `4871efa8407aad73585053a373461c5abaae1723`. The Q4 diffusion
+model is 5,151,107,136 bytes, SHA-256
+`a5ce7463f8fa20451cb9dac6b9007907fbcb0f63803b190a7cde4ee54bfb2f4b`;
+the Q4 text encoder is 2,497,281,312 bytes, SHA-256
+`f6f851777709861056efcdad3af01da38b31223a3ba26e61a4f8bf3a2195813a`.
+The shared Z-Image VAE remains unchanged. Pinned Power Nodes and ComfyUI-GGUF
+are required; the latter is an explicit dependency of the former's GGUF loaders.
+These model files were installed and verified on the current Pod; this particular
+sampler configuration has not been GPU-tested. The sampler schema accepts seeds
+1 through 2^64−1, while the app can exceptionally generate 0; such a draw would
+be rejected by ComfyUI.
+
+# CyberRealistic Krea 2 v4 FP8 selective sync — 30 October 2026
+
+Added `cyberrealistic-krea-2-v4-fp8.json`, ID
+`f9fe064c8ca84874b578dcf52e0b592b`, using eight Euler/simple steps,
+CFG 1, zeroed negative conditioning and 1024 × 1024 defaults. The FP8
+Krea text encoder and Qwen VAE are shared. The supplied API graph is the
+source; the Pod checkpoint was previously downloaded and checksum verified.
+
+The FP8 checkpoint is installed as `krea2Cyberrealistic_v40_fp8.safetensors`.
+The creator's Civitai endpoint requires authentication, so the manifest pins
+[a Hugging Face mirror](https://huggingface.co/gimly13/krea2-turbo-cyberrealistic-v4-nvfp4-gguf)
+at revision `b23d853be3444e621a74e5955727643abf8bf416`; its SHA-256
+`abb1af0bdb2245b969ad0e202e05e1eda8be28f74700b689cbae7f95d5bf36f8`
+matches [the creator's published v4 FP8 hash](https://cyberdelia.nl/models/cyberrealistic-krea-2).
+The file is 13,485,173,736 bytes. This graph has not been GPU-tested.
+
+# Krea workflow cleanup — 30 October 2026
+
+Removed the standard Turbo FP8, BF16 three-step and Turbo Realism LoRA
+snapshots from the app and provisioning libraries. The FP8 four-step and
+Realism FP8 checkpoint workflows remain. The BF16 Turbo model, three-step
+adapter and Turbo realism adapter manifest declarations are no longer used
+and were removed; shared FP8 Turbo, encoder, VAE and Darkbrush declarations
+remain. These are library changes only; installed Pod files were not removed.
+
 # Krea 2 Turbo FP8 Realism LoRA selective sync — 30 October 2026
 
 Added `krea-2-turbo-fp8-realism-lora.json`, ID
