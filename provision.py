@@ -305,9 +305,20 @@ def custom_node(root, name, package, verify=False):
     if not stamp.exists() or json.loads(stamp.read_text()) != identity:
         if verify:
             raise ValueError(f'{name}: Python dependencies not provisioned using this interpreter.')
-        if requirements.exists():
+        if package.get('runtime') == 'qwen3_tts_isolated':
+            installer = target / 'install.py'
+            script = ("import os,runpy,torch; from pathlib import Path; "
+                      "m=runpy.run_path(os.environ['QWEN_INSTALLER']); "
+                      "m['main'].__globals__['shared_site_packages']=lambda: Path(torch.__file__).resolve().parent.parent; "
+                      "m['main']()")
+            env = dict(os.environ, QWEN3_TTS_SKIP_MODEL_DOWNLOAD='1', QWEN_INSTALLER=str(installer))
+            subprocess.run([sys.executable, '-c', script], env=env, check=True)
+        elif requirements.exists():
             subprocess.run([sys.executable, '-m', 'pip', 'install', '-r', str(requirements)], check=True)
         stamp.write_text(json.dumps(identity))
+    if package.get('runtime') == 'qwen3_tts_isolated':
+        runtime = target / '.venv' / 'bin' / 'python'
+        subprocess.run([str(runtime), '-c', 'from qwen_tts import Qwen3TTSModel; import torch; assert torch.cuda.is_available()'], check=True)
     print(f'Custom node present: {name} @ {commit}')
 
 
@@ -494,6 +505,8 @@ def main(argv=None):
     # Their declared node classes must still register after installation/restart.
     addon_nodes = {node for name in packages for node in manifest['custom_nodes'][name]['nodes']}
     addon_nodes.update({'PromptFusionMemoryImage', 'PromptFusionMemoryVideo'})
+    if any('SaveQwen3TTSAudio' in workflow['nodes'] for workflow in workflows):
+        addon_nodes.add('PromptFusionMemoryQwenAudio')
     verification_workflows = [{**w, 'nodes': w['nodes'] | addon_nodes} for w in workflows]
     if args.dry_run:
         print('Dry run: no changes or network requests. Target: ' + (args.comfy_dir or 'auto-detect on Pod'))

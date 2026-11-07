@@ -472,6 +472,105 @@
       "size_bytes": 2497281312,
       "approx_gb": 2.5,
       "review": null
+    },
+    "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/config.json": {
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/config.json",
+      "source": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/blob/5ecdb67327fd37bb2e042aab12ff7391903235d3/config.json",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "sha256": "aecd2cc4c1fe9edef1cb7ca7c401685a43879ad43f3f9e883f1c6760b61731e0",
+      "review": null,
+      "size_bytes": 4421,
+      "approx_gb": 4e-06
+    },
+    "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/generation_config.json": {
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/generation_config.json",
+      "source": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/blob/5ecdb67327fd37bb2e042aab12ff7391903235d3/generation_config.json",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "sha256": "f1b90b4513f3b34c62851049e2492d7b4c5940daf1276f89c82b8ef04127f3aa",
+      "review": null,
+      "size_bytes": 245,
+      "approx_gb": 0.0
+    },
+    "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/merges.txt": {
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/merges.txt",
+      "source": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/blob/5ecdb67327fd37bb2e042aab12ff7391903235d3/merges.txt",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "sha256": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
+      "review": null,
+      "size_bytes": 1671839,
+      "approx_gb": 0.001672
+    },
+    "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/model.safetensors": {
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/model.safetensors",
+      "source": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/blob/5ecdb67327fd37bb2e042aab12ff7391903235d3/model.safetensors",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "sha256": "391e8db219f292c515297cdceeb43e4eae67cdde35fa57e79a6a8a532fca0522",
+      "review": null,
+      "size_bytes": 3833402552,
+      "approx_gb": 3.833403
+    },
+    "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/preprocessor_config.json": {
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/preprocessor_config.json",
+      "source": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/blob/5ecdb67327fd37bb2e042aab12ff7391903235d3/preprocessor_config.json",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "sha256": "efdde1022ea9d76928bf7a9cd53139138f5ba2e466e837f08f6105ab1af1c119",
+      "review": null,
+      "size_bytes": 127,
+      "approx_gb": 0.0
+    },
+    "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/speech_tokenizer/config.json": {
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/speech_tokenizer/config.json",
+      "source": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/blob/5ecdb67327fd37bb2e042aab12ff7391903235d3/speech_tokenizer/config.json",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "sha256": "ee65bb901c876664ab8707c487157aa1a6ee57c65969b28fb5ec9dc211e68167",
+      "review": null,
+      "size_bytes": 2336,
+      "approx_gb": 2e-06
+    },
+    "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/speech_tokenizer/configuration.json": {
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/speech_tokenizer/configuration.json",
+      "source": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/blob/5ecdb67327fd37bb2e042aab12ff7391903235d3/speech_tokenizer/configuration.json",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "sha256": "6bc26d64eb5024b4d1dab5a52371958b429256d6c9d59787f1f5294a54e0cebd",
+      "review": null,
+      "size_bytes": 76,
+      "approx_gb": 0.0
+    },
+    "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/speech_tokenizer/model.safetensors": {
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/speech_tokenizer/model.safetensors",
+      "source": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/blob/5ecdb67327fd37bb2e042aab12ff7391903235d3/speech_tokenizer/model.safetensors",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "sha256": "836b7b357f5ea43e889936a3709af68dfe3751881acefe4ecf0dbd30ba571258",
+      "review": null,
+      "size_bytes": 682293092,
+      "approx_gb": 0.682293
+    },
+    "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/speech_tokenizer/preprocessor_config.json": {
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/speech_tokenizer/preprocessor_config.json",
+      "source": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/blob/5ecdb67327fd37bb2e042aab12ff7391903235d3/speech_tokenizer/preprocessor_config.json",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "sha256": "fcb3805e597e786d4067706e602f6688524640f8d3396790e2e09b5942fcbdfb",
+      "review": null,
+      "size_bytes": 234,
+      "approx_gb": 0.0
+    },
+    "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/tokenizer_config.json": {
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/tokenizer_config.json",
+      "source": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/blob/5ecdb67327fd37bb2e042aab12ff7391903235d3/tokenizer_config.json",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "sha256": "dc3c31c3bdaedd5016382bb3cbe07323026775ad51f5a4fb564505992ae4a670",
+      "review": null,
+      "size_bytes": 7344,
+      "approx_gb": 7e-06
+    },
+    "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/vocab.json": {
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/vocab.json",
+      "source": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/blob/5ecdb67327fd37bb2e042aab12ff7391903235d3/vocab.json",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+      "review": null,
+      "size_bytes": 2776833,
+      "approx_gb": 0.002777
     }
   },
   "custom_nodes": {
@@ -565,6 +664,16 @@
         "UnetLoaderGGUF",
         "CLIPLoaderGGUF"
       ],
+      "review": null
+    },
+    "ComfyUI-Qwen3-TTS": {
+      "repo": "https://github.com/shinrali/ComfyUI-Qwen3-TTS.git",
+      "commit": "7ec281a883bee318d265a6555bd91d488242ec9b",
+      "nodes": [
+        "Qwen3TTSVoiceDesign",
+        "SaveQwen3TTSAudio"
+      ],
+      "runtime": "qwen3_tts_isolated",
       "review": null
     }
   },
@@ -690,6 +799,26 @@
       "custom_nodes": [
         "ComfyUI-GGUF"
       ]
+    },
+    "qwen3-tts-voice-design.json": {
+      "name": "Qwen3 TTS Voice Design",
+      "custom_nodes": [
+        "ComfyUI-Qwen3-TTS"
+      ],
+      "extra_models": [
+        "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/config.json",
+        "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/generation_config.json",
+        "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/merges.txt",
+        "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/model.safetensors",
+        "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/preprocessor_config.json",
+        "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/speech_tokenizer/config.json",
+        "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/speech_tokenizer/configuration.json",
+        "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/speech_tokenizer/model.safetensors",
+        "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/speech_tokenizer/preprocessor_config.json",
+        "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/tokenizer_config.json",
+        "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/vocab.json"
+      ],
+      "review": []
     }
   }
 }

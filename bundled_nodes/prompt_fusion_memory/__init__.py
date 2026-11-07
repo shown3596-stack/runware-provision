@@ -47,7 +47,7 @@ def _store(token, items):
 
 @PromptServer.instance.routes.get('/prompt-fusion-memory/v1/capabilities')
 async def capabilities(request):
-    return web.json_response({'version': 1, 'images': True, 'video_mp4': True, 'capacity_bytes': _LIMIT})
+    return web.json_response({'version': 1, 'images': True, 'video_mp4': True, 'qwen_audio': True, 'capacity_bytes': _LIMIT})
 
 
 @PromptServer.instance.routes.get('/prompt-fusion-memory/v1/{token}/{index}')
@@ -118,4 +118,35 @@ class PromptFusionMemoryVideo:
         return {'ui': {'images': [{'filename': '0.mp4', 'subfolder': token, 'type': 'pf_memory'}]}}
 
 
-NODE_CLASS_MAPPINGS = {'PromptFusionMemoryImage': PromptFusionMemoryImage, 'PromptFusionMemoryVideo': PromptFusionMemoryVideo}
+class PromptFusionMemoryQwenAudio:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {'required': {'audio_batch': ('QWEN3_TTS_AUDIO_BATCH',), 'token': ('STRING',)}}
+    RETURN_TYPES = ()
+    FUNCTION = 'save'
+    OUTPUT_NODE = True
+    CATEGORY = 'Prompt Fusion'
+
+    def save(self, audio_batch, token):
+        from pathlib import Path
+        import shutil
+        import folder_paths
+        root = Path(audio_batch['root']).resolve(strict=True)
+        expected_parent = Path(folder_paths.get_temp_directory()).resolve() / 'qwen3-tts'
+        if root.parent != expected_parent or not re.fullmatch('[a-f0-9]{32}', root.name):
+            raise ValueError('Invalid Qwen audio temporary directory')
+        files = audio_batch.get('files') or []
+        if len(files) != 1:
+            raise ValueError('Exactly one audio candidate is supported')
+        path = Path(files[0]).resolve(strict=True)
+        if not path.is_relative_to(root) or path.stat().st_size > 32 * 1024 * 1024:
+            raise ValueError('Invalid or oversized audio result')
+        data = path.read_bytes()
+        if len(data) < 12 or data[:4] != b'RIFF' or data[8:12] != b'WAVE':
+            raise ValueError('Expected WAV audio')
+        _store(token, [(data, 'audio/wav')])
+        shutil.rmtree(root)
+        return {'ui': {'audio': [{'filename': '0', 'subfolder': token, 'type': 'pf_memory'}]}}
+
+
+NODE_CLASS_MAPPINGS = {'PromptFusionMemoryImage': PromptFusionMemoryImage, 'PromptFusionMemoryVideo': PromptFusionMemoryVideo, 'PromptFusionMemoryQwenAudio': PromptFusionMemoryQwenAudio}

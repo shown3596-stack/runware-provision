@@ -3,6 +3,7 @@ import importlib.util
 import sys
 import types
 import unittest
+import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
@@ -59,3 +60,15 @@ class NodeTests(unittest.TestCase):
         self.assertEqual(video.settings, ('mp4', 'h264'))
         self.assertEqual(result['ui']['images'][0]['type'], 'pf_memory')
         self.assertEqual(self.node._results['c' * 64][1][0][1], 'video/mp4')
+
+    def test_qwen_wav_is_bounded_and_temp_directory_is_removed(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / 'qwen3-tts' / ('f' * 32)
+            root.mkdir(parents=True)
+            wav = root / 'voice.wav'; wav.write_bytes(b'RIFF1234WAVEdata')
+            folders = types.ModuleType('folder_paths'); folders.get_temp_directory = lambda: temp
+            with patch.dict(sys.modules, {'folder_paths': folders}):
+                result = self.node.PromptFusionMemoryQwenAudio().save({'root': root, 'files': [wav]}, 'a' * 64)
+            self.assertFalse(root.exists())
+            self.assertEqual(result['ui']['audio'][0]['filename'], '0')
+            self.assertEqual(self.node._results['a' * 64][1], [(b'RIFF1234WAVEdata', 'audio/wav')])

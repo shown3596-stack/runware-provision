@@ -338,6 +338,21 @@ class ProvisionTests(unittest.TestCase):
         with patch.object(p, 'git', side_effect=git), self.assertRaises(ValueError):
             p.custom_node(self.root, 'example', package, verify=True)
 
+    def test_qwen_runtime_is_isolated_and_verified_on_repeat(self):
+        target = self.root / 'custom_nodes' / 'qwen'
+        target.mkdir(parents=True)
+        (target / 'requirements.txt').write_text('transformers==4.57.3\n')
+        commit = 'b' * 40
+        package = dict(commit=commit, repo='https://example.invalid/qwen.git', nodes=['Qwen'], runtime='qwen3_tts_isolated')
+        def git(path, *args):
+            return commit if args[0] == 'rev-parse' else (package['repo'] if args[0] == 'remote' else '')
+        with patch.object(p, 'git', side_effect=git), patch.object(p.subprocess, 'run') as run:
+            p.custom_node(self.root, 'qwen', package)
+            p.custom_node(self.root, 'qwen', package, verify=True)
+        self.assertEqual(run.call_count, 3)
+        self.assertEqual(run.call_args_list[0].kwargs['env']['QWEN3_TTS_SKIP_MODEL_DOWNLOAD'], '1')
+        self.assertNotIn('-m pip install -r', str(run.call_args_list[0]))
+
     def test_live_node_and_loader_choice_checks(self):
         path = self.write('api.json', {'1': {'class_type': 'CLIPLoader', 'inputs': {'type': 'krea2'}}})
         workflows = [dict(path=path, slug='api', format='API', nodes={'CLIPLoader'})]

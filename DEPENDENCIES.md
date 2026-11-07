@@ -693,3 +693,7 @@ Inspect again after adding/changing workflows. Unknown node ownership, dynamic
 model selectors and unmapped assets are reported and block installation rather
 than being skipped silently. UI widget-only exports need API re-export for
 reliable provisioning.
+
+# Qwen3 TTS Voice Design — 7 November 2026
+
+The `qwen3-tts-voice-design` snapshot uses two editable text fields and the isolated runtime from `shinrali/ComfyUI-Qwen3-TTS` at `7ec281a883bee318d265a6555bd91d488242ec9b`. The eleven VoiceDesign model/tokenizer files are pinned to Qwen revision `5ecdb67327fd37bb2e042aab12ff7391903235d3`, totalling approximately 4.52 GB, with SHA-256 checksums in the manifest. The Base model is not needed for this workflow. Provisioning uses the Python interpreter running `provision.py` to locate CUDA Torch, so that interpreter must see the same CUDA Torch as ComfyUI. The installer and model declarations have offline coverage and a successful dry run; a clean-Pod install, generation and Prompt Fusion audio integration remain unverified.

@@ -1,0 +1,41 @@
+{
+  "name": "Qwen3 TTS Voice Design",
+  "workflow": {
+    "1": {
+      "inputs": {
+        "text": "API_POSITIVE_PROMPT",
+        "instruct": "API_VOICE_DESCRIPTION",
+        "language": "English",
+        "candidate_count": 1,
+        "seed": 702021563002973
+      },
+      "class_type": "Qwen3TTSVoiceDesign",
+      "_meta": {
+        "title": "Qwen3-TTS Voice Design",
+        "aux_id": "shinrali/ComfyUI-Qwen3-TTS",
+        "ver": "7ec281a883bee318d265a6555bd91d488242ec9b"
+      }
+    },
+    "2": {
+      "inputs": {
+        "filename_prefix": "qwen3_tts/voice-design",
+        "number_candidates": false,
+        "audio_batch": [
+          "1",
+          0
+        ]
+      },
+      "class_type": "SaveQwen3TTSAudio",
+      "_meta": {
+        "title": "Save Qwen3-TTS Audio",
+        "aux_id": "shinrali/ComfyUI-Qwen3-TTS",
+        "ver": "7ec281a883bee318d265a6555bd91d488242ec9b"
+      }
+    }
+  },
+  "parameter_defaults": {
+    "API_POSITIVE_PROMPT": "Welcome to Qwen3-TTS in ComfyUI.",
+    "API_VOICE_DESCRIPTION": "A warm, clear, confident studio narrator with natural pacing."
+  },
+  "id": "0331e74df4af4180b0f6173e2fa23d28"
+}
