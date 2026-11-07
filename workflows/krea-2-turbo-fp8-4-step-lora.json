@@ -15,7 +15,7 @@
     },
     "2": {
       "inputs": {
-        "lora_name": "krea2_turbo_4step_rank_64_lora_comfyui.safetensors",
+        "lora_name": "krea2_turbo_4step_rank_64_chk00133000_comfyui.safetensors",
         "strength_model": 1,
         "model": [
           "1",

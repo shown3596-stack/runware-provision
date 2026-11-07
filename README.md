@@ -21,8 +21,8 @@ encoder and Qwen VAE. See the dependency report for source and checksum.
 ## Krea 2 Turbo FP8 4-Step LoRA
 
 `krea-2-turbo-fp8-4-step-lora` uses the FP8 Turbo model and a four-step
-adapter, with the BF16 Qwen3 VL encoder and Qwen VAE. See the dependency
-report for pinned sources. GPU execution has not been verified in this sync.
+adapter (chk00133000), with the BF16 Qwen3 VL encoder and Qwen VAE. See the
+dependency report for pinned sources. GPU execution has not been verified in this sync.
 
 ## MiniMax H3 image workflow
 

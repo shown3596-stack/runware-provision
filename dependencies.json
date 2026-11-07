@@ -437,15 +437,6 @@
       "approx_gb": 0.0,
       "review": null
     },
-    "models/loras/krea2_turbo_4step_rank_64_lora_comfyui.safetensors": {
-      "url": "https://huggingface.co/lvladikov/Krea2-Turbo-Distill-4step-LoRA/resolve/9adb4934b88a2ea35aac4e443a668fe0dffbc190/krea2_turbo_4step_rank_64_lora_comfyui.safetensors",
-      "source": "https://huggingface.co/lvladikov/Krea2-Turbo-Distill-4step-LoRA/blob/9adb4934b88a2ea35aac4e443a668fe0dffbc190/krea2_turbo_4step_rank_64_lora_comfyui.safetensors",
-      "revision": "9adb4934b88a2ea35aac4e443a668fe0dffbc190",
-      "sha256": "7590b2d2772f45d7b1252124c63918b1b807e93fbf9eab20546fa7233b4dc482",
-      "size_bytes": 438140968,
-      "approx_gb": 0.44,
-      "review": null
-    },
     "models/diffusion_models/krea2Cyberrealistic_v40_fp8.safetensors": {
       "url": "https://huggingface.co/gimly13/krea2-turbo-cyberrealistic-v4-nvfp4-gguf/resolve/b23d853be3444e621a74e5955727643abf8bf416/krea2_Cyberrealistic_v4_fp8.safetensors",
       "source": "https://cyberdelia.nl/models/cyberrealistic-krea-2",
@@ -571,6 +562,15 @@
       "review": null,
       "size_bytes": 2776833,
       "approx_gb": 0.002777
+    },
+    "models/loras/krea2_turbo_4step_rank_64_chk00133000_comfyui.safetensors": {
+      "url": "https://huggingface.co/lvladikov/Krea2-Turbo-Distill-4step-LoRA/resolve/d4d6c8e9edb60587f9f6531b89995e668d5982dc/krea2_turbo_4step_rank_64_lora_comfyui.safetensors",
+      "source": "https://huggingface.co/lvladikov/Krea2-Turbo-Distill-4step-LoRA/blob/d4d6c8e9edb60587f9f6531b89995e668d5982dc/krea2_turbo_4step_rank_64_lora_comfyui.safetensors",
+      "revision": "d4d6c8e9edb60587f9f6531b89995e668d5982dc",
+      "sha256": "27a3d1644fa1a8c137b8549591e50acc4746f8e9bc736fccff80e506a8ee8ac7",
+      "size_bytes": 438141176,
+      "approx_gb": 0.44,
+      "review": null
     }
   },
   "custom_nodes": {

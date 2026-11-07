@@ -1,3 +1,11 @@
+# MOSS Image Base DMD 8 Step: editable steps — 7 November 2026
+
+The existing Base DMD workflow exposes `API_STEPS`, retaining its original default of 8. Its model, eight-step LoRA, sampler, conditioning and other defaults are unchanged. The app and provisioning snapshots are synchronized; alternate step counts have not been evaluated on a GPU. Rapid MOSS SFT 4 Step and MOSS Image SFT 4 Step already had editable steps; Rapid MOSS retains its adapter-enforced maximum of 4.
+
+# Krea 2 Turbo FP8 4-Step: chk00133000 — 7 November 2026
+
+Updated the existing four-step workflow (ID `f3c446383d81447799b5d3519b39d5a3`) to the creator's chk00133000 adapter, preserving its prompt and resolution parameters, FP8 model, BF16 text encoder, four steps, CFG and sampler. The creator's [checkpoint metadata](https://huggingface.co/lvladikov/Krea2-Turbo-Distill-4step-LoRA/blob/d4d6c8e9edb60587f9f6531b89995e668d5982dc/krea2_turbo_4step_rank_64_lora_checkpoint_info.md) identifies the new weights. The revision is `d4d6c8e9edb60587f9f6531b89995e668d5982dc`, SHA-256 `27a3d1644fa1a8c137b8549591e50acc4746f8e9bc736fccff80e506a8ee8ac7`, size 438,141,176 bytes. The local destination has a versioned name so existing files can coexist and provisioning does not overwrite user data. Source metadata and workflow substitution were checked; the model has not been installed or GPU-tested in this update. Changes remain local until publication.
+
 # CyberRealistic Z Image Turbo v8 Q4 GGUF — 31 October 2026
 
 Added `cyberrealistic-z-image-turbo-v8-q4-gguf.json`, ID
