@@ -14,6 +14,7 @@ import shutil
 import signal
 import subprocess
 import sys
+import threading
 import time
 from urllib.request import urlopen
 
@@ -37,6 +38,96 @@ MODEL_OBJECT_INPUTS = {
     ('LTXVLatentUpsampler', 'upscale_model'): ('LatentUpscaleModelLoader', 0),
 }
 ASSET = re.compile(r'\.(safetensors|ckpt|pt|pth|bin|gguf|onnx)$', re.I)
+
+
+def human_bytes(value):
+    for unit in ('B', 'KiB', 'MiB', 'GiB', 'TiB'):
+        if value < 1024 or unit == 'TiB':
+            return f'{value:.1f} {unit}' if unit != 'B' else f'{value:.0f} B'
+        value /= 1024
+
+
+class DownloadDisplay:
+    """Coordinate concurrent transfers without letting their terminal output collide."""
+    def __init__(self, total, stream=None):
+        self.total = total
+        self.stream = stream or sys.stderr
+        self.tty = self.stream.isatty()
+        self.lock = threading.Lock()
+        self.items = {}
+        self.completed = 0
+        self.results = []
+        self.stop = threading.Event()
+        self.thread = None
+
+    def __enter__(self):
+        if self.tty:
+            self.thread = threading.Thread(target=self._refresh, daemon=True)
+            self.thread.start()
+        return self
+
+    def __exit__(self, *args):
+        self.stop.set()
+        if self.thread:
+            self.thread.join()
+            print('\r\033[2K', end='', file=self.stream, flush=True)
+            for result in self.results:
+                print(result, file=self.stream, flush=True)
+
+    def update(self, target, state, part=None, size=None, downloader='curl', detail=''):
+        with self.lock:
+            if state in ('ready', 'present', 'failed'):
+                self.items.pop(target, None)
+                if state != 'failed':
+                    self.completed += 1
+            else:
+                try:
+                    initial = part.stat().st_size if part else 0
+                except OSError:
+                    initial = 0
+                self.items[target] = (state, part, size, downloader, time.monotonic(), initial)
+            message = f'[{self.completed}/{self.total}] {target.name}: {state}{detail}'
+            if self.tty and state in ('ready', 'present', 'failed'):
+                self.results.append(message)
+            elif not self.tty:
+                print(message, file=self.stream, flush=True)
+
+    def _refresh(self):
+        tick = 0
+        while not self.stop.wait(0.25):
+            with self.lock:
+                entries = list(self.items.items())
+                prefix = f'Models {self.completed}/{self.total}'
+                if entries:
+                    target, (state, part, size, downloader, started, initial) = entries[tick % len(entries)]
+                    detail = state
+                    if state == 'downloading' and downloader == 'curl':
+                        try:
+                            current = part.stat().st_size
+                        except OSError:
+                            current = 0
+                        if size:
+                            ratio = min(current / size, 1)
+                            filled = int(ratio * 16)
+                            detail = f"[{'━' * filled}{'─' * (16 - filled)}] {ratio:5.1%} {human_bytes(current)}/{human_bytes(size)}"
+                        else:
+                            detail = human_bytes(current)
+                        elapsed = time.monotonic() - started
+                        if elapsed > 0 and current >= initial:
+                            detail += f' {human_bytes((current - initial) / elapsed)}/s'
+                    heading = f'{prefix} | {len(entries)} active | '
+                    width = shutil.get_terminal_size((80, 24)).columns
+                    available = max(8, width - len(heading) - len(detail) - 4)
+                    name = target.name if len(target.name) <= available else target.name[:available - 1] + '…'
+                    line = f'{heading}{name} | {detail}'
+                else:
+                    line = prefix + ' | preparing downloads'
+                width = shutil.get_terminal_size((80, 24)).columns
+                print('\r\033[2K' + line[:max(0, width - 1)], end='', file=self.stream, flush=True)
+            tick += 1
+
+
+download_display = None
 
 
 def model_directory(kind, field):
@@ -223,20 +314,39 @@ def valid(path, model):
 
 
 def download(target, model, downloader="curl", connections=4):
+    try:
+        _download(target, model, downloader, connections)
+    except Exception:
+        if download_display:
+            download_display.update(target, 'failed')
+        raise
+
+
+def _download(target, model, downloader, connections):
+    def status(state, part=None, detail=''):
+        if download_display:
+            download_display.update(target, state, part, model.get('size_bytes'), downloader, detail)
+        else:
+            print(f'{target.name}: {state}{detail}', flush=True)
+
     if target.exists():
+        status('checking existing file')
         if valid(target, model):
-            print(f'Present: {target.name}', flush=True)
+            status('present')
             return
         raise ValueError(f'Existing file failed validation: {target}. Move/remove it and retry.')
     target.parent.mkdir(parents=True, exist_ok=True)
     part = target.with_name(target.name + ('.aria2.part' if downloader == 'aria2' else '.part'))
+    if part.exists():
+        status('checking partial file')
     if valid(part, model):
         part.replace(target)
         if downloader == 'aria2':
             part.with_name(part.name + '.aria2').unlink(missing_ok=True)
+        status('ready')
         return
-    start = time.monotonic()
-    print(f"Download: {target.name} (~{model.get('approx_gb', '?')} GB), resume at {part.stat().st_size if part.exists() else 0} bytes", flush=True)
+    transfer_start = time.monotonic()
+    status('downloading', part)
     if downloader == 'aria2':
         command = ['aria2c', '--allow-overwrite=true', '--auto-file-renaming=false',
                    '--continue=true', '--max-tries=4', '--retry-wait=3',
@@ -246,23 +356,26 @@ def download(target, model, downloader="curl", connections=4):
                    '--dir=' + str(part.parent), '--out=' + part.name, model['url']]
     else:
         command = ['curl', '--fail', '--location', '--retry', '3', '--connect-timeout', '30',
-                   '--speed-limit', '1024', '--speed-time', '120', '--progress-bar',
+                   '--speed-limit', '1024', '--speed-time', '120', '--silent', '--show-error',
                    '--continue-at', '-', '--output', str(part), model['url']]
-    result = subprocess.run(command)
+    result = subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
     if downloader == 'curl' and result.returncode == 33:  # No range support.
         part.unlink(missing_ok=True)
-        subprocess.run(command, check=True)
-    elif result.returncode:
-        raise ValueError(f'Download failed ({downloader} {result.returncode}); partial retained. Rerun to resume.')
+        status('restarting without resume')
+        status('downloading', part)
+        result = subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
+    if result.returncode:
+        detail = (result.stderr or '').strip()
+        raise ValueError(f'Download failed for {target.name} ({downloader} {result.returncode}): {detail}; partial retained. Rerun to resume.')
     downloaded = time.monotonic()
-    print(f'Downloaded {target.name} in {downloaded - start:.1f}s; validating checksum...', flush=True)
+    status('validating checksum')
     if not valid(part, model):
         part.unlink(missing_ok=True)
         if downloader == 'aria2':
             part.with_name(part.name + '.aria2').unlink(missing_ok=True)
         raise ValueError(f'Validation failed: {target.name}; invalid partial removed, no final file published.')
     part.replace(target)
-    print(f'Validated {target.name}: {target.stat().st_size:,} bytes in {time.monotonic() - downloaded:.1f}s', flush=True)
+    status('ready', detail=f' (transfer {downloaded - transfer_start:.1f}s; validation {time.monotonic() - downloaded:.1f}s)')
 
 
 def git(path, *args):
@@ -451,6 +564,7 @@ def restart_comfy(root, process, workflows, url):
 
 
 def main(argv=None):
+    global download_display
     parser = argparse.ArgumentParser(description=__doc__)
     mode = parser.add_mutually_exclusive_group(required=True)
     for flag in ('list', 'inspect', 'install', 'verify'):
@@ -530,11 +644,18 @@ def main(argv=None):
         errors = []
         if args.install:
             # Executor shutdown waits for active transfers before releasing the Pod lock.
-            with ThreadPoolExecutor(max_workers=args.download_jobs) as pool:
-                futures = [pool.submit(download, within(root, asset), manifest['models'][asset],
-                                       args.downloader, args.connections) for asset in assets]
-                for future in futures:
-                    future.result()
+            print(f'Installing {len(assets)} models with up to {args.download_jobs} concurrent downloads...', flush=True)
+            with DownloadDisplay(len(assets)) as display:
+                download_display = display
+                try:
+                    with ThreadPoolExecutor(max_workers=args.download_jobs) as pool:
+                        futures = [pool.submit(download, within(root, asset), manifest['models'][asset],
+                                               args.downloader, args.connections) for asset in assets]
+                        for future in futures:
+                            future.result()
+                finally:
+                    download_display = None
+            print('Model downloads and validation complete.', flush=True)
         else:
             for asset in assets:
                 target = within(root, asset)

@@ -198,6 +198,19 @@ class ProvisionTests(unittest.TestCase):
         self.assertEqual(target.read_bytes(), self.body)
         self.assertFalse(part.exists())
 
+    def test_download_display_reports_stages_without_terminal_controls(self):
+        output = io.StringIO()
+        target = self.root / 'model.safetensors'
+        with p.DownloadDisplay(2, output) as display:
+            display.update(target, 'downloading', target.with_suffix('.part'), 100)
+            display.update(target, 'validating checksum')
+            display.update(target, 'ready')
+            display.update(self.root / 'other', 'failed')
+        self.assertIn('[0/2] model.safetensors: downloading', output.getvalue())
+        self.assertIn('[1/2] model.safetensors: ready', output.getvalue())
+        self.assertIn('[1/2] other: failed', output.getvalue())
+        self.assertNotIn('\x1b', output.getvalue())
+
     def test_aria2_uses_separate_resumable_partial_and_validates(self):
         target = self.root / 'model.safetensors'
         part = target.with_name(target.name + '.aria2.part')

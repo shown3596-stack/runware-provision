@@ -241,13 +241,21 @@ Only run one installer per ComfyUI installation; a Pod file lock enforces this.
 
 The installer downloads up to three different models concurrently. Use
 `--download-jobs 1` to run sequentially, or set a value up to 16 to tune for
-available bandwidth and disk throughput. Download and checksum times are reported
-separately. Concurrent progress output may interleave.
+available bandwidth and disk throughput. An interactive terminal shows a shared
+progress display with the active file, bytes and average transfer speed for curl,
+and a separate checksum stage. It cycles through concurrent transfers. Redirected
+output uses plain status lines instead of terminal control codes. Each completed
+transfer reports download and validation times separately, which helps identify
+whether the network or checksum reads are the bottleneck.
 
 For multi-connection transfers of individual large files, install `aria2c` on
 the Pod and add `--downloader aria2 --connections 4`. Connections can be set
 from 1 to 16; the total potential connections are jobs multiplied by connections.
-The default remains curl, which requires no extra package. aria2 and curl use
+Try increasing `--connections` or `--download-jobs` gradually and compare speeds;
+the best setting depends on the server and the Pod. aria2's segmented partial
+files do not provide a reliable byte count, so its display shows activity and
+validation stages rather than an estimated percentage. The default remains curl,
+which requires no extra package. aria2 and curl use
 separate partial files, so resume with the same downloader after interruption.
 Both paths verify the complete file before publishing it. Performance depends on
 the source, Pod network and disk; more connections do not always help.
