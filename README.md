@@ -1,5 +1,14 @@
 # Disposable Runpod ComfyUI setup
 
+## Kromoss OPD Priming INT8 DMD2 8 Step
+
+`kromoss-opd-priming-int8-dmd2-8-step` provides the Kromoss OPD-priming
+checkpoint with the DMD2 eight-step LoRA. It shares the MOSS text encoder and
+FLUX.2 VAE. The two additional pinned files total approximately 6.60 GB.
+The OPD-priming checkpoint and DMD2 pairing has not been GPU-tested; the
+publisher's LoRA sampling recommendation predates this checkpoint. Select it
+with `--workflow kromoss-opd-priming-int8-dmd2-8-step`.
+
 Provision only the models needed by an existing workflow, on a Pod that already
 has ComfyUI. `provision.py` uses Python 3.10+ standard library and `curl`; `git`
 and pip are needed only for custom nodes. This is a standalone provisioning repository. It includes unchanged snapshots of

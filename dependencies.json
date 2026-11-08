@@ -15,7 +15,8 @@
     "2026-10-26: Added a separate native single-pass LTX Video 2B 0.9.8 Distilled Image to Video workflow. Publisher API metadata pins regular-precision 2B checkpoint (bundled video VAE) and Comfy-Org scaled FP8 T5XXL text encoder, full revisions, SHA256 and exact sizes. Uses the published distilled eight-step sigma sequence, Euler, CFG 1 via BasicGuider, 0.8 image strength, 768x512 / 3s / 24fps defaults and silent MP4 output. All nodes already have reviewed core ownership. No additional custom nodes, upscaler, audio or model payload downloads; GPU speed/quality remain unverified. Existing workflows and dependency dates retained.",
     "2026-10-26: Added Krea 2 Realism FP8 alongside the unchanged Krea 2 Turbo FP8 graph. Original RudySen Krea2Realism_V1.safetensors pinned from publisher API metadata with full revision, SHA256 and exact size. Reuses Krea encoder, VAE and disabled optional Darkbrush/prompt-enhancement branches. Publisher-recommended Euler/simple, six steps, CFG 1 and 1152x1792 defaults. No additional core/custom nodes, model payload download or GPU verification; existing workflow/dependency entries retained.",
     "2026-10-27: MiniMax H3 image graph: four Comfy-Org files pinned at repository revision e5eb578a89295337b8ff433a035929ce0279e0b6, publisher file-page SHA256 reviewed; core BasicScheduler and ModelAttentionBackend source reviewed. Graph execution, latent separation, model installation and GPU compatibility remain unverified.",
-    "2026-10-27: Rapid MOSS SFT adds exact nif0 quantized components and darask0 adapter files pinned with SHA256; custom node packages pinned to versions installed and schema-checked on the current Pod. No GPU generation verified."
+    "2026-10-27: Rapid MOSS SFT adds exact nif0 quantized components and darask0 adapter files pinned with SHA256; custom node packages pinned to versions installed and schema-checked on the current Pod. No GPU generation verified.",
+    "2026-11-08: Added Kromoss OPD-priming INT8 and DMD2 LoRA pinned to publisher revision with SHA256 and byte sizes from publisher API. Reuses MOSS Qwen3.5 encoder and FLUX.2 VAE. OPD checkpoint and turbo LoRA compatibility and inference quality are not GPU verified; publisher sampling guidance predates the OPD checkpoint."
   ],
   "models": {
     "models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors": {
@@ -571,6 +572,26 @@
       "size_bytes": 438141176,
       "approx_gb": 0.44,
       "review": null
+    },
+    "models/diffusion_models/kromoss_int8_convrot_OPD-priming.safetensors": {
+      "url": "https://huggingface.co/lodestones/Kromoss/resolve/0c5417ec89301cb82da9ee164f8ed696523910a9/diffusion_models/kromoss_int8_convrot_OPD-priming.safetensors",
+      "source": "https://huggingface.co/lodestones/Kromoss/blob/0c5417ec89301cb82da9ee164f8ed696523910a9/diffusion_models/kromoss_int8_convrot_OPD-priming.safetensors",
+      "revision": "0c5417ec89301cb82da9ee164f8ed696523910a9",
+      "sha256": "4e6e29f9c6023ac9adb19e9711115bd071ae6de6f94c3907815ab6a2858eb6bc",
+      "size_bytes": 5413698958,
+      "approx_gb": 5.414,
+      "review": null,
+      "verified_date": "2026-11-08"
+    },
+    "models/loras/8-steps-dmd2-lora.safetensors": {
+      "url": "https://huggingface.co/lodestones/Kromoss/resolve/0c5417ec89301cb82da9ee164f8ed696523910a9/8-steps-dmd2-lora.safetensors",
+      "source": "https://huggingface.co/lodestones/Kromoss/blob/0c5417ec89301cb82da9ee164f8ed696523910a9/8-steps-dmd2-lora.safetensors",
+      "revision": "0c5417ec89301cb82da9ee164f8ed696523910a9",
+      "sha256": "7683fe1fb51f73f5d690f24dd6b7f46f31ab9a9873729a854ac5c9a420ffe6f2",
+      "size_bytes": 1189176800,
+      "approx_gb": 1.189,
+      "review": null,
+      "verified_date": "2026-11-08"
     }
   },
   "custom_nodes": {

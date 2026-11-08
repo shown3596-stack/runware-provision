@@ -705,3 +705,15 @@ reliable provisioning.
 # Qwen3 TTS Voice Design — 7 November 2026
 
 The `qwen3-tts-voice-design` snapshot uses two editable text fields and the isolated runtime from `shinrali/ComfyUI-Qwen3-TTS` at `7ec281a883bee318d265a6555bd91d488242ec9b`. The eleven VoiceDesign model/tokenizer files are pinned to Qwen revision `5ecdb67327fd37bb2e042aab12ff7391903235d3`, totalling approximately 4.52 GB, with SHA-256 checksums in the manifest. The Base model is not needed for this workflow. Provisioning uses the Python interpreter running `provision.py` to locate CUDA Torch, so that interpreter must see the same CUDA Torch as ComfyUI. The installer and model declarations have offline coverage and a successful dry run; a clean-Pod install, generation and Prompt Fusion audio integration remain unverified.
+
+# Kromoss OPD Priming INT8 DMD2 — 8 November 2026
+
+The workflow uses `kromoss_int8_convrot_OPD-priming.safetensors` (5,413,698,958
+bytes) and `8-steps-dmd2-lora.safetensors` (1,189,176,800 bytes), pinned to
+publisher repository revision `0c5417ec89301cb82da9ee164f8ed696523910a9`.
+Publisher API metadata supplied both full-file SHA-256 checksums. The encoder
+and VAE are the existing MOSS dependencies. It copies the MOSS Base DMD graph,
+using eight Euler/simple steps, CFG 1 and LoRA strength 1; negative conditioning
+has no usual CFG effect at 1. The author's LoRA recommendation predates this
+OPD-priming checkpoint. No model payloads, live installation or GPU generation
+were verified.
