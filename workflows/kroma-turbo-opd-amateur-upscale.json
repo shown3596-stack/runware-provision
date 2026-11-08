@@ -1,0 +1,259 @@
+{
+  "name": "Kroma Turbo OPD Amateur Upscale",
+  "workflow": {
+    "1": {
+      "inputs": {
+        "unet_name": "kroma-v0.3.1-turbo-opd.safetensors",
+        "weight_dtype": "default"
+      },
+      "class_type": "UNETLoader",
+      "_meta": {
+        "title": "Load Diffusion Model",
+        "cnr_id": "comfy-core",
+        "ver": "0.39.0"
+      }
+    },
+    "2": {
+      "inputs": {
+        "clip_name": "qwen3vl_4b_bf16.safetensors",
+        "type": "krea2",
+        "device": "default"
+      },
+      "class_type": "CLIPLoader",
+      "_meta": {
+        "title": "Load CLIP",
+        "cnr_id": "comfy-core",
+        "ver": "0.39.0"
+      }
+    },
+    "3": {
+      "inputs": {
+        "vae_name": "wan_2.1_vae.safetensors"
+      },
+      "class_type": "VAELoader",
+      "_meta": {
+        "title": "Load VAE",
+        "cnr_id": "comfy-core",
+        "ver": "0.39.0"
+      }
+    },
+    "6": {
+      "inputs": {
+        "text": "API_POSITIVE_PROMPT",
+        "clip": [
+          "2",
+          0
+        ]
+      },
+      "class_type": "CLIPTextEncode",
+      "_meta": {
+        "title": "CLIP Text Encode (Prompt)",
+        "cnr_id": "comfy-core",
+        "ver": "0.39.0"
+      }
+    },
+    "7": {
+      "inputs": {
+        "conditioning": [
+          "6",
+          0
+        ]
+      },
+      "class_type": "ConditioningZeroOut",
+      "_meta": {
+        "title": "Conditioning Zero Out",
+        "cnr_id": "comfy-core",
+        "ver": "0.39.0"
+      }
+    },
+    "9": {
+      "inputs": {
+        "seed": 0,
+        "steps": "API_STEPS",
+        "cfg": 1,
+        "sampler_name": "euler",
+        "scheduler": "simple",
+        "denoise": 1,
+        "model": [
+          "22",
+          0
+        ],
+        "positive": [
+          "6",
+          0
+        ],
+        "negative": [
+          "7",
+          0
+        ],
+        "latent_image": [
+          "23",
+          0
+        ]
+      },
+      "class_type": "KSampler",
+      "_meta": {
+        "title": "KSampler",
+        "cnr_id": "comfy-core",
+        "ver": "0.39.0"
+      }
+    },
+    "10": {
+      "inputs": {
+        "samples": [
+          "9",
+          0
+        ],
+        "vae": [
+          "3",
+          0
+        ]
+      },
+      "class_type": "VAEDecode",
+      "_meta": {
+        "title": "VAE Decode",
+        "cnr_id": "comfy-core",
+        "ver": "0.39.0"
+      }
+    },
+    "19": {
+      "inputs": {
+        "filename_prefix": "kroma/kroma",
+        "format": "png",
+        "format.bit_depth": "16-bit",
+        "format.input_color_space": "sRGB",
+        "images": [
+          "28",
+          0
+        ]
+      },
+      "class_type": "SaveImageAdvanced",
+      "_meta": {
+        "title": "Save Image (Advanced)",
+        "cnr_id": "comfy-core",
+        "ver": "0.39.0"
+      }
+    },
+    "22": {
+      "inputs": {
+        "lora_name": "AmateurSlider-KREA2_v1.safetensors",
+        "strength_model": 1.1,
+        "model": [
+          "1",
+          0
+        ]
+      },
+      "class_type": "LoraLoaderModelOnly",
+      "_meta": {
+        "title": "Load LoRA",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.4"
+      }
+    },
+    "23": {
+      "inputs": {
+        "width": "API_WIDTH",
+        "height": "API_HEIGHT",
+        "batch_size": 1
+      },
+      "class_type": "EmptyLatentImage",
+      "_meta": {
+        "title": "Empty Latent Image",
+        "cnr_id": "comfy-core",
+        "ver": "0.28.0"
+      }
+    },
+    "26": {
+      "inputs": {
+        "seed": 0,
+        "steps": 4,
+        "cfg": 1,
+        "sampler_name": "res_multistep",
+        "scheduler": "beta",
+        "denoise": 0.14,
+        "model": [
+          "22",
+          0
+        ],
+        "positive": [
+          "6",
+          0
+        ],
+        "negative": [
+          "7",
+          0
+        ],
+        "latent_image": [
+          "27",
+          0
+        ]
+      },
+      "class_type": "KSampler",
+      "_meta": {
+        "title": "KSampler",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.4"
+      }
+    },
+    "27": {
+      "inputs": {
+        "pixels": [
+          "29",
+          0
+        ],
+        "vae": [
+          "3",
+          0
+        ]
+      },
+      "class_type": "VAEEncode",
+      "_meta": {
+        "title": "VAE Encode",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.4"
+      }
+    },
+    "28": {
+      "inputs": {
+        "samples": [
+          "26",
+          0
+        ],
+        "vae": [
+          "3",
+          0
+        ]
+      },
+      "class_type": "VAEDecode",
+      "_meta": {
+        "title": "VAE Decode",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.4"
+      }
+    },
+    "29": {
+      "inputs": {
+        "upscale_method": "lanczos",
+        "scale_by": "API_UPSCALE",
+        "image": [
+          "10",
+          0
+        ]
+      },
+      "class_type": "ImageScaleBy",
+      "_meta": {
+        "title": "Upscale Image By",
+        "cnr_id": "comfy-core",
+        "ver": "0.37.4"
+      }
+    }
+  },
+  "parameter_defaults": {
+    "API_POSITIVE_PROMPT": "POS_Prompt",
+    "API_WIDTH": 1184,
+    "API_HEIGHT": 880,
+    "API_STEPS": 8,
+    "API_UPSCALE": 1
+  },
+  "id": "4479e1809ea1442ca4887dbcbd02316f"
+}

@@ -1,0 +1,256 @@
+{
+  "name": "NitroFusion2 INT8 2 Step",
+  "workflow": {
+    "60": {
+      "inputs": {
+        "filename_prefix": "NitroFusion2",
+        "images": [
+          "57:12",
+          0
+        ]
+      },
+      "class_type": "SaveImage",
+      "_meta": {
+        "title": "Save Image",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      }
+    },
+    "57:1": {
+      "inputs": {
+        "unet_name": "nitrofusion2_int8_convrot.safetensors",
+        "weight_dtype": "default"
+      },
+      "class_type": "UNETLoader",
+      "_meta": {
+        "title": "Load Diffusion Model",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      }
+    },
+    "57:2": {
+      "inputs": {
+        "lora_name": "nf2-dedistill-lora.safetensors",
+        "strength_model": 0.5,
+        "model": [
+          "57:1",
+          0
+        ]
+      },
+      "class_type": "LoraLoaderModelOnly",
+      "_meta": {
+        "title": "De-distillation LoRA · step 1",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      }
+    },
+    "57:14": {
+      "inputs": {
+        "lora_name": "nf2-dedistill-lora.safetensors",
+        "strength_model": 0,
+        "model": [
+          "57:1",
+          0
+        ]
+      },
+      "class_type": "LoraLoaderModelOnly",
+      "_meta": {
+        "title": "De-distillation LoRA · step 2",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      }
+    },
+    "57:3": {
+      "inputs": {
+        "shift": 6,
+        "sampling": "flow",
+        "model": [
+          "57:14",
+          0
+        ]
+      },
+      "class_type": "ModelSamplingAuraFlow",
+      "_meta": {
+        "title": "ModelSamplingAuraFlow",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      }
+    },
+    "57:4": {
+      "inputs": {
+        "shift": 6,
+        "sampling": "flow",
+        "model": [
+          "57:2",
+          0
+        ]
+      },
+      "class_type": "ModelSamplingAuraFlow",
+      "_meta": {
+        "title": "ModelSamplingAuraFlow",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      }
+    },
+    "57:5": {
+      "inputs": {
+        "clip_name": "qwen_3_4b.safetensors",
+        "type": "lumina2",
+        "device": "default"
+      },
+      "class_type": "CLIPLoader",
+      "_meta": {
+        "title": "Load CLIP",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      }
+    },
+    "57:6": {
+      "inputs": {
+        "text": "API_POSITIVE_PROMPT",
+        "clip": [
+          "57:5",
+          0
+        ]
+      },
+      "class_type": "CLIPTextEncode",
+      "_meta": {
+        "title": "CLIP Text Encode (Prompt)",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      }
+    },
+    "57:7": {
+      "inputs": {
+        "conditioning": [
+          "57:6",
+          0
+        ]
+      },
+      "class_type": "ConditioningZeroOut",
+      "_meta": {
+        "title": "Conditioning Zero Out",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      }
+    },
+    "57:8": {
+      "inputs": {
+        "vae_name": "ae.safetensors"
+      },
+      "class_type": "VAELoader",
+      "_meta": {
+        "title": "Load VAE",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      }
+    },
+    "57:9": {
+      "inputs": {
+        "width": "API_WIDTH",
+        "height": "API_HEIGHT",
+        "batch_size": 1
+      },
+      "class_type": "EmptySD3LatentImage",
+      "_meta": {
+        "title": "EmptySD3LatentImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      }
+    },
+    "57:10": {
+      "inputs": {
+        "add_noise": "enable",
+        "noise_seed": 371281520258955,
+        "steps": 2,
+        "cfg": 1,
+        "sampler_name": "euler",
+        "scheduler": "simple",
+        "start_at_step": 0,
+        "end_at_step": 1,
+        "return_with_leftover_noise": "enable",
+        "model": [
+          "57:4",
+          0
+        ],
+        "positive": [
+          "57:6",
+          0
+        ],
+        "negative": [
+          "57:7",
+          0
+        ],
+        "latent_image": [
+          "57:9",
+          0
+        ]
+      },
+      "class_type": "KSamplerAdvanced",
+      "_meta": {
+        "title": "Step 1 · NitroFusion2 + de-distillation LoRA",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      }
+    },
+    "57:11": {
+      "inputs": {
+        "add_noise": "disable",
+        "noise_seed": 371281520258955,
+        "steps": 2,
+        "cfg": 1,
+        "sampler_name": "euler",
+        "scheduler": "simple",
+        "start_at_step": 1,
+        "end_at_step": 2,
+        "return_with_leftover_noise": "disable",
+        "model": [
+          "57:3",
+          0
+        ],
+        "positive": [
+          "57:6",
+          0
+        ],
+        "negative": [
+          "57:7",
+          0
+        ],
+        "latent_image": [
+          "57:10",
+          0
+        ]
+      },
+      "class_type": "KSamplerAdvanced",
+      "_meta": {
+        "title": "Step 2 · NitroFusion2",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      }
+    },
+    "57:12": {
+      "inputs": {
+        "samples": [
+          "57:11",
+          0
+        ],
+        "vae": [
+          "57:8",
+          0
+        ]
+      },
+      "class_type": "VAEDecode",
+      "_meta": {
+        "title": "VAE Decode",
+        "cnr_id": "comfy-core",
+        "ver": "0.44.0"
+      }
+    }
+  },
+  "parameter_defaults": {
+    "API_POSITIVE_PROMPT": "POSITIVE_PROMPT",
+    "API_WIDTH": 1024,
+    "API_HEIGHT": 1024
+  },
+  "id": "a7d6915bcb2b4bebaac484342afd808f"
+}

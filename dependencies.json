@@ -16,7 +16,9 @@
     "2026-10-26: Added Krea 2 Realism FP8 alongside the unchanged Krea 2 Turbo FP8 graph. Original RudySen Krea2Realism_V1.safetensors pinned from publisher API metadata with full revision, SHA256 and exact size. Reuses Krea encoder, VAE and disabled optional Darkbrush/prompt-enhancement branches. Publisher-recommended Euler/simple, six steps, CFG 1 and 1152x1792 defaults. No additional core/custom nodes, model payload download or GPU verification; existing workflow/dependency entries retained.",
     "2026-10-27: MiniMax H3 image graph: four Comfy-Org files pinned at repository revision e5eb578a89295337b8ff433a035929ce0279e0b6, publisher file-page SHA256 reviewed; core BasicScheduler and ModelAttentionBackend source reviewed. Graph execution, latent separation, model installation and GPU compatibility remain unverified.",
     "2026-10-27: Rapid MOSS SFT adds exact nif0 quantized components and darask0 adapter files pinned with SHA256; custom node packages pinned to versions installed and schema-checked on the current Pod. No GPU generation verified.",
-    "2026-11-08: Added Kromoss OPD-priming INT8 and DMD2 LoRA pinned to publisher revision with SHA256 and byte sizes from publisher API. Reuses MOSS Qwen3.5 encoder and FLUX.2 VAE. OPD checkpoint and turbo LoRA compatibility and inference quality are not GPU verified; publisher sampling guidance predates the OPD checkpoint."
+    "2026-11-08: Added Kromoss OPD-priming INT8 and DMD2 LoRA pinned to publisher revision with SHA256 and byte sizes from publisher API. Reuses MOSS Qwen3.5 encoder and FLUX.2 VAE. OPD checkpoint and turbo LoRA compatibility and inference quality are not GPU verified; publisher sampling guidance predates the OPD checkpoint.",
+    "2026-11-08: NitroFusion2 INT8 2 Step uses PedroMarinhoDev community INT8 ConvRot checkpoint and ChenDY de-distillation LoRA; publisher API revisions, SHA-256 and sizes verified. Reuses Z Image Qwen 3 4B encoder and ae VAE. KSamplerAdvanced core implementation reviewed. No model payloads downloaded or live GPU inference verified.",
+    "2026-11-08: Kroma Turbo OPD Amateur Upscale adds the publisher BF16 checkpoint, mirrored Amateur Slider and Comfy-Org Wan 2.1 VAE with pinned revisions, SHA256 and sizes; reuses Krea Qwen encoder. VAEEncode and ImageScaleBy are core nodes. res_multistep and beta appeared in the current Pod KSampler schema; fresh template sampler compatibility, model payloads and GPU execution were not verified."
   ],
   "models": {
     "models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors": {
@@ -592,6 +594,56 @@
       "approx_gb": 1.189,
       "review": null,
       "verified_date": "2026-11-08"
+    },
+    "models/diffusion_models/nitrofusion2_int8_convrot.safetensors": {
+      "url": "https://huggingface.co/PedroMarinhoDev/NitroFusion2-ComfyUI/resolve/fa0668b0122e78dc81a230f901b6feaca62560f4/diffusion_models/nitrofusion2_int8_convrot.safetensors",
+      "source": "https://huggingface.co/PedroMarinhoDev/NitroFusion2-ComfyUI/blob/fa0668b0122e78dc81a230f901b6feaca62560f4/diffusion_models/nitrofusion2_int8_convrot.safetensors",
+      "revision": "fa0668b0122e78dc81a230f901b6feaca62560f4",
+      "sha256": "b8605a75ed2289d382fd10b2f8cf33d16b8079b76b6219181f20efcaded8325c",
+      "size_bytes": 6175283776,
+      "approx_gb": 6.175,
+      "review": null,
+      "verified_date": "2026-11-08"
+    },
+    "models/loras/nf2-dedistill-lora.safetensors": {
+      "url": "https://huggingface.co/ChenDY/NitroFusion2/resolve/62d1a7000af9c46a0c4348d936bd7670ff33c1b9/nf2-dedistill-lora.safetensors",
+      "source": "https://huggingface.co/ChenDY/NitroFusion2/blob/62d1a7000af9c46a0c4348d936bd7670ff33c1b9/nf2-dedistill-lora.safetensors",
+      "revision": "62d1a7000af9c46a0c4348d936bd7670ff33c1b9",
+      "sha256": "22658dff2284c343cbd2a6f02abb8373472611c3d5d657bf30f20db992d35693",
+      "size_bytes": 381553336,
+      "approx_gb": 0.382,
+      "review": null,
+      "verified_date": "2026-11-08"
+    },
+    "models/diffusion_models/kroma-v0.3.1-turbo-opd.safetensors": {
+      "url": "https://huggingface.co/lodestones/Kroma/resolve/94bfb29d748c0cd9319e7d9b489b7f9f3a6f6d92/kroma-v0.3.1-turbo-opd.safetensors",
+      "source": "https://huggingface.co/lodestones/Kroma/blob/94bfb29d748c0cd9319e7d9b489b7f9f3a6f6d92/kroma-v0.3.1-turbo-opd.safetensors",
+      "revision": "94bfb29d748c0cd9319e7d9b489b7f9f3a6f6d92",
+      "sha256": "3cfb5bc847c804ea8e8f894677f7e16ebe4c9ff0f978896cc5e7eb1e64fc7d82",
+      "size_bytes": 26283332880,
+      "approx_gb": 26.283,
+      "review": null,
+      "verified_date": "2026-11-08"
+    },
+    "models/loras/AmateurSlider-KREA2_v1.safetensors": {
+      "url": "https://huggingface.co/AiAngelGallery/ComfyPod-Models/resolve/078a63e14229964975e7e9e55693248c654e1652/loras/AmateurSlider-KREA2_v1.safetensors",
+      "source": "https://huggingface.co/AiAngelGallery/ComfyPod-Models/blob/078a63e14229964975e7e9e55693248c654e1652/loras/AmateurSlider-KREA2_v1.safetensors",
+      "revision": "078a63e14229964975e7e9e55693248c654e1652",
+      "sha256": "424be9cab885fdeac74652b627a1104c8717b6ca0834553044c6cd4eb3dfe0a1",
+      "size_bytes": 6696848,
+      "approx_gb": 0.007,
+      "review": null,
+      "verified_date": "2026-11-08"
+    },
+    "models/vae/wan_2.1_vae.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/Wan-2.1/resolve/ab076c7a07868990c4506a87f2f60020763a0114/split_files/vae/wan_2.1_vae.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/Wan-2.1/blob/ab076c7a07868990c4506a87f2f60020763a0114/split_files/vae/wan_2.1_vae.safetensors",
+      "revision": "ab076c7a07868990c4506a87f2f60020763a0114",
+      "sha256": "2fc39d31359a4b0a64f55876d8ff7fa8d780956ae2cb13463b0223e15148976b",
+      "size_bytes": 253815318,
+      "approx_gb": 0.254,
+      "review": null,
+      "verified_date": "2026-11-08"
     }
   },
   "custom_nodes": {
@@ -754,7 +806,10 @@
     "CheckpointLoaderSimple": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/nodes.py",
     "BasicGuider": "https://github.com/Comfy-Org/ComfyUI/blob/7cebca52227c63b4180ceed448cbd7ad22903b6d/comfy_extras/nodes_custom_sampler.py",
     "BasicScheduler": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_custom_sampler.py",
-    "ModelAttentionBackend": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_model_advanced.py"
+    "ModelAttentionBackend": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_model_advanced.py",
+    "KSamplerAdvanced": "https://github.com/Comfy-Org/ComfyUI/blob/master/nodes.py",
+    "VAEEncode": "https://github.com/Comfy-Org/ComfyUI/blob/master/nodes.py",
+    "ImageScaleBy": "https://github.com/Comfy-Org/ComfyUI/blob/master/nodes.py"
   },
   "workflows": {
     "qwen-2512.json": {

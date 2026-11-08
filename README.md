@@ -1,5 +1,21 @@
 # Disposable Runpod ComfyUI setup
 
+## Kroma Turbo OPD Amateur Upscale
+
+`kroma-turbo-opd-amateur-upscale` uses the Kroma v0.3.1 Turbo OPD BF16
+checkpoint, Amateur Slider LoRA, Krea encoder and Wan 2.1 VAE. Main steps and
+the upscale factor are configurable; the refinement pass uses four steps.
+The checkpoint alone is about 26.28 GB. The current Pod advertised the
+`res_multistep` sampler, but fresh-template compatibility and GPU inference
+are not verified.
+
+## NitroFusion2 INT8 2 Step
+
+`nitrofusion2-int8-2-step` uses a community INT8 ConvRot checkpoint and the
+publisher's de-distillation LoRA, plus the shared Z-Image Qwen 3 4B encoder
+and VAE. Its two sampler stages are fixed at two steps. The new checkpoint and
+LoRA total approximately 6.56 GB. GPU execution has not been verified.
+
 ## Kromoss OPD Priming INT8 DMD2 8 Step
 
 `kromoss-opd-priming-int8-dmd2-8-step` provides the Kromoss OPD-priming

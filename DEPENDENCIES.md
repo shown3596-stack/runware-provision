@@ -717,3 +717,25 @@ using eight Euler/simple steps, CFG 1 and LoRA strength 1; negative conditioning
 has no usual CFG effect at 1. The author's LoRA recommendation predates this
 OPD-priming checkpoint. No model payloads, live installation or GPU generation
 were verified.
+
+# NitroFusion2 INT8 2 Step — 8 November 2026
+
+The two-step graph uses `nitrofusion2_int8_convrot.safetensors` from the
+PedroMarinhoDev community conversion (6,175,283,776 bytes) and the original
+ChenDY `nf2-dedistill-lora.safetensors` (381,553,336 bytes). Both revisions,
+sizes and SHA-256 values are pinned from publisher API metadata. It shares the
+Z-Image `qwen_3_4b.safetensors` text encoder and `ae.safetensors` VAE. Core
+`KSamplerAdvanced` ownership was checked in ComfyUI. The first stage uses LoRA
+strength 0.5, the second 0; both use shift 6 and Euler/simple, with two steps
+split across the stages. The negative conditioning is zeroed. Model downloads,
+installation, live ComfyUI schema and GPU generation have not been checked.
+
+# Kroma Turbo OPD Amateur Upscale — 8 November 2026
+
+The workflow uses the publisher's `kroma-v0.3.1-turbo-opd.safetensors`
+(26,283,332,880 bytes), the mirrored `AmateurSlider-KREA2_v1.safetensors`
+(6,696,848 bytes), the Comfy-Org Wan 2.1 VAE (253,815,318 bytes), and the
+shared Krea Qwen encoder. Revisions, sizes and SHA-256 checksums are pinned from
+publisher or mirror metadata. VAEEncode and ImageScaleBy are ComfyUI core nodes.
+The running Pod advertises `res_multistep` and `beta` in KSampler; a fresh Pod's
+sampler compatibility, model payloads and actual generation have not been tested.
