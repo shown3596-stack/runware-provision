@@ -739,3 +739,10 @@ shared Krea Qwen encoder. Revisions, sizes and SHA-256 checksums are pinned from
 publisher or mirror metadata. VAEEncode and ImageScaleBy are ComfyUI core nodes.
 The running Pod advertises `res_multistep` and `beta` in KSampler; a fresh Pod's
 sampler compatibility, model payloads and actual generation have not been tested.
+# Mage Flow INT8 — 9 November 2026
+
+The non-turbo `mage_flow_int8_convrot.safetensors` is pinned to Comfy-Org
+revision `6ff68fbf3c667325e961d551691b246791d5eec0`, with a publisher-verified
+SHA-256 and size of 4,159,146,848 bytes. The existing Mage Flow Turbo encoder
+and VAE are shared. Both Mage workflows expose steps and CFG, preserving their
+original defaults. No new Pod install or GPU generation was tested.

@@ -1,5 +1,12 @@
 # Disposable Runpod ComfyUI setup
 
+## Mage Flow INT8
+
+`mage-flow-int8` uses the non-turbo INT8 checkpoint and shares its text encoder
+and VAE with Mage Flow Turbo. Both workflows expose steps and CFG. Defaults are
+30 steps / CFG 5 for INT8 and 4 steps / CFG 1 for Turbo. The additional INT8
+checkpoint is approximately 4.16 GB. GPU generation has not been verified.
+
 ## Kroma Turbo OPD Amateur Upscale
 
 `kroma-turbo-opd-amateur-upscale` uses the Kroma v0.3.1 Turbo OPD BF16
