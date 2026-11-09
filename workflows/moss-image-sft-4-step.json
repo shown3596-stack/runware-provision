@@ -52,7 +52,7 @@
       "inputs": {
         "seed": 42,
         "steps": "API_STEPS",
-        "cfg": 1,
+        "cfg": "API_CFG",
         "sampler_name": "euler",
         "scheduler": "simple",
         "denoise": 1,
@@ -147,7 +147,8 @@
     "API_NEGATIVE_PROMPT": "",
     "API_WIDTH": 1024,
     "API_HEIGHT": 1024,
-    "API_STEPS": 4
+    "API_STEPS": 4,
+    "API_CFG": 1
   },
   "id": "fcbd1b287d9b403987396793c0e2490f"
 }

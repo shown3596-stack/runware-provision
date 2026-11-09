@@ -19,7 +19,8 @@
     "2026-11-08: Added Kromoss OPD-priming INT8 and DMD2 LoRA pinned to publisher revision with SHA256 and byte sizes from publisher API. Reuses MOSS Qwen3.5 encoder and FLUX.2 VAE. OPD checkpoint and turbo LoRA compatibility and inference quality are not GPU verified; publisher sampling guidance predates the OPD checkpoint.",
     "2026-11-08: NitroFusion2 INT8 2 Step uses PedroMarinhoDev community INT8 ConvRot checkpoint and ChenDY de-distillation LoRA; publisher API revisions, SHA-256 and sizes verified. Reuses Z Image Qwen 3 4B encoder and ae VAE. KSamplerAdvanced core implementation reviewed. No model payloads downloaded or live GPU inference verified.",
     "2026-11-08: Kroma Turbo OPD Amateur Upscale adds the publisher BF16 checkpoint, mirrored Amateur Slider and Comfy-Org Wan 2.1 VAE with pinned revisions, SHA256 and sizes; reuses Krea Qwen encoder. VAEEncode and ImageScaleBy are core nodes. res_multistep and beta appeared in the current Pod KSampler schema; fresh template sampler compatibility, model payloads and GPU execution were not verified.",
-    "2026-11-09: Added non-turbo Mage Flow INT8 workflow. The official Comfy-Org diffusion checkpoint is pinned to revision and SHA-256 verified against publisher metadata; text encoder and VAE are shared with Mage Flow Turbo. No checkpoint payload download, new Pod installation, or live GPU generation verified."
+    "2026-11-09: Added non-turbo Mage Flow INT8 workflow. The official Comfy-Org diffusion checkpoint is pinned to revision and SHA-256 verified against publisher metadata; text encoder and VAE are shared with Mage Flow Turbo. No checkpoint payload download, new Pod installation, or live GPU generation verified.",
+    "2026-11-09: Replaced Kromoss OPD INT8 workflow with user-supplied Kromoss update-11000 BF16 and Qwen3.5 W4A8 graph, including its DMD2 adapter, CFG 2 and Comfy Kitchen attention; publisher revisions and SHA256 pinned. MOSS workflows now expose steps and CFG. Rapid MOSS uses CFGGuider and zeroed negative conditioning, default CFG 1; CFG values other than 1 have not been GPU tested."
   ],
   "models": {
     "models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors": {
@@ -576,16 +577,6 @@
       "approx_gb": 0.44,
       "review": null
     },
-    "models/diffusion_models/kromoss_int8_convrot_OPD-priming.safetensors": {
-      "url": "https://huggingface.co/lodestones/Kromoss/resolve/0c5417ec89301cb82da9ee164f8ed696523910a9/diffusion_models/kromoss_int8_convrot_OPD-priming.safetensors",
-      "source": "https://huggingface.co/lodestones/Kromoss/blob/0c5417ec89301cb82da9ee164f8ed696523910a9/diffusion_models/kromoss_int8_convrot_OPD-priming.safetensors",
-      "revision": "0c5417ec89301cb82da9ee164f8ed696523910a9",
-      "sha256": "4e6e29f9c6023ac9adb19e9711115bd071ae6de6f94c3907815ab6a2858eb6bc",
-      "size_bytes": 5413698958,
-      "approx_gb": 5.414,
-      "review": null,
-      "verified_date": "2026-11-08"
-    },
     "models/loras/8-steps-dmd2-lora.safetensors": {
       "url": "https://huggingface.co/lodestones/Kromoss/resolve/0c5417ec89301cb82da9ee164f8ed696523910a9/8-steps-dmd2-lora.safetensors",
       "source": "https://huggingface.co/lodestones/Kromoss/blob/0c5417ec89301cb82da9ee164f8ed696523910a9/8-steps-dmd2-lora.safetensors",
@@ -653,6 +644,26 @@
       "sha256": "e081068163d7793b7e0d54ae2a773d3ac1c0d5b099c09b69dcbff36448485ae8",
       "size_bytes": 4159146848,
       "approx_gb": 4.159,
+      "review": null,
+      "verified_date": "2026-11-09"
+    },
+    "models/diffusion_models/kromoss_bf16_11000.safetensors": {
+      "url": "https://huggingface.co/lodestones/Kromoss/resolve/901bc5256890e8a18c551ce5a9e5f6d0b28dffbd/diffusion_models/kromoss_bf16.safetensors",
+      "source": "https://huggingface.co/lodestones/Kromoss/blob/901bc5256890e8a18c551ce5a9e5f6d0b28dffbd/diffusion_models/kromoss_bf16.safetensors",
+      "revision": "901bc5256890e8a18c551ce5a9e5f6d0b28dffbd",
+      "sha256": "54c863b9392f7b6a02f557d32a416b22765b4ffbee322ade9945e379f09adaba",
+      "size_bytes": 10164655808,
+      "approx_gb": 10.165,
+      "review": null,
+      "verified_date": "2026-11-09"
+    },
+    "models/text_encoders/qwen3.5_9b_w4a8_gptq.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/MOSS-Image/resolve/d055f4a3db0ed418ece2a82904cac8c43c27aeef/text_encoders/qwen3.5_9b_w4a8_gptq.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/MOSS-Image/blob/d055f4a3db0ed418ece2a82904cac8c43c27aeef/text_encoders/qwen3.5_9b_w4a8_gptq.safetensors",
+      "revision": "d055f4a3db0ed418ece2a82904cac8c43c27aeef",
+      "sha256": "4cc6a1543ad2061806da46f35f90cadb4801dcba246c44782cf42ec0feb6407c",
+      "size_bytes": 7343591088,
+      "approx_gb": 7.344,
       "review": null,
       "verified_date": "2026-11-09"
     }

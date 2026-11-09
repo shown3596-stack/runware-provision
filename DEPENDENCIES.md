@@ -708,6 +708,9 @@ The `qwen3-tts-voice-design` snapshot uses two editable text fields and the isol
 
 # Kromoss OPD Priming INT8 DMD2 — 8 November 2026
 
+Historical: this workflow was replaced on 9 November by the Kromoss BF16 11000
+DMD2 workflow documented below.
+
 The workflow uses `kromoss_int8_convrot_OPD-priming.safetensors` (5,413,698,958
 bytes) and `8-steps-dmd2-lora.safetensors` (1,189,176,800 bytes), pinned to
 publisher repository revision `0c5417ec89301cb82da9ee164f8ed696523910a9`.
@@ -717,6 +720,16 @@ using eight Euler/simple steps, CFG 1 and LoRA strength 1; negative conditioning
 has no usual CFG effect at 1. The author's LoRA recommendation predates this
 OPD-priming checkpoint. No model payloads, live installation or GPU generation
 were verified.
+
+# Kromoss BF16 11000 DMD2 and MOSS CFG — 9 November 2026
+
+The replacement uses the Kromoss update-11000 BF16 checkpoint under the filename
+`kromoss_bf16_11000.safetensors` and the Qwen3.5 W4A8 GPTQ encoder, with
+publisher-pinned revisions and SHA-256 hashes. The graph retains DMD2 strength 1,
+Comfy Kitchen attention and the user's CFG 2 / eight-step defaults. MOSS workflows
+expose steps and CFG. Rapid MOSS uses CFGGuider with zeroed negative conditioning;
+its previous BasicGuider was positive-only and CFG 1 remains its default. Other
+CFG values and fresh-Pod inference are not GPU verified.
 
 # NitroFusion2 INT8 2 Step — 8 November 2026
 

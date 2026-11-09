@@ -23,14 +23,12 @@ publisher's de-distillation LoRA, plus the shared Z-Image Qwen 3 4B encoder
 and VAE. Its two sampler stages are fixed at two steps. The new checkpoint and
 LoRA total approximately 6.56 GB. GPU execution has not been verified.
 
-## Kromoss OPD Priming INT8 DMD2 8 Step
+## Kromoss BF16 11000 DMD2 8 Step
 
-`kromoss-opd-priming-int8-dmd2-8-step` provides the Kromoss OPD-priming
-checkpoint with the DMD2 eight-step LoRA. It shares the MOSS text encoder and
-FLUX.2 VAE. The two additional pinned files total approximately 6.60 GB.
-The OPD-priming checkpoint and DMD2 pairing has not been GPU-tested; the
-publisher's LoRA sampling recommendation predates this checkpoint. Select it
-with `--workflow kromoss-opd-priming-int8-dmd2-8-step`.
+`kromoss-bf16-11000-dmd2-8-step` uses the Kromoss update-11000 BF16 checkpoint,
+DMD2 LoRA, Qwen3.5 W4A8 text encoder and FLUX.2 VAE. Steps and CFG are editable;
+defaults are eight steps and CFG 2. The graph selects Comfy Kitchen attention.
+Fresh-Pod installation and GPU generation are not verified.
 
 Provision only the models needed by an existing workflow, on a Pod that already
 has ComfyUI. `provision.py` uses Python 3.10+ standard library and `curl`; `git`
