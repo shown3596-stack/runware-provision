@@ -14,6 +14,7 @@ import shutil
 import signal
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 from urllib.request import urlopen
@@ -55,6 +56,7 @@ class DownloadDisplay:
         self.tty = self.stream.isatty()
         self.lock = threading.Lock()
         self.items = {}
+        self.progress = {}
         self.completed = 0
         self.results = []
         self.stop = threading.Event()
@@ -78,6 +80,7 @@ class DownloadDisplay:
         with self.lock:
             if state in ('ready', 'present', 'failed'):
                 self.items.pop(target, None)
+                self.progress.pop(target, None)
                 if state != 'failed':
                     self.completed += 1
             else:
@@ -92,6 +95,14 @@ class DownloadDisplay:
             elif not self.tty:
                 print(message, file=self.stream, flush=True)
 
+    def transfer_progress(self, target, detail):
+        with self.lock:
+            if target not in self.items:
+                return
+            self.progress[target] = detail
+            if not self.tty:
+                print(f'[{self.completed}/{self.total}] {target.name}: {detail}', file=self.stream, flush=True)
+
     def _refresh(self):
         tick = 0
         while not self.stop.wait(0.25):
@@ -101,6 +112,8 @@ class DownloadDisplay:
                 if entries:
                     target, (state, part, size, downloader, started, initial) = entries[tick % len(entries)]
                     detail = state
+                    if state == 'downloading' and downloader == 'aria2':
+                        detail = self.progress.get(target, f'connecting / downloading ({int(time.monotonic() - started)}s)')
                     if state == 'downloading' and downloader == 'curl':
                         try:
                             current = part.stat().st_size
@@ -340,6 +353,50 @@ def ensure_downloader(downloader):
         raise ValueError(f'aria2 was installed but aria2c is not on PATH. {hint}')
 
 
+def aria2_transfer(command, target):
+    """Read aria2's periodic summaries while retaining its diagnostics on failure."""
+    stop = threading.Event()
+    with tempfile.TemporaryFile() as output:
+        def monitor():
+            offset, pending = 0, ''
+            last_report = time.monotonic()
+            started = last_report
+            while not stop.wait(2):
+                chunk = os.pread(output.fileno(), 65536, offset)
+                offset += len(chunk)
+                pending += chunk.decode('utf-8', errors='replace')
+                lines = pending.split('\n')
+                pending = lines.pop()[-4096:]
+                for line in lines:
+                    match = re.search(r'\[#\S+\s+([^\]]+)]', line)
+                    if match:
+                        detail = match.group(1).strip()
+                        if download_display:
+                            download_display.transfer_progress(target, detail)
+                        else:
+                            print(f'{target.name}: {detail}', flush=True)
+                        last_report = time.monotonic()
+                if time.monotonic() - last_report >= 10:
+                    detail = f'waiting for aria2 transfer update ({int(time.monotonic() - started)}s elapsed)'
+                    if download_display:
+                        download_display.transfer_progress(target, detail)
+                    else:
+                        print(f'{target.name}: {detail}', flush=True)
+                    last_report = time.monotonic()
+        thread = threading.Thread(target=monitor, daemon=True)
+        thread.start()
+        try:
+            result = subprocess.run(command, stdout=output, stderr=subprocess.STDOUT)
+        finally:
+            stop.set()
+            thread.join()
+        output.seek(0, os.SEEK_END)
+        length = output.tell()
+        output.seek(max(0, length - 8192))
+        diagnostic = output.read().decode('utf-8', errors='replace').strip()
+    return result.returncode, diagnostic
+
+
 def download(target, model, downloader="aria2", connections=4):
     try:
         _download(target, model, downloader, connections)
@@ -377,7 +434,8 @@ def _download(target, model, downloader, connections):
     if downloader == 'aria2':
         command = ['aria2c', '--allow-overwrite=true', '--auto-file-renaming=false',
                    '--continue=true', '--max-tries=4', '--retry-wait=3',
-                   '--connect-timeout=30', '--summary-interval=0',
+                   '--connect-timeout=30', '--timeout=60', '--summary-interval=5',
+                   '--enable-color=false', '--show-console-readout=false',
                    '--max-connection-per-server=' + str(connections),
                    '--split=' + str(connections), '--min-split-size=16M',
                    '--dir=' + str(part.parent), '--out=' + part.name, model['url']]
@@ -385,15 +443,19 @@ def _download(target, model, downloader, connections):
         command = ['curl', '--fail', '--location', '--retry', '3', '--connect-timeout', '30',
                    '--speed-limit', '1024', '--speed-time', '120', '--silent', '--show-error',
                    '--continue-at', '-', '--output', str(part), model['url']]
-    result = subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
-    if downloader == 'curl' and result.returncode == 33:  # No range support.
+    if downloader == 'aria2':
+        returncode, detail = aria2_transfer(command, target)
+    else:
+        result = subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
+        returncode, detail = result.returncode, result.stderr or ''
+    if downloader == 'curl' and returncode == 33:  # No range support.
         part.unlink(missing_ok=True)
         status('restarting without resume')
         status('downloading', part)
         result = subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
-    if result.returncode:
-        detail = (result.stderr or '').strip()
-        raise ValueError(f'Download failed for {target.name} ({downloader} {result.returncode}): {detail}; partial retained. Rerun to resume.')
+        returncode, detail = result.returncode, result.stderr or ''
+    if returncode:
+        raise ValueError(f'Download failed for {target.name} ({downloader} {returncode}): {detail.strip()}; partial retained. Rerun to resume.')
     downloaded = time.monotonic()
     status('validating checksum')
     if not valid(part, model):

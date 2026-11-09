@@ -246,6 +246,24 @@ class ProvisionTests(unittest.TestCase):
         self.assertEqual(target.read_bytes(), self.body)
         self.assertFalse(part.exists())
 
+    def test_aria2_progress_and_error_are_visible(self):
+        import time
+        target = self.root / 'model.safetensors'
+        output = io.StringIO()
+        def aria(command, **kwargs):
+            kwargs['stdout'].write(b'[#abc123 20MiB/100MiB(20%) CN:4 DL:5MiB]\n')
+            kwargs['stdout'].flush()
+            time.sleep(2.2)
+            kwargs['stdout'].write(b'network error\n')
+            return subprocess.CompletedProcess(command, 1)
+        with p.DownloadDisplay(1, output) as display, \
+                patch.object(p, 'download_display', display), \
+                patch.object(p.subprocess, 'run', side_effect=aria):
+            with self.assertRaisesRegex(ValueError, 'network error'):
+                p.download(target, self.model, 'aria2')
+        self.assertIn('20MiB/100MiB(20%) CN:4 DL:5MiB', output.getvalue())
+        self.assertIn('failed', output.getvalue())
+
     def test_install_runs_multiple_downloads_concurrently(self):
         import threading
         workflows = self.root / 'workflows'

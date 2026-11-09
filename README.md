@@ -262,9 +262,8 @@ manually or use `--downloader curl`. Dry runs and verification do not install it
 Connections can be set
 from 1 to 16; the total potential connections are jobs multiplied by connections.
 Try increasing `--connections` or `--download-jobs` gradually and compare speeds;
-the best setting depends on the server and the Pod. aria2's segmented partial
-files do not provide a reliable byte count, so its display shows activity and
-validation stages rather than an estimated percentage. aria2 and curl use
+the best setting depends on the server and the Pod. aria2 reports its own
+completed bytes, speed and connection count during transfers. aria2 and curl use
 separate partial files, so resume with the same downloader after interruption.
 Both paths verify the complete file before publishing it. Performance depends on
 the source, Pod network and disk; more connections do not always help.
