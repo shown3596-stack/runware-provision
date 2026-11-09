@@ -397,7 +397,7 @@ def aria2_transfer(command, target):
     return result.returncode, diagnostic
 
 
-def download(target, model, downloader="aria2", connections=4):
+def download(target, model, downloader="curl", connections=4):
     try:
         _download(target, model, downloader, connections)
     except Exception:
@@ -471,7 +471,7 @@ def git(path, *args):
     return subprocess.check_output(['git', '-C', str(path), *args], text=True).strip()
 
 
-def custom_node(root, name, package, verify=False, downloader='aria2', connections=4):
+def custom_node(root, name, package, verify=False, downloader='curl', connections=4):
     """Pinned git checkout and interpreter-specific requirements stamp."""
     target = within(root, 'custom_nodes/' + name)
     commit = package['commit']
@@ -670,8 +670,8 @@ def main(argv=None):
                         help='Leave ComfyUI running after installation (restart manually if needed)')
     parser.add_argument('--download-jobs', type=int, default=1,
                         help='Maximum simultaneous model downloads (default: 1)')
-    parser.add_argument('--downloader', choices=('curl', 'aria2'), default='aria2',
-                        help='Transfer tool; aria2 enables segmented downloads (default: aria2)')
+    parser.add_argument('--downloader', choices=('curl', 'aria2'), default='curl',
+                        help='Transfer tool; aria2 enables segmented downloads (default: curl)')
     parser.add_argument('--connections', type=int, default=4,
                         help='aria2 connections per model, 1–16 (default: 4)')
     args = parser.parse_args(argv)

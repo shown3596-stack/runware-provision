@@ -110,19 +110,16 @@ class ProvisionTests(unittest.TestCase):
         comfy = self.root / 'ComfyUI'
         (comfy / 'models').mkdir(parents=True)
         (comfy / 'main.py').touch()
-        def aria(command, **kwargs):
-            self.assertEqual(command[0], 'aria2c')
-            self.assertIn('--split=4', command)
-            directory = next(arg[6:] for arg in command if arg.startswith('--dir='))
-            name = next(arg[6:] for arg in command if arg.startswith('--out='))
-            (Path(directory) / name).write_bytes(self.body)
+        def curl(command, **kwargs):
+            self.assertEqual(command[0], 'curl')
+            Path(command[command.index('--output') + 1]).write_bytes(self.body)
             return subprocess.CompletedProcess(command, 0)
         args = ['--all', '--comfy-dir', str(comfy)]
         with patch.object(p, 'ROOT', self.root), patch.object(p, 'bundled_memory_node'), patch.object(p, 'verify_nodes') as live, \
                 patch.object(p, 'running_comfy', return_value={'pid': 123}) as running, \
                 patch.object(p, 'restart_comfy') as restart, \
                 patch.object(p.shutil, 'which', return_value='/usr/bin/curl'), \
-                patch.object(p.subprocess, 'run', side_effect=aria) as run, \
+                patch.object(p.subprocess, 'run', side_effect=curl) as run, \
                 contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(p.main(['--install', *args]), 0)
             self.assertEqual(p.main(['--install', *args]), 0)

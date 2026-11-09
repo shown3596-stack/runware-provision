@@ -31,7 +31,7 @@ defaults are eight steps and CFG 2. The graph selects Comfy Kitchen attention.
 Fresh-Pod installation and GPU generation are not verified.
 
 Provision only the models needed by an existing workflow, on a Pod that already
-has ComfyUI. `provision.py` uses Python 3.10+ standard library and `aria2c` by default (`curl` is an alternative); `git`
+has ComfyUI. `provision.py` uses Python 3.10+ standard library and `curl` by default (`aria2c` is an alternative); `git`
 and pip are needed only for custom nodes. This is a standalone provisioning repository. It includes unchanged snapshots of
 the workflows audited from `comfyui-api-poc`; the original app and workflow
 library remain in that separate repository.
@@ -239,7 +239,7 @@ restart through that manager after installation, then run `--verify`.
 Use `--all` instead of `--workflow NAME` to provision every discovered export.
 Models are shared by destination path. Existing files are SHA-256 checked and
 skipped; reruns do not fetch them again. Interrupted downloads resume from
-`filename.aria2.part` (or `filename.part` with curl); a final filename appears only after validation. Checksumming
+`filename.part` (or `filename.aria2.part` with aria2); a final filename appears only after validation. Checksumming
 large existing files takes some disk-read time. Sizes shown in GB are rounded
 publisher estimates, never used as exact validation sizes. SHA-256 is authoritative.
 Only run one installer per ComfyUI installation; a Pod file lock enforces this.
@@ -255,8 +255,9 @@ output uses plain status lines instead of terminal control codes. Each completed
 transfer reports download and validation times separately, which helps identify
 whether the network or checksum reads are the bottleneck.
 
-The default downloader uses up to four connections per model. If `aria2c` is
-missing, installation attempts to install the `aria2` package with `apt-get`
+The default downloader is curl. For segmented downloads, use `--downloader aria2`;
+it uses up to four connections per model by default. If `aria2c` is missing,
+installation attempts to install the `aria2` package with `apt-get`
 as root or via passwordless sudo. If that is unavailable or fails, install it
 manually or use `--downloader curl`. Dry runs and verification do not install it.
 Connections can be set
