@@ -239,9 +239,11 @@ large existing files takes some disk-read time. Sizes shown in GB are rounded
 publisher estimates, never used as exact validation sizes. SHA-256 is authoritative.
 Only run one installer per ComfyUI installation; a Pod file lock enforces this.
 
-The installer downloads up to three different models concurrently. Use
-`--download-jobs 1` to run sequentially, or set a value up to 16 to tune for
-available bandwidth and disk throughput. An interactive terminal shows a shared
+The installer downloads and validates models one at a time by default. Set
+`--download-jobs` to a value up to 16 to download models concurrently if that
+works better for your network and disk. Sequential downloads may give each file
+more bandwidth and reduce disk contention, but can also increase total install
+time; compare the reported times on your Pod. An interactive terminal shows a shared
 progress display with the active file, bytes and average transfer speed for curl,
 and a separate checksum stage. It cycles through concurrent transfers. Redirected
 output uses plain status lines instead of terminal control codes. Each completed

@@ -239,6 +239,13 @@ class ProvisionTests(unittest.TestCase):
         comfy = self.root / 'ComfyUI'
         (comfy / 'models').mkdir(parents=True)
         (comfy / 'main.py').touch()
+        with patch.object(p, 'ROOT', self.root), patch.object(p, 'bundled_memory_node'), patch.object(p, 'verify_nodes'), \
+                patch.object(p.shutil, 'which', return_value='/usr/bin/curl'), \
+                patch.object(p, 'download') as sequential, \
+                patch.object(p, 'ThreadPoolExecutor', wraps=p.ThreadPoolExecutor) as executor:
+            self.assertEqual(p.main(['--install', '--all', '--no-restart', '--comfy-dir', str(comfy)]), 0)
+        executor.assert_called_once_with(max_workers=1)
+        self.assertEqual(sequential.call_count, 2)
         barrier = threading.Barrier(2, timeout=3)
         def transfer(target, model, downloader, connections):
             barrier.wait()

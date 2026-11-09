@@ -579,8 +579,8 @@ def main(argv=None):
     parser.add_argument('--comfy-url', default='http://127.0.0.1:8188', help='Read-only node verification endpoint')
     parser.add_argument('--no-restart', action='store_true',
                         help='Leave ComfyUI running after installation (restart manually if needed)')
-    parser.add_argument('--download-jobs', type=int, default=3,
-                        help='Maximum simultaneous model downloads (default: 3)')
+    parser.add_argument('--download-jobs', type=int, default=1,
+                        help='Maximum simultaneous model downloads (default: 1)')
     parser.add_argument('--downloader', choices=('curl', 'aria2'), default='curl',
                         help='Transfer tool; aria2 enables segmented downloads (default: curl)')
     parser.add_argument('--connections', type=int, default=4,
