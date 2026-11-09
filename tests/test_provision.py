@@ -110,15 +110,19 @@ class ProvisionTests(unittest.TestCase):
         comfy = self.root / 'ComfyUI'
         (comfy / 'models').mkdir(parents=True)
         (comfy / 'main.py').touch()
-        def curl(command, **kwargs):
-            Path(command[command.index('--output') + 1]).write_bytes(self.body)
+        def aria(command, **kwargs):
+            self.assertEqual(command[0], 'aria2c')
+            self.assertIn('--split=4', command)
+            directory = next(arg[6:] for arg in command if arg.startswith('--dir='))
+            name = next(arg[6:] for arg in command if arg.startswith('--out='))
+            (Path(directory) / name).write_bytes(self.body)
             return subprocess.CompletedProcess(command, 0)
         args = ['--all', '--comfy-dir', str(comfy)]
         with patch.object(p, 'ROOT', self.root), patch.object(p, 'bundled_memory_node'), patch.object(p, 'verify_nodes') as live, \
                 patch.object(p, 'running_comfy', return_value={'pid': 123}) as running, \
                 patch.object(p, 'restart_comfy') as restart, \
                 patch.object(p.shutil, 'which', return_value='/usr/bin/curl'), \
-                patch.object(p.subprocess, 'run', side_effect=curl) as run, \
+                patch.object(p.subprocess, 'run', side_effect=aria) as run, \
                 contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(p.main(['--install', *args]), 0)
             self.assertEqual(p.main(['--install', *args]), 0)
@@ -192,11 +196,27 @@ class ProvisionTests(unittest.TestCase):
             part.write_bytes(self.body)
             return subprocess.CompletedProcess(command, 0)
         with patch.object(p.subprocess, 'run', side_effect=curl) as run:
-            p.download(target, self.model)
-            p.download(target, self.model)
+            p.download(target, self.model, 'curl')
+            p.download(target, self.model, 'curl')
         self.assertEqual(run.call_count, 1)
         self.assertEqual(target.read_bytes(), self.body)
         self.assertFalse(part.exists())
+
+    def test_missing_aria2_is_installed_and_checked(self):
+        with patch.object(p.shutil, 'which', side_effect=[None, '/usr/bin/apt-get', '/usr/bin/aria2c']), \
+                patch.object(p.os, 'geteuid', return_value=0), \
+                patch.object(p.subprocess, 'run') as run:
+            p.ensure_downloader('aria2')
+        self.assertEqual([call.args[0] for call in run.call_args_list],
+                         [['/usr/bin/apt-get', 'update'], ['/usr/bin/apt-get', 'install', '-y', 'aria2']])
+        self.assertTrue(all(call.kwargs['check'] for call in run.call_args_list))
+
+    def test_aria2_install_failure_explains_curl_fallback(self):
+        with patch.object(p.shutil, 'which', side_effect=[None, '/usr/bin/apt-get']), \
+                patch.object(p.os, 'geteuid', return_value=0), \
+                patch.object(p.subprocess, 'run', side_effect=subprocess.CalledProcessError(1, 'apt-get')):
+            with self.assertRaisesRegex(ValueError, '--downloader curl'):
+                p.ensure_downloader('aria2')
 
     def test_download_display_reports_stages_without_terminal_controls(self):
         output = io.StringIO()
@@ -262,12 +282,12 @@ class ProvisionTests(unittest.TestCase):
         part.write_bytes(b'partial')
         with patch.object(p.subprocess, 'run', return_value=subprocess.CompletedProcess([], 28)):
             with self.assertRaises(ValueError):
-                p.download(target, self.model)
+                p.download(target, self.model, 'curl')
         self.assertTrue(part.exists())
         self.assertFalse(target.exists())
         with patch.object(p.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0)):
             with self.assertRaises(ValueError):
-                p.download(target, self.model)
+                p.download(target, self.model, 'curl')
         self.assertFalse(part.exists())
         self.assertFalse(target.exists())
 
@@ -281,10 +301,10 @@ class ProvisionTests(unittest.TestCase):
             part.write_bytes(self.body)
             return subprocess.CompletedProcess(command, 0)
         with patch.object(p.subprocess, 'run', side_effect=curl):
-            p.download(target, self.model)
+            p.download(target, self.model, 'curl')
         target.write_bytes(b'incorrect existing file')
         with patch.object(p.subprocess, 'run') as run, self.assertRaises(ValueError):
-            p.download(target, self.model)
+            p.download(target, self.model, 'curl')
         run.assert_not_called()
         self.assertEqual(target.read_bytes(), b'incorrect existing file')
 
@@ -324,15 +344,15 @@ class ProvisionTests(unittest.TestCase):
             Path(command[command.index('--output') + 1]).write_bytes(self.body)
             return subprocess.CompletedProcess(command, 0)
         with patch.object(p.subprocess, 'run', side_effect=curl) as run:
-            p.custom_node(self.root, 'test-node', package)
-            p.custom_node(self.root, 'test-node', package)
+            p.custom_node(self.root, 'test-node', package, downloader='curl')
+            p.custom_node(self.root, 'test-node', package, downloader='curl')
             p.custom_node(self.root, 'test-node', package, verify=True)
             self.assertEqual(run.call_count, 1)
             (self.root / 'custom_nodes/test-node/nodes.py').write_text('changed')
             with self.assertRaises(ValueError):
                 p.custom_node(self.root, 'test-node', package, verify=True)
             with self.assertRaises(ValueError):
-                p.custom_node(self.root, 'test-node', package)
+                p.custom_node(self.root, 'test-node', package, downloader='curl')
 
     def test_invalid_pinned_node_paths_fail_planning(self):
         self.manifest['custom_nodes']['bad'] = {'repo': 'https://example.invalid/repo',

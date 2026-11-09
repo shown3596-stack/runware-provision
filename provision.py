@@ -313,7 +313,34 @@ def valid(path, model):
     return not model.get('sha256') or digest(path) == model['sha256']
 
 
-def download(target, model, downloader="curl", connections=4):
+def ensure_downloader(downloader):
+    executable = 'aria2c' if downloader == 'aria2' else 'curl'
+    if shutil.which(executable):
+        return
+    if downloader != 'aria2':
+        raise ValueError('curl is required for the selected downloader.')
+    hint = 'Install aria2 manually or rerun with --downloader curl.'
+    apt = shutil.which('apt-get')
+    if not apt:
+        raise ValueError(f'aria2c is missing and apt-get is unavailable. {hint}')
+    prefix = []
+    if os.geteuid() != 0:
+        sudo = shutil.which('sudo')
+        if not sudo:
+            raise ValueError(f'aria2c installation requires root or passwordless sudo. {hint}')
+        prefix = [sudo, '-n']
+    print('aria2c is missing; installing aria2 with apt-get...', flush=True)
+    env = dict(os.environ, DEBIAN_FRONTEND='noninteractive')
+    try:
+        subprocess.run(prefix + [apt, 'update'], check=True, env=env)
+        subprocess.run(prefix + [apt, 'install', '-y', 'aria2'], check=True, env=env)
+    except (OSError, subprocess.CalledProcessError) as error:
+        raise ValueError(f'Automatic aria2 installation failed: {error}. {hint}') from error
+    if not shutil.which('aria2c'):
+        raise ValueError(f'aria2 was installed but aria2c is not on PATH. {hint}')
+
+
+def download(target, model, downloader="aria2", connections=4):
     try:
         _download(target, model, downloader, connections)
     except Exception:
@@ -382,7 +409,7 @@ def git(path, *args):
     return subprocess.check_output(['git', '-C', str(path), *args], text=True).strip()
 
 
-def custom_node(root, name, package, verify=False):
+def custom_node(root, name, package, verify=False, downloader='aria2', connections=4):
     """Pinned git checkout and interpreter-specific requirements stamp."""
     target = within(root, 'custom_nodes/' + name)
     commit = package['commit']
@@ -393,7 +420,7 @@ def custom_node(root, name, package, verify=False):
                 if not valid(destination, item):
                     raise ValueError(f'{name}: missing or invalid pinned file {filename}.')
             else:
-                download(destination, item)
+                download(destination, item, downloader, connections)
         print(f'Custom node present: {name} @ {commit}')
         return
     if not target.exists():
@@ -581,8 +608,8 @@ def main(argv=None):
                         help='Leave ComfyUI running after installation (restart manually if needed)')
     parser.add_argument('--download-jobs', type=int, default=1,
                         help='Maximum simultaneous model downloads (default: 1)')
-    parser.add_argument('--downloader', choices=('curl', 'aria2'), default='curl',
-                        help='Transfer tool; aria2 enables segmented downloads (default: curl)')
+    parser.add_argument('--downloader', choices=('curl', 'aria2'), default='aria2',
+                        help='Transfer tool; aria2 enables segmented downloads (default: aria2)')
     parser.add_argument('--connections', type=int, default=4,
                         help='aria2 connections per model, 1–16 (default: 4)')
     args = parser.parse_args(argv)
@@ -627,9 +654,7 @@ def main(argv=None):
         return 0
     root = locate(args.comfy_dir)
     print(f'ComfyUI: {root}; Python: {sys.executable}', flush=True)
-    executable = 'aria2c' if args.downloader == 'aria2' else 'curl'
-    if args.install and assets and not shutil.which(executable):
-        raise ValueError(f'{executable} is required for the selected downloader.')
+    needs_downloader = assets or any('files' in manifest['custom_nodes'][name] for name in packages)
     if packages and not shutil.which('git'):
         raise ValueError('git is required for custom nodes.')
     if args.install and not packages:
@@ -640,6 +665,8 @@ def main(argv=None):
         if lock:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         process = running_comfy(root) if args.install and not args.no_restart else None
+        if args.install and needs_downloader:
+            ensure_downloader(args.downloader)
         bundled_memory_node(root, verify=args.verify)
         errors = []
         if args.install:
@@ -664,7 +691,8 @@ def main(argv=None):
                 else:
                     print(f'Validated: {target.name}')
         for name in packages:
-            custom_node(root, name, manifest['custom_nodes'][name], verify=args.verify)
+            custom_node(root, name, manifest['custom_nodes'][name], verify=args.verify,
+                        downloader=args.downloader, connections=args.connections)
         if errors:
             raise ValueError('\n'.join(errors))
         if process:
