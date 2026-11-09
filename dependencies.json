@@ -20,7 +20,8 @@
     "2026-11-08: NitroFusion2 INT8 2 Step uses PedroMarinhoDev community INT8 ConvRot checkpoint and ChenDY de-distillation LoRA; publisher API revisions, SHA-256 and sizes verified. Reuses Z Image Qwen 3 4B encoder and ae VAE. KSamplerAdvanced core implementation reviewed. No model payloads downloaded or live GPU inference verified.",
     "2026-11-08: Kroma Turbo OPD Amateur Upscale adds the publisher BF16 checkpoint, mirrored Amateur Slider and Comfy-Org Wan 2.1 VAE with pinned revisions, SHA256 and sizes; reuses Krea Qwen encoder. VAEEncode and ImageScaleBy are core nodes. res_multistep and beta appeared in the current Pod KSampler schema; fresh template sampler compatibility, model payloads and GPU execution were not verified.",
     "2026-11-09: Added non-turbo Mage Flow INT8 workflow. The official Comfy-Org diffusion checkpoint is pinned to revision and SHA-256 verified against publisher metadata; text encoder and VAE are shared with Mage Flow Turbo. No checkpoint payload download, new Pod installation, or live GPU generation verified.",
-    "2026-11-09: Replaced Kromoss OPD INT8 workflow with user-supplied Kromoss update-11000 BF16 and Qwen3.5 W4A8 graph, including its DMD2 adapter, CFG 2 and Comfy Kitchen attention; publisher revisions and SHA256 pinned. MOSS workflows now expose steps and CFG. Rapid MOSS uses CFGGuider and zeroed negative conditioning, default CFG 1; CFG values other than 1 have not been GPU tested."
+    "2026-11-09: Replaced Kromoss OPD INT8 workflow with user-supplied Kromoss update-11000 BF16 and Qwen3.5 W4A8 graph, including its DMD2 adapter, CFG 2 and Comfy Kitchen attention; publisher revisions and SHA256 pinned. MOSS workflows now expose steps and CFG. Rapid MOSS uses CFGGuider and zeroed negative conditioning, default CFG 1; CFG values other than 1 have not been GPU tested.",
+    "2026-11-09: Replaced the four-step Rapid MOSS workflow with the lodestones eight-step data-space adapter; its three files are pinned by publisher revision, size and SHA256. The adapter node supports 1–8 steps. Existing MOSS SFT model, encoder and VAE are shared. No live GPU inference has been tested."
   ],
   "models": {
     "models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors": {
@@ -415,33 +416,6 @@
       "approx_gb": 0.125,
       "review": null
     },
-    "models/rapid_moss/rapid-moss-4step/lora.safetensors": {
-      "url": "https://huggingface.co/darask0/MOSS-Image_4-step_adapter_lora/resolve/c88f33bcb3251eb39943d0635e74b650732977c8/lora.safetensors",
-      "source": "https://huggingface.co/darask0/MOSS-Image_4-step_adapter_lora/blob/c88f33bcb3251eb39943d0635e74b650732977c8/lora.safetensors",
-      "revision": "c88f33bcb3251eb39943d0635e74b650732977c8",
-      "sha256": "4a4c8e2d6244a0fcdc2822b87b3435226ae57c289aef99fc2ac54edeab9e09bb",
-      "size_bytes": 1189176832,
-      "approx_gb": 1.189,
-      "review": null
-    },
-    "models/rapid_moss/rapid-moss-4step/time_embedding.safetensors": {
-      "url": "https://huggingface.co/darask0/MOSS-Image_4-step_adapter_lora/resolve/c88f33bcb3251eb39943d0635e74b650732977c8/time_embedding.safetensors",
-      "source": "https://huggingface.co/darask0/MOSS-Image_4-step_adapter_lora/blob/c88f33bcb3251eb39943d0635e74b650732977c8/time_embedding.safetensors",
-      "revision": "c88f33bcb3251eb39943d0635e74b650732977c8",
-      "sha256": "2ebabc91e2a9e68c00e948dd80b05235a826e808817b5b2600b441457570d244",
-      "size_bytes": 41017896,
-      "approx_gb": 0.041,
-      "review": null
-    },
-    "models/rapid_moss/rapid-moss-4step/dataspace.safetensors": {
-      "url": "https://huggingface.co/darask0/MOSS-Image_4-step_adapter_lora/resolve/c88f33bcb3251eb39943d0635e74b650732977c8/dataspace.safetensors",
-      "source": "https://huggingface.co/darask0/MOSS-Image_4-step_adapter_lora/blob/c88f33bcb3251eb39943d0635e74b650732977c8/dataspace.safetensors",
-      "revision": "c88f33bcb3251eb39943d0635e74b650732977c8",
-      "sha256": "d19f0e695bb26886cfce57441fd412f358e159d6eec8555ec1a71daaf30a7968",
-      "size_bytes": 65784,
-      "approx_gb": 0.0,
-      "review": null
-    },
     "models/diffusion_models/krea2Cyberrealistic_v40_fp8.safetensors": {
       "url": "https://huggingface.co/gimly13/krea2-turbo-cyberrealistic-v4-nvfp4-gguf/resolve/b23d853be3444e621a74e5955727643abf8bf416/krea2_Cyberrealistic_v4_fp8.safetensors",
       "source": "https://cyberdelia.nl/models/cyberrealistic-krea-2",
@@ -666,6 +640,36 @@
       "approx_gb": 7.344,
       "review": null,
       "verified_date": "2026-11-09"
+    },
+    "models/rapid_moss/lodestones-8step/lora.safetensors": {
+      "url": "https://huggingface.co/lodestones/MOSS-Image-SFT-8-steps-dmd/resolve/f95df83b5e90ae91ea412434b3f9b7f1c8c6314f/lora.safetensors",
+      "source": "https://huggingface.co/lodestones/MOSS-Image-SFT-8-steps-dmd/blob/f95df83b5e90ae91ea412434b3f9b7f1c8c6314f/lora.safetensors",
+      "revision": "f95df83b5e90ae91ea412434b3f9b7f1c8c6314f",
+      "sha256": "4abb14e39c1a59018907581e609f43616ec6810126144ec2b1d2e6f8969628fe",
+      "size_bytes": 1189176800,
+      "approx_gb": 1.189,
+      "review": null,
+      "verified_date": "2026-11-09"
+    },
+    "models/rapid_moss/lodestones-8step/time_embedding.safetensors": {
+      "url": "https://huggingface.co/lodestones/MOSS-Image-SFT-8-steps-dmd/resolve/f95df83b5e90ae91ea412434b3f9b7f1c8c6314f/time_embedding.safetensors",
+      "source": "https://huggingface.co/lodestones/MOSS-Image-SFT-8-steps-dmd/blob/f95df83b5e90ae91ea412434b3f9b7f1c8c6314f/time_embedding.safetensors",
+      "revision": "f95df83b5e90ae91ea412434b3f9b7f1c8c6314f",
+      "sha256": "54f081f33f48f4abda3362cdc41abec947ddabd11894ce6158b15a9ff6340a3d",
+      "size_bytes": 41017896,
+      "approx_gb": 0.041,
+      "review": null,
+      "verified_date": "2026-11-09"
+    },
+    "models/rapid_moss/lodestones-8step/dataspace.safetensors": {
+      "url": "https://huggingface.co/lodestones/MOSS-Image-SFT-8-steps-dmd/resolve/f95df83b5e90ae91ea412434b3f9b7f1c8c6314f/dataspace.safetensors",
+      "source": "https://huggingface.co/lodestones/MOSS-Image-SFT-8-steps-dmd/blob/f95df83b5e90ae91ea412434b3f9b7f1c8c6314f/dataspace.safetensors",
+      "revision": "f95df83b5e90ae91ea412434b3f9b7f1c8c6314f",
+      "sha256": "816cf216448000c9f525539adcc005a6b929d1bdb2e4e30e2fe82e094152dcb5",
+      "size_bytes": 65728,
+      "approx_gb": 0.0,
+      "review": null,
+      "verified_date": "2026-11-09"
     }
   },
   "custom_nodes": {
@@ -886,13 +890,6 @@
       "custom_nodes": [],
       "review": []
     },
-    "rapid-moss-sft-4-step.json": {
-      "extra_models": [
-        "models/rapid_moss/rapid-moss-4step/lora.safetensors",
-        "models/rapid_moss/rapid-moss-4step/time_embedding.safetensors",
-        "models/rapid_moss/rapid-moss-4step/dataspace.safetensors"
-      ]
-    },
     "cyberrealistic-z-image-turbo-v8-q4-gguf.json": {
       "custom_nodes": [
         "ComfyUI-GGUF"
@@ -917,6 +914,14 @@
         "models/qwen-voice/Qwen3-TTS-12Hz-1.7B-VoiceDesign/vocab.json"
       ],
       "review": []
+    },
+    "rapid-moss-sft-8-step.json": {
+      "name": "Rapid MOSS SFT 8 Step",
+      "extra_models": [
+        "models/rapid_moss/lodestones-8step/lora.safetensors",
+        "models/rapid_moss/lodestones-8step/time_embedding.safetensors",
+        "models/rapid_moss/lodestones-8step/dataspace.safetensors"
+      ]
     }
   }
 }

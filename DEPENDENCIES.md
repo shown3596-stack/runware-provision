@@ -759,3 +759,11 @@ revision `6ff68fbf3c667325e961d551691b246791d5eec0`, with a publisher-verified
 SHA-256 and size of 4,159,146,848 bytes. The existing Mage Flow Turbo encoder
 and VAE are shared. Both Mage workflows expose steps and CFG, preserving their
 original defaults. No new Pod install or GPU generation was tested.
+# Rapid MOSS SFT 8 Step — 9 November 2026
+
+The previous four-step Rapid MOSS workflow has been replaced by a separate
+eight-step lodestones data-space adapter using its pinned `lora.safetensors`,
+`time_embedding.safetensors`, and `dataspace.safetensors` files. The adapter
+supports one through eight network evaluations; default steps are eight and CFG
+is one. The underlying SFT BF16 checkpoint, INT8 encoder, VAE, custom node and
+output path remain shared. Live eight-step inference has not been verified.

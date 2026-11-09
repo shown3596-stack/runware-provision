@@ -60,12 +60,12 @@ dependency report for pinned sources. GPU execution has not been verified in thi
 of model files). Its supplied latent separation path has not been verified on a GPU;
 see [the dependency report](DEPENDENCIES.md) before using it. At that sync the library contained 15 workflows and 40 unique model files (~316.30 GB).
 
-## Rapid MOSS SFT 4 Step
+## Rapid MOSS SFT 8 Step
 
-`rapid-moss-sft-4-step` uses native MOSS loading, BF16 SFT, the Comfy-Org
-INT8 text encoder, FLUX.2 VAE and RapidMOSS adapter. Its model files are shared
-with MOSS Image SFT 4 Step except for the adapter. The native-loader repair has
-not yet been GPU-tested; see the dependency report before use. See [the dependency report](DEPENDENCIES.md).
+`rapid-moss-sft-8-step` uses native MOSS loading, BF16 SFT, the Comfy-Org
+INT8 text encoder, FLUX.2 VAE and lodestones eight-step data-space adapter.
+The step control accepts 1–8 and defaults to 8; CFG defaults to 1. The adapter
+files total approximately 1.23 GB. GPU inference has not been verified.
 The installer supports individually checksum-pinned source files for custom nodes
 published as repository subdirectories.
 
