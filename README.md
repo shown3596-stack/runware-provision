@@ -244,6 +244,15 @@ large existing files takes some disk-read time. Sizes shown in GB are rounded
 publisher estimates, never used as exact validation sizes. SHA-256 is authoritative.
 Only run one installer per ComfyUI installation; a Pod file lock enforces this.
 
+For Hugging Face repositories that require access, set `HF_TOKEN` in the Pod
+environment before starting provisioning (or use `HUGGING_FACE_HUB_TOKEN`). The
+account must have access to the repository and have accepted any required terms.
+The token is sent only to `https://huggingface.co`, not other download hosts or
+redirect destinations. Authenticated Hugging Face transfers use curl even when
+`--downloader aria2` is selected; curl must be installed on the Pod. Existing
+valid files are still reused. Set the token in the environment of the process
+that launches provisioning, including when another application starts it.
+
 The installer downloads and validates models one at a time by default. Set
 `--download-jobs` to a value up to 16 to download models concurrently if that
 works better for your network and disk. Sequential downloads may give each file

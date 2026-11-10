@@ -18,6 +18,7 @@ import tempfile
 import threading
 import time
 from urllib.request import urlopen
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parent
 MODEL_INPUTS = {
@@ -407,6 +408,15 @@ def download(target, model, downloader="curl", connections=4):
 
 
 def _download(target, model, downloader, connections):
+    url = urlsplit(model['url'])
+    token = os.environ.get('HF_TOKEN') or os.environ.get('HUGGING_FACE_HUB_TOKEN')
+    token = token if url.scheme == 'https' and url.hostname == 'huggingface.co' and url.port in (None, 443) else None
+    if token and not re.fullmatch(r'[A-Za-z0-9_-]+', token):
+        raise ValueError('Invalid Hugging Face token in environment; check HF_TOKEN.')
+    if token and downloader == 'aria2':
+        # curl limits Authorization to the original host when following redirects.
+        ensure_downloader('curl')
+        downloader = 'curl'
     def status(state, part=None, detail=''):
         if download_display:
             download_display.update(target, state, part, model.get('size_bytes'), downloader, detail)
@@ -443,19 +453,24 @@ def _download(target, model, downloader, connections):
         command = ['curl', '--fail', '--location', '--retry', '3', '--connect-timeout', '30',
                    '--speed-limit', '1024', '--speed-time', '120', '--silent', '--show-error',
                    '--continue-at', '-', '--output', str(part), model['url']]
+        if token:
+            command[1:1] = ['--config', '-']
     if downloader == 'aria2':
         returncode, detail = aria2_transfer(command, target)
     else:
-        result = subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
+        kwargs = {'input': f'header = "Authorization: Bearer {token}"\n'} if token else {}
+        result = subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True, **kwargs)
         returncode, detail = result.returncode, result.stderr or ''
     if downloader == 'curl' and returncode == 33:  # No range support.
         part.unlink(missing_ok=True)
         status('restarting without resume')
         status('downloading', part)
-        result = subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
+        result = subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True, **kwargs)
         returncode, detail = result.returncode, result.stderr or ''
     if returncode:
-        raise ValueError(f'Download failed for {target.name} ({downloader} {returncode}): {detail.strip()}; partial retained. Rerun to resume.')
+        if token:
+            detail = detail.replace(token, '[redacted]')
+        raise ValueError(f'Download failed for {target} ({downloader} {returncode}): {detail.strip()}; partial retained. Rerun to resume.')
     downloaded = time.monotonic()
     status('validating checksum')
     if not valid(part, model):

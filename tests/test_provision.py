@@ -208,6 +208,38 @@ class ProvisionTests(unittest.TestCase):
                          [['/usr/bin/apt-get', 'update'], ['/usr/bin/apt-get', 'install', '-y', 'aria2']])
         self.assertTrue(all(call.kwargs['check'] for call in run.call_args_list))
 
+    def test_huggingface_token_is_private_and_aria_uses_curl(self):
+        model = dict(self.model, url='https://huggingface.co/owner/repo/resolve/abc/file')
+        target = self.root / 'file'
+        def curl(command, **kwargs):
+            self.assertEqual(command[0], 'curl')
+            self.assertNotIn('hf_secret', str(command))
+            self.assertIn('Authorization: Bearer hf_secret', kwargs['input'])
+            Path(command[command.index('--output') + 1]).write_bytes(self.body)
+            return subprocess.CompletedProcess(command, 0)
+        with patch.dict(p.os.environ, {'HF_TOKEN': 'hf_secret'}), \
+                patch.object(p, 'ensure_downloader') as ensure, \
+                patch.object(p.subprocess, 'run', side_effect=curl):
+            p.download(target, model, 'aria2')
+        ensure.assert_called_once_with('curl')
+        self.assertEqual(target.read_bytes(), self.body)
+
+    def test_token_not_sent_to_other_hosts_and_redacted_on_failure(self):
+        def failure(command, **kwargs):
+            if 'input' in kwargs:
+                return subprocess.CompletedProcess(command, 22, stderr='error hf_secret')
+            return subprocess.CompletedProcess(command, 22, stderr='error')
+        with patch.dict(p.os.environ, {'HF_TOKEN': 'hf_secret'}), \
+                patch.object(p.subprocess, 'run', side_effect=failure) as run:
+            with self.assertRaises(ValueError):
+                p.download(self.root / 'other', self.model)
+            self.assertNotIn('input', run.call_args.kwargs)
+            model = dict(self.model, url='https://huggingface.co/owner/file')
+            with self.assertRaises(ValueError) as error:
+                p.download(self.root / 'hf-file', model)
+            self.assertNotIn('hf_secret', str(error.exception))
+            self.assertIn('[redacted]', str(error.exception))
+
     def test_aria2_install_failure_explains_curl_fallback(self):
         with patch.object(p.shutil, 'which', side_effect=[None, '/usr/bin/apt-get']), \
                 patch.object(p.os, 'geteuid', return_value=0), \
