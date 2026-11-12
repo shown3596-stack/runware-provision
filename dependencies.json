@@ -22,7 +22,9 @@
     "2026-11-09: Added non-turbo Mage Flow INT8 workflow. The official Comfy-Org diffusion checkpoint is pinned to revision and SHA-256 verified against publisher metadata; text encoder and VAE are shared with Mage Flow Turbo. No checkpoint payload download, new Pod installation, or live GPU generation verified.",
     "2026-11-09: Replaced Kromoss OPD INT8 workflow with user-supplied Kromoss update-11000 BF16 and Qwen3.5 W4A8 graph, including its DMD2 adapter, CFG 2 and Comfy Kitchen attention; publisher revisions and SHA256 pinned. MOSS workflows now expose steps and CFG. Rapid MOSS uses CFGGuider and zeroed negative conditioning, default CFG 1; CFG values other than 1 have not been GPU tested.",
     "2026-11-09: Replaced the four-step Rapid MOSS workflow with the lodestones eight-step data-space adapter; its three files are pinned by publisher revision, size and SHA256. The adapter node supports 1–8 steps. Existing MOSS SFT model, encoder and VAE are shared. No live GPU inference has been tested.",
-    "2026-11-12: MiniMax H3 Image pDMD dependencies pinned to publisher metadata; ComfyUI core node ownership reviewed. No provisioning or fresh GPU test performed."
+    "2026-11-12: MiniMax H3 Image pDMD dependencies pinned to publisher metadata; ComfyUI core node ownership reviewed. No provisioning or fresh GPU test performed.",
+    "2026-11-12: MiniMax H3 Image pDMD Detail uses the publisher pre-merged BF16 checkpoint pinned to publisher revision, size and SHA-256; ImageScale core ownership reviewed. No fresh Pod or GPU test performed.",
+    "2026-11-12: MiniMax H3 Turbo 4 Step Image to Video: LightX2V 4-step LoRA and Comfy-Org audio VAE pinned to publisher revisions, sizes and SHA256; new core node ownership reviewed. No fresh Pod provisioning or adapted workflow GPU run."
   ],
   "models": {
     "models/diffusion_models/qwen_image_2512_fp8_e4m3fn.safetensors": {
@@ -707,6 +709,33 @@
       "size_bytes": 1956194168,
       "approx_gb": 1.96,
       "review": null
+    },
+    "models/diffusion_models/minimax_h3_image_pdmd_2step_bf16.safetensors": {
+      "url": "https://huggingface.co/akhaliq/minimax-h3-image-pdmd-2step/resolve/ef1e3b9a237fc7a57ba4d07174ecca397d695d8a/minimax_h3_image_pdmd_2step_bf16.safetensors",
+      "source": "https://huggingface.co/akhaliq/minimax-h3-image-pdmd-2step/blob/ef1e3b9a237fc7a57ba4d07174ecca397d695d8a/minimax_h3_image_pdmd_2step_bf16.safetensors",
+      "revision": "ef1e3b9a237fc7a57ba4d07174ecca397d695d8a",
+      "sha256": "18b54e667f99472465f51fd90570bbcfcac1999b40257f13f22e7350a46afca5",
+      "size_bytes": 40234657210,
+      "approx_gb": 40.23,
+      "review": null
+    },
+    "models/vae/minimax_h3_audio_vae_fp32.safetensors": {
+      "url": "https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/54472221d27c695fca9621b0c3ed52f06c4af707/vae/minimax_h3_audio_vae_fp32.safetensors",
+      "source": "https://huggingface.co/Comfy-Org/MiniMax-H3/blob/54472221d27c695fca9621b0c3ed52f06c4af707/vae/minimax_h3_audio_vae_fp32.safetensors",
+      "revision": "54472221d27c695fca9621b0c3ed52f06c4af707",
+      "sha256": "8e505d95dd1561d47abd43d4238fd40d9bb1ae9e147ed0a4cba778d76ae4db48",
+      "size_bytes": 605254808,
+      "approx_gb": 0.61,
+      "review": null
+    },
+    "models/loras/minimax_h3_fl2v_turbo_4step_v1.0_768p_comfyui_bf16.safetensors": {
+      "url": "https://huggingface.co/lightx2v/Minimax-h3-Turbo/resolve/745a0e425c54c9032a126bb0a85fe703503bb1ab/minimax_h3_fl2v_turbo_4step_v1.0_768p_comfyui_bf16.safetensors",
+      "source": "https://huggingface.co/lightx2v/Minimax-h3-Turbo/blob/745a0e425c54c9032a126bb0a85fe703503bb1ab/minimax_h3_fl2v_turbo_4step_v1.0_768p_comfyui_bf16.safetensors",
+      "revision": "745a0e425c54c9032a126bb0a85fe703503bb1ab",
+      "sha256": "c396a9a06f58399e9df9754b18299818d84a2ddd371724ba48fe4a41221437dc",
+      "size_bytes": 1956192992,
+      "approx_gb": 1.96,
+      "review": null
     }
   },
   "custom_nodes": {
@@ -874,7 +903,12 @@
     "VAEEncode": "https://github.com/Comfy-Org/ComfyUI/blob/master/nodes.py",
     "ImageScaleBy": "https://github.com/Comfy-Org/ComfyUI/blob/master/nodes.py",
     "MiniMaxH3SigmaShift": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_minimax_h3.py",
-    "EmptyHunyuanLatentVideo": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_hunyuan.py"
+    "EmptyHunyuanLatentVideo": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_hunyuan.py",
+    "ImageScale": "https://github.com/Comfy-Org/ComfyUI/blob/master/nodes.py",
+    "MiniMaxH3ImageToVideo": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_minimax_h3.py",
+    "VAEDecodeAudio": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_audio.py",
+    "ImageScaleToTotalPixels": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_post_processing.py",
+    "GetImageSize": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_images.py"
   },
   "workflows": {
     "qwen-2512.json": {

@@ -1,0 +1,349 @@
+{
+  "name": "MiniMax H3 Turbo 4 Step Image to Video",
+  "workflow": {
+    "92": {
+      "inputs": {
+        "filename_prefix": "video/MiniMax_H3",
+        "format": "auto",
+        "format.codec": "auto",
+        "codec": "auto",
+        "video-preview": "",
+        "video": [
+          "105:91",
+          0
+        ]
+      },
+      "class_type": "SaveVideo",
+      "_meta": {
+        "title": "Save Video",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    },
+    "119": {
+      "inputs": {
+        "upscale_method": "nearest-exact",
+        "megapixels": 1,
+        "resolution_steps": 32
+      },
+      "class_type": "ImageScaleToTotalPixels",
+      "_meta": {
+        "title": "Scale Image to Total Pixels",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    },
+    "120": {
+      "inputs": {
+        "image": [
+          "119",
+          0
+        ]
+      },
+      "class_type": "GetImageSize",
+      "_meta": {
+        "title": "Get Image Size",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    },
+    "125": {
+      "inputs": {
+        "image": "API_INPUT_IMAGE"
+      },
+      "class_type": "LoadImage",
+      "_meta": {
+        "title": "Load Image",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    },
+    "105:11": {
+      "inputs": {
+        "vae_name": "minimax_h3_video_vae_fp16.safetensors"
+      },
+      "class_type": "VAELoader",
+      "_meta": {
+        "title": "Load VAE",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    },
+    "105:24": {
+      "inputs": {
+        "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+      },
+      "class_type": "VAELoader",
+      "_meta": {
+        "title": "Load VAE",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    },
+    "105:10": {
+      "inputs": {
+        "samples": [
+          "105:14",
+          0
+        ],
+        "vae": [
+          "105:11",
+          0
+        ]
+      },
+      "class_type": "VAEDecode",
+      "_meta": {
+        "title": "VAE Decode",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    },
+    "105:14": {
+      "inputs": {
+        "noise": [
+          "105:15",
+          0
+        ],
+        "guider": [
+          "105:16",
+          0
+        ],
+        "sampler": [
+          "105:17",
+          0
+        ],
+        "sigmas": [
+          "105:9",
+          0
+        ],
+        "latent_image": [
+          "105:104",
+          1
+        ]
+      },
+      "class_type": "SamplerCustomAdvanced",
+      "_meta": {
+        "title": "SamplerCustomAdvanced",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    },
+    "105:16": {
+      "inputs": {
+        "model": [
+          "105:123",
+          0
+        ],
+        "conditioning": [
+          "105:104",
+          0
+        ]
+      },
+      "class_type": "BasicGuider",
+      "_meta": {
+        "title": "Basic Guider",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    },
+    "105:13": {
+      "inputs": {
+        "clip_name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+        "type": "minimax",
+        "device": "default"
+      },
+      "class_type": "CLIPLoader",
+      "_meta": {
+        "title": "Load CLIP",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    },
+    "105:15": {
+      "inputs": {
+        "noise_seed": 908057627042316
+      },
+      "class_type": "RandomNoise",
+      "_meta": {
+        "title": "RandomNoise",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    },
+    "105:104": {
+      "inputs": {
+        "prompt": "API_POSITIVE_PROMPT",
+        "width": "API_WIDTH",
+        "height": "API_HEIGHT",
+        "length": [
+          "105:107",
+          1
+        ],
+        "clip": [
+          "105:13",
+          0
+        ],
+        "vae": [
+          "105:11",
+          0
+        ],
+        "first_frame": [
+          "125",
+          0
+        ]
+      },
+      "class_type": "MiniMaxH3ImageToVideo",
+      "_meta": {
+        "title": "MiniMax H3 Image to Video",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    },
+    "105:107": {
+      "inputs": {
+        "expression": "max(5, round(a * 24)) + (5 - (max(5, round(a * 24)) % 17)) % 17",
+        "values.a": [
+          "105:111",
+          0
+        ]
+      },
+      "class_type": "ComfyMathExpression",
+      "_meta": {
+        "title": "Math Expression",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    },
+    "105:111": {
+      "inputs": {
+        "value": "API_DURATION"
+      },
+      "class_type": "PrimitiveFloat",
+      "_meta": {
+        "title": "Float (duration)",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    },
+    "105:6": {
+      "inputs": {
+        "unet_name": "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+        "weight_dtype": "default"
+      },
+      "class_type": "UNETLoader",
+      "_meta": {
+        "title": "Load Diffusion Model",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    },
+    "105:9": {
+      "inputs": {
+        "scheduler": "simple",
+        "steps": 4,
+        "denoise": 1,
+        "model": [
+          "105:123",
+          0
+        ]
+      },
+      "class_type": "BasicScheduler",
+      "_meta": {
+        "title": "BasicScheduler",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    },
+    "105:17": {
+      "inputs": {
+        "sampler_name": "euler"
+      },
+      "class_type": "KSamplerSelect",
+      "_meta": {
+        "title": "KSamplerSelect",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    },
+    "105:122": {
+      "inputs": {
+        "lora_name": "minimax_h3_fl2v_turbo_4step_v1.0_768p_comfyui_bf16.safetensors",
+        "strength_model": 1,
+        "model": [
+          "105:6",
+          0
+        ]
+      },
+      "class_type": "LoraLoaderModelOnly",
+      "_meta": {
+        "title": "Load LoRA",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    },
+    "105:123": {
+      "inputs": {
+        "shift_video": 6,
+        "shift_audio": 3,
+        "model": [
+          "105:122",
+          0
+        ]
+      },
+      "class_type": "MiniMaxH3SigmaShift",
+      "_meta": {
+        "title": "ModelSamplingMiniMaxH3",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    },
+    "105:23": {
+      "inputs": {
+        "samples": [
+          "105:14",
+          0
+        ],
+        "vae": [
+          "105:24",
+          0
+        ]
+      },
+      "class_type": "VAEDecodeAudio",
+      "_meta": {
+        "title": "VAE Decode Audio",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    },
+    "105:91": {
+      "inputs": {
+        "fps": 24,
+        "bit_depth": 8,
+        "color_space": "sRGB",
+        "chroma_subsampling": "auto",
+        "codec": "none",
+        "images": [
+          "105:10",
+          0
+        ],
+        "audio": [
+          "105:23",
+          0
+        ]
+      },
+      "class_type": "CreateVideo",
+      "_meta": {
+        "title": "Create Video",
+        "cnr_id": "comfy-core",
+        "ver": "0.45.0"
+      }
+    }
+  },
+  "parameter_defaults": {
+    "API_POSITIVE_PROMPT": "POSITVE_PROMPT",
+    "API_WIDTH": 512,
+    "API_HEIGHT": 512,
+    "API_DURATION": 2
+  },
+  "id": "076da2aaab03410eadb434248c42df67"
+}

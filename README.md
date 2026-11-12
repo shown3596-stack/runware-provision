@@ -1,5 +1,13 @@
 # Disposable Runpod ComfyUI setup
 
+## MiniMax H3 Turbo 4 Step Image to Video
+
+`minimax-h3-turbo-4-step-image-to-video` uses the FL2VA INT8 model and LightX2V 4-step 768p adapter, with audio. The local app exposes the input image, prompt, dimensions and approximate duration. See DEPENDENCIES.md for constraints and validation.
+
+## MiniMax H3 Image pDMD Detail
+
+`minimax-h3-image-pdmd-detail` uses the pre-merged pDMD BF16 checkpoint with a two-step draft and a three-step detail pass. Final dimensions and draft steps are editable. See DEPENDENCIES.md for details.
+
 ## MiniMax H3 Image pDMD
 
 `minimax-h3-image-pdmd` uses the BF16 image model, INT8 Qwen encoder, image VAE and pDMD LoRA. Width, height and steps are editable; defaults are 2048 × 2048 and four steps. See DEPENDENCIES.md for installation details.
@@ -35,7 +43,7 @@ defaults are eight steps and CFG 2. The graph selects Comfy Kitchen attention.
 Fresh-Pod installation and GPU generation are not verified.
 
 Provision only the models needed by an existing workflow, on a Pod that already
-has ComfyUI. `provision.py` uses Python 3.10+ standard library and `curl` by default (`aria2c` is an alternative); `git`
+has ComfyUI. `provision.py` uses Python 3.10+ and `hf-xet` by default (`curl` and `aria2c` are alternatives); `git`
 and pip are needed only for custom nodes. This is a standalone provisioning repository. It includes unchanged snapshots of
 the workflows audited from `comfyui-api-poc`; the original app and workflow
 library remain in that separate repository.
@@ -242,8 +250,8 @@ restart through that manager after installation, then run `--verify`.
 
 Use `--all` instead of `--workflow NAME` to provision every discovered export.
 Models are shared by destination path. Existing files are SHA-256 checked and
-skipped; reruns do not fetch them again. Interrupted downloads resume from
-`filename.part` (or `filename.aria2.part` with aria2); a final filename appears only after validation. Checksumming
+skipped; reruns do not fetch them again. Interrupted downloads resume from a downloader-specific staging file or directory;
+a final filename appears only after validation. Checksumming
 large existing files takes some disk-read time. Sizes shown in GB are rounded
 publisher estimates, never used as exact validation sizes. SHA-256 is authoritative.
 Only run one installer per ComfyUI installation; a Pod file lock enforces this.
@@ -262,13 +270,25 @@ The installer downloads and validates models one at a time by default. Set
 works better for your network and disk. Sequential downloads may give each file
 more bandwidth and reduce disk contention, but can also increase total install
 time; compare the reported times on your Pod. An interactive terminal shows a shared
-progress display with the active file, bytes and average transfer speed for curl,
-and a separate checksum stage. It cycles through concurrent transfers. Redirected
-output uses plain status lines instead of terminal control codes. Each completed
+progress display for each active file, including bytes and average transfer speed
+for curl, and a separate checksum stage. Pinned custom-node file downloads use the
+same display. Redirected output uses periodic plain status lines instead of terminal
+control codes. Files without a known size show bytes transferred without a percentage. Each completed
 transfer reports download and validation times separately, which helps identify
 whether the network or checksum reads are the bottleneck.
 
-The default downloader is curl. For segmented downloads, use `--downloader aria2`;
+The default downloader is Hugging Face's `hf-xet` client for Hugging Face files.
+Install its Python dependencies in the environment used to run the provisioner:
+
+```bash
+python3 -m pip install -U huggingface_hub hf_xet
+```
+
+Public models do not need a token; gated or private models require access and a token.
+Other hosts use curl. Use `--downloader curl` to select curl for all files. Hugging
+Face downloads use a separate resumable staging directory beside the target; curl
+and aria2 partial files cannot be resumed by hf-xet. For segmented downloads with
+aria2, use `--downloader aria2`;
 it uses up to four connections per model by default. If `aria2c` is missing,
 installation attempts to install the `aria2` package with `apt-get`
 as root or via passwordless sudo. If that is unavailable or fails, install it

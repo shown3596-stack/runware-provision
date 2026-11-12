@@ -260,6 +260,62 @@ class ProvisionTests(unittest.TestCase):
         self.assertIn('[1/2] other: failed', output.getvalue())
         self.assertNotIn('\x1b', output.getvalue())
 
+    def test_progress_formats_each_transfer_and_unknown_sizes(self):
+        output = io.StringIO()
+        display = p.DownloadDisplay(2, output)
+        part = self.root / 'model.part'
+        part.write_bytes(b'x' * 50)
+        target = self.root / 'model.safetensors'
+        display.update(target, 'downloading', part, 100)
+        self.assertIn('[########--------] 50.0% 50 B/100 B',
+                      display._format(target, display.items[target]))
+        other = self.root / 'other'
+        display.update(other, 'downloading', part)
+        self.assertIn('[        ?       ] 50 B', display._format(other, display.items[other]))
+        display.update(other, 'downloading', part, 100, 'aria2')
+        display.transfer_progress(other, '20MiB/100MiB(20%) CN:4 DL:5MiB')
+        self.assertIn('[###-------------] 20.0%', display._format(other, display.items[other]))
+
+    def test_hf_xet_pins_revision_reports_progress_and_validates(self):
+        import sys
+        import types
+        target = self.root / 'model.safetensors'
+        model = dict(self.model, url='https://huggingface.co/owner/repo/resolve/abc123/sub/model.safetensors')
+        output = io.StringIO()
+        class FakeTqdm:
+            def __init__(self, *args, **kwargs):
+                pass
+        def hub_download(**kwargs):
+            self.assertEqual((kwargs['repo_id'], kwargs['revision'], kwargs['filename']),
+                             ('owner/repo', 'abc123', 'sub/model.safetensors'))
+            progress = kwargs['tqdm_class'](total=len(self.body))
+            progress.update(5)
+            formatted = display._format(target, display.items[target])
+            self.assertIn('5 B/', formatted)
+            staging = kwargs['local_dir'] / 'sub'
+            staging.mkdir(parents=True)
+            result = staging / 'model.safetensors'
+            result.write_bytes(self.body)
+            return str(result)
+        modules = {'huggingface_hub': types.SimpleNamespace(hf_hub_download=hub_download),
+                   'tqdm': types.ModuleType('tqdm'),
+                   'tqdm.auto': types.SimpleNamespace(tqdm=FakeTqdm)}
+        with p.DownloadDisplay(1, output) as display, patch.object(p, 'download_display', display), \
+                patch.dict(sys.modules, modules):
+            p.download(target, model, 'hf-xet')
+        self.assertEqual(target.read_bytes(), self.body)
+        self.assertIn('validating checksum', output.getvalue())
+
+    def test_hf_xet_falls_back_for_other_hosts(self):
+        with patch.object(p, 'ensure_downloader') as ensure, \
+                patch.object(p.subprocess, 'run') as run:
+            def curl(command, **kwargs):
+                Path(command[command.index('--output') + 1]).write_bytes(self.body)
+                return subprocess.CompletedProcess(command, 0, stderr='')
+            run.side_effect = curl
+            p.download(self.root / 'file', self.model, 'hf-xet')
+        ensure.assert_called_once_with('curl')
+
     def test_aria2_uses_separate_resumable_partial_and_validates(self):
         target = self.root / 'model.safetensors'
         part = target.with_name(target.name + '.aria2.part')

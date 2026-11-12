@@ -771,3 +771,11 @@ output path remain shared. Live eight-step inference has not been verified.
 # MiniMax H3 Image pDMD — 12 November 2026
 
 The supplied graph uses the Comfy-Org BF16 image model, INT8 ConvRot encoder and image VAE, plus the akhaliq ComfyUI-format pDMD LoRA at strength 1. Publisher revisions, byte sizes and SHA-256 hashes are pinned in the manifest. Width and height default to 2048 and steps to 4. This is a single-pass graph; no detail pass is included. Core node ownership and offline substitution were checked. Fresh-Pod provisioning and this saved app graph have not been GPU tested.
+
+# MiniMax H3 Image pDMD Detail — 12 November 2026
+
+This workflow uses the publisher’s pre-merged BF16 pDMD checkpoint (40,234,657,210 bytes), pinned with SHA-256 and revision. It shares the Qwen encoder and image VAE with the base-plus-LoRA workflow. Final dimensions default to 2048 square, with the draft derived at half size; use final dimensions divisible by 16 to preserve exact latent dimensions. Draft steps are editable and default to two; refinement remains at three steps and denoise 0.5. The draft save is removed in the app copy to support the single-output memory bridge; the original is retained separately. Fresh-Pod install and this adapted graph have not been GPU tested.
+
+# MiniMax H3 Turbo 4 Step Image to Video — 12 November 2026
+
+The graph uses the FL2VA INT8 ConvRot model, NVFP4 AWQ text encoder and FP16 video VAE already declared, plus the Comfy-Org FP32 audio VAE and LightX2V 4-step v1.0 768p ComfyUI LoRA. New files are pinned by publisher revision, size and SHA-256. Prompt, input image, dimensions and duration are editable; dimensions follow the model 32-pixel grid, and 24 FPS and 4 steps remain fixed. The source 2-second request snaps to 56 frames, approximately 2.33 seconds. Input first frames are stretched to the requested aspect ratio by the MiniMax node. Offline substitution and sync checks do not establish live GPU compatibility. The local video bridge only supports reviewed LTX graphs and does not currently support this MiniMax graph.

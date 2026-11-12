@@ -18,7 +18,7 @@ import tempfile
 import threading
 import time
 from urllib.request import urlopen
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, unquote
 
 ROOT = Path(__file__).resolve().parent
 MODEL_INPUTS = {
@@ -62,18 +62,19 @@ class DownloadDisplay:
         self.results = []
         self.stop = threading.Event()
         self.thread = None
+        self.lines = 0
 
     def __enter__(self):
-        if self.tty:
-            self.thread = threading.Thread(target=self._refresh, daemon=True)
-            self.thread.start()
+        self.thread = threading.Thread(target=self._refresh, daemon=True)
+        self.thread.start()
         return self
 
     def __exit__(self, *args):
         self.stop.set()
         if self.thread:
             self.thread.join()
-            print('\r\033[2K', end='', file=self.stream, flush=True)
+            if self.tty and self.lines:
+                self._clear()
             for result in self.results:
                 print(result, file=self.stream, flush=True)
 
@@ -101,44 +102,75 @@ class DownloadDisplay:
             if target not in self.items:
                 return
             self.progress[target] = detail
-            if not self.tty:
+            if not self.tty and not isinstance(detail, tuple):
                 print(f'[{self.completed}/{self.total}] {target.name}: {detail}', file=self.stream, flush=True)
 
+    def _clear(self):
+        if self.lines:
+            self.stream.write(f'\033[{self.lines}A')
+            for _ in range(self.lines):
+                self.stream.write('\r\033[2K\n')
+            self.stream.write(f'\033[{self.lines}A')
+            self.stream.flush()
+            self.lines = 0
+
+    def _format(self, target, item, width=None):
+        state, part, size, downloader, started, initial = item
+        detail = state
+        if state == 'downloading':
+            if downloader == 'hf-xet':
+                current, total, initial_progress = self.progress.get(target, (0, size, 0))
+                ratio = min(current / total, 1) if total else None
+                detail = human_bytes(current)
+                if total:
+                    detail += f'/{human_bytes(total)}'
+                elapsed = time.monotonic() - started
+                if elapsed > 0:
+                    detail += f' {human_bytes(max(0, current - initial_progress) / elapsed)}/s'
+            elif downloader == 'aria2':
+                detail = self.progress.get(target, 'connecting / downloading')
+                match = re.search(r'\((\d+(?:\.\d+)?)%\)', detail)
+                ratio = min(float(match.group(1)) / 100, 1) if match else None
+            else:
+                try:
+                    current = part.stat().st_size
+                except OSError:
+                    current = 0
+                ratio = min(current / size, 1) if size else None
+                detail = human_bytes(current)
+                if size:
+                    detail += f'/{human_bytes(size)}'
+                elapsed = time.monotonic() - started
+                if elapsed > 0 and current >= initial:
+                    detail += f' {human_bytes((current - initial) / elapsed)}/s'
+            if ratio is not None:
+                filled = int(ratio * 16)
+                detail = f"[{'#' * filled}{'-' * (16 - filled)}] {ratio:5.1%} {detail}"
+            else:
+                detail = f'[        ?       ] {detail}'
+        prefix = f'[{self.completed}/{self.total}] '
+        name = target.name
+        if width is not None:
+            available = max(1, width - len(prefix) - len(detail) - 3)
+            if len(name) > available:
+                name = name[:max(0, available - 1)] + '…'
+        return f'{prefix}{name}: {detail}'
+
     def _refresh(self):
-        tick = 0
-        while not self.stop.wait(0.25):
+        interval = 0.25 if self.tty else 5
+        while not self.stop.wait(interval):
             with self.lock:
-                entries = list(self.items.items())
-                prefix = f'Models {self.completed}/{self.total}'
-                if entries:
-                    target, (state, part, size, downloader, started, initial) = entries[tick % len(entries)]
-                    detail = state
-                    if state == 'downloading' and downloader == 'aria2':
-                        detail = self.progress.get(target, f'connecting / downloading ({int(time.monotonic() - started)}s)')
-                    if state == 'downloading' and downloader == 'curl':
-                        try:
-                            current = part.stat().st_size
-                        except OSError:
-                            current = 0
-                        if size:
-                            ratio = min(current / size, 1)
-                            filled = int(ratio * 16)
-                            detail = f"[{'━' * filled}{'─' * (16 - filled)}] {ratio:5.1%} {human_bytes(current)}/{human_bytes(size)}"
-                        else:
-                            detail = human_bytes(current)
-                        elapsed = time.monotonic() - started
-                        if elapsed > 0 and current >= initial:
-                            detail += f' {human_bytes((current - initial) / elapsed)}/s'
-                    heading = f'{prefix} | {len(entries)} active | '
-                    width = shutil.get_terminal_size((80, 24)).columns
-                    available = max(8, width - len(heading) - len(detail) - 4)
-                    name = target.name if len(target.name) <= available else target.name[:available - 1] + '…'
-                    line = f'{heading}{name} | {detail}'
+                width = shutil.get_terminal_size((80, 24)).columns - 1 if self.tty else None
+                lines = [self._format(target, item, width) for target, item in self.items.items()]
+                if self.tty:
+                    self._clear()
+                    for line in lines:
+                        print(line[:max(0, width)], file=self.stream)
+                    self.stream.flush()
+                    self.lines = len(lines)
                 else:
-                    line = prefix + ' | preparing downloads'
-                width = shutil.get_terminal_size((80, 24)).columns
-                print('\r\033[2K' + line[:max(0, width - 1)], end='', file=self.stream, flush=True)
-            tick += 1
+                    for line in lines:
+                        print(line, file=self.stream, flush=True)
 
 
 download_display = None
@@ -328,6 +360,15 @@ def valid(path, model):
 
 
 def ensure_downloader(downloader):
+    if downloader == 'hf-xet':
+        try:
+            import huggingface_hub
+            import hf_xet
+        except ImportError as error:
+            raise ValueError('hf-xet requires huggingface_hub and hf_xet; install with: python3 -m pip install -U huggingface_hub hf_xet') from error
+        if os.environ.get('HF_HUB_DISABLE_XET', '').upper() in ('1', 'ON', 'YES', 'TRUE'):
+            raise ValueError('HF_HUB_DISABLE_XET is set; unset it to use --downloader hf-xet.')
+        return
     executable = 'aria2c' if downloader == 'aria2' else 'curl'
     if shutil.which(executable):
         return
@@ -398,6 +439,47 @@ def aria2_transfer(command, target):
     return result.returncode, diagnostic
 
 
+def hf_xet_transfer(target, model, token):
+    """Download a pinned Hub file into a resumable, target-specific staging directory."""
+    from huggingface_hub import hf_hub_download
+    from tqdm.auto import tqdm
+
+    url = urlsplit(model['url'])
+    parts = url.path.split('/')
+    if len(parts) < 6 or parts[3] != 'resolve' or not all(parts[1:5]):
+        raise ValueError(f'Unsupported Hugging Face model URL: {model["url"]}')
+    repo_id = unquote(parts[1]) + '/' + unquote(parts[2])
+    revision = unquote(parts[4])
+    filename = unquote('/'.join(parts[5:]))
+    if not filename or any(part in ('', '.', '..') for part in filename.split('/')):
+        raise ValueError('Invalid Hugging Face filename in manifest.')
+    staging = target.parent / ('.' + target.name + '.hf-download')
+
+    class Progress(tqdm):
+        def __init__(self, *args, **kwargs):
+            self.transferred = kwargs.get('initial', 0) or 0
+            self.initial_progress = self.transferred
+            self.transfer_total = kwargs.get('total') or model.get('size_bytes')
+            self.transfer_lock = threading.Lock()
+            kwargs['disable'] = True
+            super().__init__(*args, **kwargs)
+
+        def update(self, n=1):
+            with self.transfer_lock:
+                self.transferred += n
+                if download_display:
+                    download_display.transfer_progress(target, (self.transferred, self.transfer_total, self.initial_progress))
+
+    try:
+        return Path(hf_hub_download(repo_id=repo_id, filename=filename, revision=revision,
+                                    local_dir=staging, token=token, tqdm_class=Progress))
+    except Exception as error:
+        detail = str(error)
+        if token:
+            detail = detail.replace(token, '[redacted]')
+        raise ValueError(f'Hugging Face download failed for {target}: {detail}; rerun to resume.') from None
+
+
 def download(target, model, downloader="curl", connections=4):
     try:
         _download(target, model, downloader, connections)
@@ -413,6 +495,9 @@ def _download(target, model, downloader, connections):
     token = token if url.scheme == 'https' and url.hostname == 'huggingface.co' and url.port in (None, 443) else None
     if token and not re.fullmatch(r'[A-Za-z0-9_-]+', token):
         raise ValueError('Invalid Hugging Face token in environment; check HF_TOKEN.')
+    if downloader == 'hf-xet' and not (url.scheme == 'https' and url.hostname == 'huggingface.co' and url.port in (None, 443)):
+        ensure_downloader('curl')
+        downloader = 'curl'
     if token and downloader == 'aria2':
         # curl limits Authorization to the original host when following redirects.
         ensure_downloader('curl')
@@ -430,7 +515,8 @@ def _download(target, model, downloader, connections):
             return
         raise ValueError(f'Existing file failed validation: {target}. Move/remove it and retry.')
     target.parent.mkdir(parents=True, exist_ok=True)
-    part = target.with_name(target.name + ('.aria2.part' if downloader == 'aria2' else '.part'))
+    suffix = {'aria2': '.aria2.part', 'hf-xet': '.hf.part'}.get(downloader, '.part')
+    part = target.with_name(target.name + suffix)
     if part.exists():
         status('checking partial file')
     if valid(part, model):
@@ -441,7 +527,10 @@ def _download(target, model, downloader, connections):
         return
     transfer_start = time.monotonic()
     status('downloading', part)
-    if downloader == 'aria2':
+    if downloader == 'hf-xet':
+        downloaded_path = hf_xet_transfer(target, model, token)
+        downloaded_path.replace(part)
+    elif downloader == 'aria2':
         command = ['aria2c', '--allow-overwrite=true', '--auto-file-renaming=false',
                    '--continue=true', '--max-tries=4', '--retry-wait=3',
                    '--connect-timeout=30', '--timeout=60', '--summary-interval=5',
@@ -455,7 +544,9 @@ def _download(target, model, downloader, connections):
                    '--continue-at', '-', '--output', str(part), model['url']]
         if token:
             command[1:1] = ['--config', '-']
-    if downloader == 'aria2':
+    if downloader == 'hf-xet':
+        returncode, detail = 0, ''
+    elif downloader == 'aria2':
         returncode, detail = aria2_transfer(command, target)
     else:
         kwargs = {'input': f'header = "Authorization: Bearer {token}"\n'} if token else {}
@@ -685,8 +776,8 @@ def main(argv=None):
                         help='Leave ComfyUI running after installation (restart manually if needed)')
     parser.add_argument('--download-jobs', type=int, default=1,
                         help='Maximum simultaneous model downloads (default: 1)')
-    parser.add_argument('--downloader', choices=('curl', 'aria2'), default='curl',
-                        help='Transfer tool; aria2 enables segmented downloads (default: curl)')
+    parser.add_argument('--downloader', choices=('curl', 'aria2', 'hf-xet'), default='hf-xet',
+                        help='Transfer tool; hf-xet uses the Hugging Face client for Hub files (default: hf-xet)')
     parser.add_argument('--connections', type=int, default=4,
                         help='aria2 connections per model, 1–16 (default: 4)')
     args = parser.parse_args(argv)
@@ -743,7 +834,10 @@ def main(argv=None):
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         process = running_comfy(root) if args.install and not args.no_restart else None
         if args.install and needs_downloader:
-            ensure_downloader(args.downloader)
+            sources = [manifest['models'][asset] for asset in assets]
+            sources += [item for name in packages for item in manifest['custom_nodes'][name].get('files', {}).values()]
+            has_hub = any(urlsplit(item['url']).hostname == 'huggingface.co' for item in sources)
+            ensure_downloader(args.downloader if args.downloader != 'hf-xet' or has_hub else 'curl')
         bundled_memory_node(root, verify=args.verify)
         errors = []
         if args.install:
@@ -768,8 +862,17 @@ def main(argv=None):
                 else:
                     print(f'Validated: {target.name}')
         for name in packages:
-            custom_node(root, name, manifest['custom_nodes'][name], verify=args.verify,
-                        downloader=args.downloader, connections=args.connections)
+            package = manifest['custom_nodes'][name]
+            if args.install and 'files' in package:
+                with DownloadDisplay(len(package['files'])) as display:
+                    download_display = display
+                    try:
+                        custom_node(root, name, package, downloader=args.downloader, connections=args.connections)
+                    finally:
+                        download_display = None
+            else:
+                custom_node(root, name, package, verify=args.verify,
+                            downloader=args.downloader, connections=args.connections)
         if errors:
             raise ValueError('\n'.join(errors))
         if process:
