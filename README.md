@@ -4,11 +4,11 @@
 
 `minimax-h3-turbo-4-step-image-to-video` uses the FL2VA INT8 model and LightX2V 4-step 768p adapter, with audio. The local app exposes the input image, prompt, dimensions and approximate duration. See DEPENDENCIES.md for constraints and validation.
 
-## MiniMax H3 Image pDMD Detail
+## MiniMax H3 Image — Draft + Detail
 
 `minimax-h3-image-pdmd-detail` uses the pre-merged pDMD BF16 checkpoint with a two-step draft and a three-step detail pass. Final dimensions and draft steps are editable. See DEPENDENCIES.md for details.
 
-## MiniMax H3 Image pDMD
+## MiniMax H3 Image — Single Pass
 
 `minimax-h3-image-pdmd` uses the BF16 image model, INT8 Qwen encoder, image VAE and pDMD LoRA. Width, height and steps are editable; defaults are 2048 × 2048 and four steps. See DEPENDENCIES.md for installation details.
 

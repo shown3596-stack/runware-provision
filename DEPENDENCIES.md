@@ -768,11 +768,11 @@ supports one through eight network evaluations; default steps are eight and CFG
 is one. The underlying SFT BF16 checkpoint, INT8 encoder, VAE, custom node and
 output path remain shared. Live eight-step inference has not been verified.
 
-# MiniMax H3 Image pDMD — 12 November 2026
+# MiniMax H3 Image — Single Pass — 12 November 2026
 
 The supplied graph uses the Comfy-Org BF16 image model, INT8 ConvRot encoder and image VAE, plus the akhaliq ComfyUI-format pDMD LoRA at strength 1. Publisher revisions, byte sizes and SHA-256 hashes are pinned in the manifest. Width and height default to 2048 and steps to 4. This is a single-pass graph; no detail pass is included. Core node ownership and offline substitution were checked. Fresh-Pod provisioning and this saved app graph have not been GPU tested.
 
-# MiniMax H3 Image pDMD Detail — 12 November 2026
+# MiniMax H3 Image — Draft + Detail — 12 November 2026
 
 This workflow uses the publisher’s pre-merged BF16 pDMD checkpoint (40,234,657,210 bytes), pinned with SHA-256 and revision. It shares the Qwen encoder and image VAE with the base-plus-LoRA workflow. Final dimensions default to 2048 square, with the draft derived at half size; use final dimensions divisible by 16 to preserve exact latent dimensions. Draft steps are editable and default to two; refinement remains at three steps and denoise 0.5. The draft save is removed in the app copy to support the single-output memory bridge; the original is retained separately. Fresh-Pod install and this adapted graph have not been GPU tested.
 
