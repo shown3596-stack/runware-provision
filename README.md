@@ -1,5 +1,9 @@
 # Disposable Runpod ComfyUI setup
 
+## MiniMax H3 Image pDMD
+
+`minimax-h3-image-pdmd` uses the BF16 image model, INT8 Qwen encoder, image VAE and pDMD LoRA. Width, height and steps are editable; defaults are 2048 × 2048 and four steps. See DEPENDENCIES.md for installation details.
+
 ## Mage Flow INT8
 
 `mage-flow-int8` uses the non-turbo INT8 checkpoint and shares its text encoder

@@ -767,3 +767,7 @@ eight-step lodestones data-space adapter using its pinned `lora.safetensors`,
 supports one through eight network evaluations; default steps are eight and CFG
 is one. The underlying SFT BF16 checkpoint, INT8 encoder, VAE, custom node and
 output path remain shared. Live eight-step inference has not been verified.
+
+# MiniMax H3 Image pDMD — 12 November 2026
+
+The supplied graph uses the Comfy-Org BF16 image model, INT8 ConvRot encoder and image VAE, plus the akhaliq ComfyUI-format pDMD LoRA at strength 1. Publisher revisions, byte sizes and SHA-256 hashes are pinned in the manifest. Width and height default to 2048 and steps to 4. This is a single-pass graph; no detail pass is included. Core node ownership and offline substitution were checked. Fresh-Pod provisioning and this saved app graph have not been GPU tested.
