@@ -135,7 +135,7 @@
     },
     "32": {
       "inputs": {
-        "unet_name": "kromoss_bf16_11000.safetensors",
+        "unet_name": "API_DIFFUSION_MODEL",
         "weight_dtype": "default"
       },
       "class_type": "UNETLoader",
@@ -147,7 +147,7 @@
     },
     "34": {
       "inputs": {
-        "lora_name": "8-steps-dmd2-lora.safetensors",
+        "lora_name": "API_LORA",
         "strength_model": 1,
         "model": [
           "32",
@@ -183,7 +183,9 @@
     "API_WIDTH": 1024,
     "API_HEIGHT": 1024,
     "API_STEPS": 8,
-    "API_CFG": 2
+    "API_CFG": 2,
+    "API_DIFFUSION_MODEL": "kromoss_bf16_11000.safetensors",
+    "API_LORA": "8-steps-dmd2-lora.safetensors"
   },
   "id": "b267b0c58d4c4460b20d99ea7ed974dd"
 }

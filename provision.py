@@ -232,6 +232,10 @@ def discover(directory):
                     continue
                 asset_directory = model_directory(kind, key)
                 if asset_directory:
+                    if value in ('API_DIFFUSION_MODEL', 'API_LORA') and (kind, key, value) in (
+                            ('UNETLoader', 'unet_name', 'API_DIFFUSION_MODEL'),
+                            ('LoraLoaderModelOnly', 'lora_name', 'API_LORA')):
+                        value = document.get('parameter_defaults', {}).get(value)
                     if not isinstance(value, str) or value.startswith('API_'):
                         issues.append(f'{kind}.{key}: dynamic model selection needs review: {value!r}')
                     else:

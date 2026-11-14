@@ -736,6 +736,26 @@
       "size_bytes": 1956192992,
       "approx_gb": 1.96,
       "review": null
+    },
+    "models/diffusion_models/kromoss_bf16_OPD-priming.safetensors": {
+      "url": "https://huggingface.co/lodestones/Kromoss/resolve/1a38e065819c88097fabdf4e3890647dfbe89365/diffusion_models/kromoss_bf16_OPD-priming.safetensors",
+      "source": "https://huggingface.co/lodestones/Kromoss/blob/1a38e065819c88097fabdf4e3890647dfbe89365/diffusion_models/kromoss_bf16_OPD-priming.safetensors",
+      "revision": "1a38e065819c88097fabdf4e3890647dfbe89365",
+      "sha256": "9aaf2388ea79a4fcf08fc64a39ce1523fa39b96dcdcfcb8ad04cd614b0bfe612",
+      "size_bytes": 10164655808,
+      "approx_gb": 10.165,
+      "review": null,
+      "verified_date": "2026-11-14"
+    },
+    "models/loras/opd-priming-8-steps-dmd-lora_cfg-ramp-neg_12000.safetensors": {
+      "url": "https://huggingface.co/lodestones/Kromoss/resolve/1a38e065819c88097fabdf4e3890647dfbe89365/experimental/opd-priming-8-steps-dmd-lora_cfg-ramp-neg_12000.safetensors",
+      "source": "https://huggingface.co/lodestones/Kromoss/blob/1a38e065819c88097fabdf4e3890647dfbe89365/experimental/opd-priming-8-steps-dmd-lora_cfg-ramp-neg_12000.safetensors",
+      "revision": "1a38e065819c88097fabdf4e3890647dfbe89365",
+      "sha256": "0d73315607aaac118bf68951b75f6429c7b47a88284bd33d9a98c6c21ed7583d",
+      "size_bytes": 1189176800,
+      "approx_gb": 1.189,
+      "review": null,
+      "verified_date": "2026-11-14"
     }
   },
   "custom_nodes": {
@@ -994,6 +1014,13 @@
         "models/rapid_moss/lodestones-8step/lora.safetensors",
         "models/rapid_moss/lodestones-8step/time_embedding.safetensors",
         "models/rapid_moss/lodestones-8step/dataspace.safetensors"
+      ]
+    },
+    "kromoss-bf16-11000-dmd2-8-step.json": {
+      "name": "Kromoss BF16 11000 DMD2 8 Step",
+      "extra_models": [
+        "models/diffusion_models/kromoss_bf16_OPD-priming.safetensors",
+        "models/loras/opd-priming-8-steps-dmd-lora_cfg-ramp-neg_12000.safetensors"
       ]
     }
   }
