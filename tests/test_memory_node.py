@@ -4,6 +4,7 @@ import sys
 import types
 import unittest
 import tempfile
+import time
 from pathlib import Path
 from unittest.mock import patch
 
@@ -28,7 +29,7 @@ class NodeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'already exists'): node._store('a' * 64, [(b'1', 'image/png')])
         with self.assertRaisesRegex(ValueError, 'capacity'): node._store('b' * 64, [(b'12345', 'image/png')])
         self.assertEqual(node._results['a' * 64][1][0][0], b'1234')
-        node._results['a' * 64] = (0, node._results['a' * 64][1])
+        node._results['a' * 64] = (time.monotonic() - node._TTL - 1, node._results['a' * 64][1])
         node._store('b' * 64, [(b'12', 'image/png')])
         self.assertNotIn('a' * 64, node._results)
 

@@ -1,6 +1,8 @@
 """Prompt Fusion RAM-only output nodes. Direct ComfyUI workflows are unaffected."""
 import io
+import os
 import re
+import stat
 import threading
 import time
 from aiohttp import web
@@ -26,6 +28,15 @@ def _cleanup_loop():
     while True:
         time.sleep(60)
         _expire(time.monotonic())
+        # Interrupted predictors may leave an incomplete file in tmpfs.
+        try:
+            for entry in os.scandir('/dev/shm'):
+                if re.fullmatch(r'prompt-fusion-sharp-[a-f0-9]{64}_[0-9]+\.ply', entry.name):
+                    info = entry.stat(follow_symlinks=False)
+                    if stat.S_ISREG(info.st_mode) and time.time() - info.st_mtime > _TTL:
+                        os.unlink(entry.path)
+        except OSError:
+            pass
 
 
 threading.Thread(target=_cleanup_loop, name='prompt-fusion-memory-expiry', daemon=True).start()
@@ -47,7 +58,12 @@ def _store(token, items):
 
 @PromptServer.instance.routes.get('/prompt-fusion-memory/v1/capabilities')
 async def capabilities(request):
-    return web.json_response({'version': 1, 'images': True, 'video_mp4': True, 'qwen_audio': True, 'capacity_bytes': _LIMIT})
+    try:
+        from comfy_extras.nodes_gaussian_splat import _parse_ply_gaussian, _gaussian_spz_bytes
+        sharp_spz = callable(_parse_ply_gaussian) and callable(_gaussian_spz_bytes)
+    except ImportError:
+        sharp_spz = False
+    return web.json_response({'version': 1, 'images': True, 'video_mp4': True, 'qwen_audio': True, 'sharp_spz': sharp_spz, 'capacity_bytes': _LIMIT})
 
 
 @PromptServer.instance.routes.get('/prompt-fusion-memory/v1/{token}/{index}')
@@ -149,4 +165,63 @@ class PromptFusionMemoryQwenAudio:
         return {'ui': {'audio': [{'filename': '0', 'subfolder': token, 'type': 'pf_memory'}]}}
 
 
-NODE_CLASS_MAPPINGS = {'PromptFusionMemoryImage': PromptFusionMemoryImage, 'PromptFusionMemoryVideo': PromptFusionMemoryVideo, 'PromptFusionMemoryQwenAudio': PromptFusionMemoryQwenAudio}
+def _check_tmpfs():
+    with open('/proc/mounts', encoding='utf-8') as mounts:
+        if not any(len(parts := line.split()) >= 3 and parts[1:3] == ['/dev/shm', 'tmpfs'] for line in mounts):
+            raise ValueError('SHARP output requires /dev/shm to be tmpfs')
+
+
+class PromptFusionSharpRamGuard:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {'required': {'image': ('IMAGE',), 'token': ('STRING',)}}
+    RETURN_TYPES = ('IMAGE',)
+    FUNCTION = 'check'
+    CATEGORY = 'Prompt Fusion'
+
+    def check(self, image, token):
+        if not _TOKEN.fullmatch(token):
+            raise ValueError('Invalid output token')
+        _check_tmpfs()
+        fs = os.statvfs('/dev/shm')
+        if fs.f_bavail * fs.f_frsize < 256 * 1024 * 1024:
+            raise ValueError('Not enough RAM-backed storage for SHARP output')
+        return (image,)
+
+
+class PromptFusionMemorySharp:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {'required': {'ply_path': ('STRING',), 'token': ('STRING',)}}
+    RETURN_TYPES = ()
+    FUNCTION = 'save'
+    OUTPUT_NODE = True
+    CATEGORY = 'Prompt Fusion'
+
+    def save(self, ply_path, token):
+        if not _TOKEN.fullmatch(token) or not re.fullmatch('/dev/shm/prompt-fusion-sharp-' + token + r'_[0-9]+\.ply', ply_path):
+            raise ValueError('Invalid SHARP RAM output path')
+        _check_tmpfs()
+        fd = os.open(ply_path, os.O_RDONLY | os.O_NOFOLLOW)
+        try:
+            info = os.fstat(fd)
+            if not stat.S_ISREG(info.st_mode) or info.st_size > 256 * 1024 * 1024:
+                raise ValueError('Invalid or oversized SHARP PLY')
+            with os.fdopen(fd, 'rb', closefd=False) as source:
+                data = source.read(256 * 1024 * 1024 + 1)
+            if len(data) != info.st_size or not (data.startswith(b'ply\n') or data.startswith(b'ply\r\n')):
+                raise ValueError('Expected complete PLY output')
+            import torch
+            from comfy_extras.nodes_gaussian_splat import _parse_ply_gaussian, _gaussian_spz_bytes
+            arrays = _parse_ply_gaussian(data)
+            if arrays[4].shape[1] != 1:
+                raise ValueError('SPZ conversion would discard higher-order colour data')
+            compressed = _gaussian_spz_bytes(*[torch.from_numpy(array) for array in arrays])
+            _store(token, [(compressed, 'application/x-spz')])
+        finally:
+            os.close(fd)
+            os.unlink(ply_path)
+        return {'ui': {'images': [{'filename': '0', 'subfolder': token, 'type': 'pf_memory'}]}}
+
+
+NODE_CLASS_MAPPINGS = {'PromptFusionMemoryImage': PromptFusionMemoryImage, 'PromptFusionMemoryVideo': PromptFusionMemoryVideo, 'PromptFusionMemoryQwenAudio': PromptFusionMemoryQwenAudio, 'PromptFusionSharpRamGuard': PromptFusionSharpRamGuard, 'PromptFusionMemorySharp': PromptFusionMemorySharp}
