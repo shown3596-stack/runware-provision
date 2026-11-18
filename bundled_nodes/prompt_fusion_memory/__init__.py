@@ -63,7 +63,7 @@ async def capabilities(request):
         sharp_spz = callable(_parse_ply_gaussian) and callable(_gaussian_spz_bytes)
     except ImportError:
         sharp_spz = False
-    return web.json_response({'version': 1, 'images': True, 'video_mp4': True, 'qwen_audio': True, 'sharp_spz': sharp_spz, 'capacity_bytes': _LIMIT})
+    return web.json_response({'version': 1, 'images': True, 'video_mp4': True, 'qwen_audio': True, 'sharp_spz': sharp_spz, 'sharp_splat_limit': sharp_spz, 'capacity_bytes': _LIMIT})
 
 
 @PromptServer.instance.routes.get('/prompt-fusion-memory/v1/{token}/{index}')
@@ -192,13 +192,16 @@ class PromptFusionSharpRamGuard:
 class PromptFusionMemorySharp:
     @classmethod
     def INPUT_TYPES(cls):
-        return {'required': {'ply_path': ('STRING',), 'token': ('STRING',)}}
+        return {'required': {'ply_path': ('STRING',), 'token': ('STRING',)},
+                'optional': {'max_splats': ('INT', {'default': 0, 'min': 0, 'max': 150000})}}
     RETURN_TYPES = ()
     FUNCTION = 'save'
     OUTPUT_NODE = True
     CATEGORY = 'Prompt Fusion'
 
-    def save(self, ply_path, token):
+    def save(self, ply_path, token, max_splats=0):
+        if type(max_splats) is not int or max_splats not in (0, 150000):
+            raise ValueError('Unsupported SHARP splat limit')
         if not _TOKEN.fullmatch(token) or not re.fullmatch('/dev/shm/prompt-fusion-sharp-' + token + r'_[0-9]+\.ply', ply_path):
             raise ValueError('Invalid SHARP RAM output path')
         _check_tmpfs()
@@ -216,6 +219,18 @@ class PromptFusionMemorySharp:
             arrays = _parse_ply_gaussian(data)
             if arrays[4].shape[1] != 1:
                 raise ValueError('SPZ conversion would discard higher-order colour data')
+            if max_splats and len(arrays[0]) > max_splats:
+                # Deterministic weighted sampling favours larger, opaque splats
+                # while still giving smaller splats a chance of being selected.
+                opacity = np.clip(arrays[3].reshape(-1), 0, 1)
+                scales = np.maximum(arrays[1], 1e-12)
+                weights = opacity * np.power(np.prod(scales, axis=1), 2.0 / 3.0)
+                weights = np.nan_to_num(weights, nan=0.0, posinf=0.0, neginf=0.0)
+                weights = np.maximum(weights, 1e-30)
+                rng = np.random.default_rng(0)
+                keys = -np.log(np.maximum(rng.random(len(weights)), 1e-15)) / weights
+                selected = np.sort(np.argpartition(keys, max_splats - 1)[:max_splats])
+                arrays = tuple(array[selected] for array in arrays)
             compressed = _gaussian_spz_bytes(*[torch.from_numpy(array) for array in arrays])
             _store(token, [(compressed, 'application/x-spz')])
         finally:
