@@ -621,12 +621,21 @@ def custom_node(root, name, package, verify=False, downloader='curl', connection
                       "m['main']()")
             env = dict(os.environ, QWEN3_TTS_SKIP_MODEL_DOWNLOAD='1', QWEN_INSTALLER=str(installer))
             subprocess.run([sys.executable, '-c', script], env=env, check=True)
+        elif package.get('runtime') == 'sharp_gaussian_isolated':
+            subprocess.run([sys.executable, str(ROOT / 'scripts/install_sharp_runtime.py'), str(root)], check=True)
+        elif package.get('runtime') == 'sharp_gaussian_companion':
+            pass  # The SHARP runtime installer provisions both node packs together.
         elif requirements.exists():
             subprocess.run([sys.executable, '-m', 'pip', 'install', '-r', str(requirements)], check=True)
         stamp.write_text(json.dumps(identity))
     if package.get('runtime') == 'qwen3_tts_isolated':
         runtime = target / '.venv' / 'bin' / 'python'
         subprocess.run([str(runtime), '-c', 'from qwen_tts import Qwen3TTSModel; import torch; assert torch.cuda.is_available()'], check=True)
+    if package.get('runtime') == 'sharp_gaussian_isolated':
+        workspace = Path(os.environ.get('COMFY_ENV_ROOT', str(Path.home() / '.ce')))
+        for environment_name in ('sharp-nodes', 'gaussianpack-nodes'):
+            runtime = workspace / '.pixi' / 'envs' / environment_name / 'bin' / 'python'
+            subprocess.run([str(runtime), '-c', 'import torch, comfy_aimdo, einops; assert torch.cuda.is_available()'], check=True)
     print(f'Custom node present: {name} @ {commit}')
 
 

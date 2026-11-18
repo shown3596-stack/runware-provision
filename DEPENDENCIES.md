@@ -779,3 +779,23 @@ This workflow uses the publisher’s pre-merged BF16 pDMD checkpoint (40,234,657
 # MiniMax H3 Turbo 4 Step Image to Video — 12 November 2026
 
 The graph uses the FL2VA INT8 ConvRot model, NVFP4 AWQ text encoder and FP16 video VAE already declared, plus the Comfy-Org FP32 audio VAE and LightX2V 4-step v1.0 768p ComfyUI LoRA. New files are pinned by publisher revision, size and SHA-256. Prompt, input image, dimensions and duration are editable; dimensions follow the model 32-pixel grid, and 24 FPS and 4 steps remain fixed. The source 2-second request snaps to 56 frames, approximately 2.33 seconds. Input first frames are stretched to the requested aspect ratio by the MiniMax node. Offline substitution and sync checks do not establish live GPU compatibility. The local video bridge only supports reviewed LTX graphs and does not currently support this MiniMax graph.
+
+# SHARP Basic image to Gaussian splat — 18 November 2026
+
+The optional `sharp-basic-image-to-gaussian-splat` snapshot takes an uploaded
+image and produces a PLY through SHARP and GaussianPack. It has no text prompt.
+It is hidden from the Artflow bridge until 3D output transport is implemented.
+The model and both custom-node checkouts are pinned in `dependencies.json`.
+The installer builds only the two reviewed comfy-env node environments; it
+refuses to overwrite an existing unowned comfy-env workspace or a workspace with
+other comfy-env packs. It requires 40 GB free before a first environment build.
+The dependency installer also uses the shared ComfyUI Python for the packs' root
+requirements; the heavy model runtimes are isolated. This setup is specific to
+the tested Linux x86_64, Torch 2.10 CUDA 12.8 installation; other Pod templates
+are not yet validated. The installer stores an ownership marker to permit retry.
+
+A scoped build was exercised on a clean Runpod A5000 with 149 GB initially free;
+a repeat build reused the workspace. The model checksum and required node
+registrations passed. A separate ComfyUI execution with the bundled icon image
+produced a 63 MB PLY. The full provisioner then completed against the prepared
+Pod. Artflow transfer, persistent storage and VR rendering were not tested.

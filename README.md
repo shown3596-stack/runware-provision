@@ -404,3 +404,13 @@ python3 -m unittest discover -s tests -v
 
 Tests use tiny fixtures and mocked HTTP/curl/git/pip. No real model payload
 downloads, Pod provisioning, or GPU inference were executed for this tool.
+
+## SHARP Basic image to Gaussian splat
+
+`sharp-basic-image-to-gaussian-splat` is an optional, promptless image-to-PLY
+workflow. Its two custom packs use isolated comfy-env runtimes and require at
+least 40 GB free for the first setup, plus the model and generated output space.
+The installer refuses to replace an existing unowned comfy-env workspace or
+rebuild one containing other comfy-env packs. The workflow can be tested in
+ComfyUI; it is deliberately excluded from the Artflow bridge until 3D result
+transport is implemented. See `DEPENDENCIES.md` for the tested Pod and limits.

@@ -736,6 +736,16 @@
       "size_bytes": 1956192992,
       "approx_gb": 1.96,
       "review": null
+    },
+    "models/sharp/sharp_2572gikvuh.pt": {
+      "url": "https://huggingface.co/apple/Sharp/resolve/50753d96c1f7ad0bae4184ddfb6aa98bca975f29/sharp_2572gikvuh.pt",
+      "source": "https://huggingface.co/apple/Sharp/blob/50753d96c1f7ad0bae4184ddfb6aa98bca975f29/sharp_2572gikvuh.pt",
+      "revision": "50753d96c1f7ad0bae4184ddfb6aa98bca975f29",
+      "sha256": "94211a75198c47f61fca7d739ba08a215418d8d398d48fddf023baccc24f073d",
+      "size_bytes": 2809738232,
+      "approx_gb": 2.81,
+      "review": null,
+      "verified_date": "2026-11-18"
     }
   },
   "custom_nodes": {
@@ -839,6 +849,25 @@
         "SaveQwen3TTSAudio"
       ],
       "runtime": "qwen3_tts_isolated",
+      "review": null
+    },
+    "ComfyUI-GaussianPack": {
+      "repo": "https://github.com/PozzettiAndrea/ComfyUI-GaussianPack.git",
+      "commit": "059313a53ffa7ecc8697eddc02d2cee4727e5085",
+      "nodes": [
+        "PreviewGaussianSharp"
+      ],
+      "runtime": "sharp_gaussian_companion",
+      "review": null
+    },
+    "ComfyUI-Sharp": {
+      "repo": "https://github.com/PozzettiAndrea/ComfyUI-Sharp.git",
+      "commit": "92c0015af61b71e6fd88301cfb336e7034f19796",
+      "nodes": [
+        "LoadSharpModel",
+        "SharpPredict"
+      ],
+      "runtime": "sharp_gaussian_isolated",
       "review": null
     }
   },
@@ -994,6 +1023,12 @@
         "models/rapid_moss/lodestones-8step/lora.safetensors",
         "models/rapid_moss/lodestones-8step/time_embedding.safetensors",
         "models/rapid_moss/lodestones-8step/dataspace.safetensors"
+      ]
+    },
+    "sharp-basic-image-to-gaussian-splat.json": {
+      "name": "SHARP Basic Image to Gaussian Splat",
+      "extra_models": [
+        "models/sharp/sharp_2572gikvuh.pt"
       ]
     }
   }
