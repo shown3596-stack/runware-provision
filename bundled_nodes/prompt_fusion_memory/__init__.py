@@ -63,7 +63,7 @@ async def capabilities(request):
         sharp_spz = callable(_parse_ply_gaussian) and callable(_gaussian_spz_bytes)
     except ImportError:
         sharp_spz = False
-    return web.json_response({'version': 1, 'images': True, 'video_mp4': True, 'qwen_audio': True, 'sharp_spz': sharp_spz, 'sharp_splat_limit': sharp_spz, 'capacity_bytes': _LIMIT})
+    return web.json_response({'version': 1, 'images': True, 'video_mp4': True, 'qwen_audio': True, 'sharp_spz': sharp_spz, 'sharp_splat_limit': sharp_spz, 'sharp_splat_limit_300k': sharp_spz, 'capacity_bytes': _LIMIT})
 
 
 @PromptServer.instance.routes.get('/prompt-fusion-memory/v1/{token}/{index}')
@@ -193,14 +193,14 @@ class PromptFusionMemorySharp:
     @classmethod
     def INPUT_TYPES(cls):
         return {'required': {'ply_path': ('STRING',), 'token': ('STRING',)},
-                'optional': {'max_splats': ('INT', {'default': 0, 'min': 0, 'max': 150000})}}
+                'optional': {'max_splats': ('INT', {'default': 0, 'min': 0, 'max': 300000})}}
     RETURN_TYPES = ()
     FUNCTION = 'save'
     OUTPUT_NODE = True
     CATEGORY = 'Prompt Fusion'
 
     def save(self, ply_path, token, max_splats=0):
-        if type(max_splats) is not int or max_splats not in (0, 150000):
+        if type(max_splats) is not int or max_splats not in (0, 150000, 300000):
             raise ValueError('Unsupported SHARP splat limit')
         if not _TOKEN.fullmatch(token) or not re.fullmatch('/dev/shm/prompt-fusion-sharp-' + token + r'_[0-9]+\.ply', ply_path):
             raise ValueError('Invalid SHARP RAM output path')

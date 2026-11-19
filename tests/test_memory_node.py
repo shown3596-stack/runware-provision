@@ -33,6 +33,16 @@ class NodeTests(unittest.TestCase):
         node._store('b' * 64, [(b'12', 'image/png')])
         self.assertNotIn('a' * 64, node._results)
 
+    def test_sharp_accepts_only_supported_splat_limits(self):
+        node = self.node.PromptFusionMemorySharp()
+        self.assertEqual(node.INPUT_TYPES()['optional']['max_splats'][1]['max'], 300000)
+        for limit in (0, 150000, 300000):
+            with self.assertRaisesRegex(ValueError, 'Invalid SHARP RAM output path'):
+                node.save('not-a-path', 'a' * 64, limit)
+        for limit in (1, 300001, True):
+            with self.assertRaisesRegex(ValueError, 'Unsupported SHARP splat limit'):
+                node.save('not-a-path', 'a' * 64, limit)
+
     def test_image_batch_encodes_in_memory_and_preserves_order(self):
         class Array:
             def __rmul__(self, value): return self
