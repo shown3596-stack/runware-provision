@@ -35,11 +35,11 @@ class NodeTests(unittest.TestCase):
 
     def test_sharp_accepts_only_supported_splat_limits(self):
         node = self.node.PromptFusionMemorySharp()
-        self.assertEqual(node.INPUT_TYPES()['optional']['max_splats'][1]['max'], 300000)
-        for limit in (0, 150000, 300000):
+        self.assertEqual(node.INPUT_TYPES()['optional']['max_splats'][1]['max'], 500000)
+        for limit in (0, 150000, 300000, 500000):
             with self.assertRaisesRegex(ValueError, 'Invalid SHARP RAM output path'):
                 node.save('not-a-path', 'a' * 64, limit)
-        for limit in (1, 300001, True):
+        for limit in (1, 500001, True):
             with self.assertRaisesRegex(ValueError, 'Unsupported SHARP splat limit'):
                 node.save('not-a-path', 'a' * 64, limit)
 
