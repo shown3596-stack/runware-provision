@@ -1,0 +1,116 @@
+{
+  "name": "InfiniSplat Image to Gaussian Splat",
+  "workflow": {
+    "1": {
+      "inputs": {
+        "image": "API_INPUT_IMAGE"
+      },
+      "class_type": "LoadImage",
+      "_meta": {
+        "title": "Load Image",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    },
+    "2": {
+      "inputs": {
+        "focal_length_mm": 30,
+        "gaussian_count": "API_SPLAT_COUNT",
+        "query_chunk_size": 20000,
+        "seed": 0,
+        "filter_floaters": true,
+        "download_model": true,
+        "save": false,
+        "file_path": "infinisplat/InfiniSplat",
+        "camera_estimation": "manual",
+        "infinisplat_status": "",
+        "image": [
+          "1",
+          0
+        ]
+      },
+      "class_type": "InfiniSplatGenerate",
+      "_meta": {
+        "title": "InfiniSplat (Image to PLY)",
+        "aux_id": "jKaarlehto/ComfyUI-InfiniSplat",
+        "ver": "0722bc45e86b51f3fff2415ffc0c982fb0ffa5aa"
+      }
+    },
+    "3": {
+      "inputs": {
+        "viewport_state": {
+          "image": "",
+          "mask": "",
+          "normal": "",
+          "camera_info": {
+            "position": {
+              "x": 10,
+              "y": 10,
+              "z": 10.000000000000002
+            },
+            "target": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "zoom": 1,
+            "cameraType": "perspective",
+            "quaternion": {
+              "x": -0.2798481423331213,
+              "y": 0.3647051996310008,
+              "z": 0.11591689595929511,
+              "w": 0.8804762392171493
+            },
+            "fov": 35,
+            "aspect": 1,
+            "near": 0.01,
+            "far": 10000,
+            "frustum": {
+              "left": -5,
+              "right": 5,
+              "top": 5,
+              "bottom": -5
+            }
+          },
+          "recording": "",
+          "model_3d_info": [
+            {
+              "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              },
+              "quaternion": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+              },
+              "scale": {
+                "x": 1,
+                "y": 1,
+                "z": 1
+              }
+            }
+          ]
+        },
+        "width": 1024,
+        "height": 1024,
+        "model_3d": [
+          "2",
+          0
+        ]
+      },
+      "class_type": "PreviewGaussianSplat",
+      "_meta": {
+        "title": "Preview Splat",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    }
+  },
+  "parameter_defaults": {
+    "API_SPLAT_COUNT": 500000
+  },
+  "id": "dac01516d4204d76a3587a36211fe04e"
+}

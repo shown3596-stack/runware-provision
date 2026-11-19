@@ -5,6 +5,11 @@ import re
 import stat
 import threading
 import time
+import json
+import shutil
+import subprocess
+import tempfile
+from pathlib import Path
 from aiohttp import web
 import numpy as np
 from PIL import Image
@@ -35,6 +40,10 @@ def _cleanup_loop():
                     info = entry.stat(follow_symlinks=False)
                     if stat.S_ISREG(info.st_mode) and time.time() - info.st_mtime > _TTL:
                         os.unlink(entry.path)
+                elif re.fullmatch(r'prompt-fusion-infini-[a-z0-9_]{8}', entry.name):
+                    info = entry.stat(follow_symlinks=False)
+                    if stat.S_ISDIR(info.st_mode) and time.time() - info.st_mtime > _TTL:
+                        shutil.rmtree(entry.path)
         except OSError:
             pass
 
@@ -63,7 +72,14 @@ async def capabilities(request):
         sharp_spz = callable(_parse_ply_gaussian) and callable(_gaussian_spz_bytes)
     except ImportError:
         sharp_spz = False
-    return web.json_response({'version': 1, 'images': True, 'video_mp4': True, 'qwen_audio': True, 'sharp_spz': sharp_spz, 'sharp_splat_limit': sharp_spz, 'sharp_splat_limit_300k': sharp_spz, 'sharp_splat_limit_500k': sharp_spz, 'capacity_bytes': _LIMIT})
+    try:
+        import folder_paths
+        pack = Path(folder_paths.base_path) / 'custom_nodes' / 'ComfyUI-InfiniSplat'
+        model = Path(folder_paths.models_dir) / 'infinisplat/checkpoints/infinisplat_rgb.ckpt'
+        infini_spz = sharp_spz and (pack / '.venv/bin/python').is_file() and (pack / 'worker.py').is_file() and (pack / 'upstream/src/demo/infer_batch_images.py').is_file() and model.is_file()
+    except (ImportError, AttributeError, OSError):
+        infini_spz = False
+    return web.json_response({'version': 1, 'images': True, 'video_mp4': True, 'qwen_audio': True, 'sharp_spz': sharp_spz, 'infinisplat_spz': infini_spz, 'sharp_splat_limit': sharp_spz, 'sharp_splat_limit_300k': sharp_spz, 'sharp_splat_limit_500k': sharp_spz, 'capacity_bytes': _LIMIT})
 
 
 @PromptServer.instance.routes.get('/prompt-fusion-memory/v1/{token}/{index}')
@@ -239,4 +255,64 @@ class PromptFusionMemorySharp:
         return {'ui': {'images': [{'filename': '0', 'subfolder': token, 'type': 'pf_memory'}]}}
 
 
-NODE_CLASS_MAPPINGS = {'PromptFusionMemoryImage': PromptFusionMemoryImage, 'PromptFusionMemoryVideo': PromptFusionMemoryVideo, 'PromptFusionMemoryQwenAudio': PromptFusionMemoryQwenAudio, 'PromptFusionSharpRamGuard': PromptFusionSharpRamGuard, 'PromptFusionMemorySharp': PromptFusionMemorySharp}
+class PromptFusionMemoryInfiniSplat:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {'required': {'image': ('IMAGE',), 'token': ('STRING',), 'focal_length_mm': ('FLOAT', {'min': 0.1, 'max': 500.0}), 'gaussian_count': ('INT', {'min': 10000, 'max': 4000000, 'step': 10000}), 'query_chunk_size': ('INT', {'min': 1000, 'max': 160000}), 'seed': ('INT', {'min': 0, 'max': 0xffffffffffffffff}), 'filter_floaters': ('BOOLEAN',)}}
+    RETURN_TYPES = ()
+    FUNCTION = 'save'
+    OUTPUT_NODE = True
+    CATEGORY = 'Prompt Fusion'
+
+    def save(self, image, token, focal_length_mm, gaussian_count, query_chunk_size, seed, filter_floaters):
+        if not _TOKEN.fullmatch(token) or type(gaussian_count) is not int or not 10000 <= gaussian_count <= 4000000 or gaussian_count % 10000 or len(image) != 1:
+            raise ValueError('Invalid InfiniSplat output request')
+        _check_tmpfs()
+        if os.statvfs('/dev/shm').f_bavail * os.statvfs('/dev/shm').f_frsize < 512 * 1024 * 1024:
+            raise ValueError('Not enough RAM-backed storage for InfiniSplat')
+        import torch
+        import folder_paths
+        import comfy.model_management as mm
+        from comfy_extras.nodes_gaussian_splat import _parse_ply_gaussian, _gaussian_spz_bytes
+        pack = Path(folder_paths.base_path) / 'custom_nodes' / 'ComfyUI-InfiniSplat'
+        python, worker = pack / '.venv/bin/python', pack / 'worker.py'
+        checkpoint = Path(folder_paths.models_dir) / 'infinisplat/checkpoints/infinisplat_rgb.ckpt'
+        if not python.is_file() or not worker.is_file() or not checkpoint.is_file():
+            raise ValueError('InfiniSplat runtime or checkpoint is missing; provision it first')
+        mm.unload_all_models()
+        mm.soft_empty_cache()
+        with tempfile.TemporaryDirectory(prefix='prompt-fusion-infini-', dir='/dev/shm') as directory:
+            root = Path(directory)
+            (root / 'input').mkdir()
+            pixels = (image[0, ..., :3].detach().cpu().clamp(0, 1).numpy() * 255).round().astype(np.uint8)
+            Image.fromarray(pixels).save(root / 'input/0000.png')
+            request = {'input_dir': str(root / 'input'), 'output_dir': str(root / 'output'), 'checkpoint': str(checkpoint), 'model_dir': str(checkpoint.parent.parent), 'focal_length_mm': focal_length_mm, 'gaussian_count': gaussian_count, 'query_chunk_size': query_chunk_size, 'seed': seed, 'filter_floaters': filter_floaters, 'download_model': False, 'device': str(mm.get_torch_device()), 'camera_estimation': 'manual'}
+            (root / 'request.json').write_text(json.dumps(request))
+            env = os.environ.copy()
+            env.pop('PYTHONPATH', None)
+            env.pop('PYTHONHOME', None)
+            env['HF_HUB_DISABLE_TELEMETRY'] = '1'
+            with (root / 'worker.log').open('wb') as log:
+                process = subprocess.Popen([str(python), str(worker), str(root / 'request.json')], cwd=str(pack / 'upstream'), env=env, stdout=log, stderr=subprocess.STDOUT)
+                try:
+                    while process.poll() is None:
+                        mm.throw_exception_if_processing_interrupted()
+                        time.sleep(0.25)
+                finally:
+                    if process.poll() is None:
+                        process.kill()
+                    process.wait()
+            if process.returncode:
+                raise ValueError('InfiniSplat failed: ' + (root / 'worker.log').read_text(errors='replace')[-4000:])
+            result = root / 'output/0000/0000.ply'
+            if not result.is_file() or result.stat().st_size > 256 * 1024 * 1024:
+                raise ValueError('InfiniSplat returned a missing or oversized PLY')
+            arrays = _parse_ply_gaussian(result.read_bytes())
+            if arrays[4].shape[1] != 1:
+                raise ValueError('SPZ conversion would discard higher-order colour data')
+            compressed = _gaussian_spz_bytes(*[torch.from_numpy(array) for array in arrays])
+            _store(token, [(compressed, 'application/x-spz')])
+        return {'ui': {'images': [{'filename': '0', 'subfolder': token, 'type': 'pf_memory'}]}}
+
+
+NODE_CLASS_MAPPINGS = {'PromptFusionMemoryImage': PromptFusionMemoryImage, 'PromptFusionMemoryVideo': PromptFusionMemoryVideo, 'PromptFusionMemoryQwenAudio': PromptFusionMemoryQwenAudio, 'PromptFusionSharpRamGuard': PromptFusionSharpRamGuard, 'PromptFusionMemorySharp': PromptFusionMemorySharp, 'PromptFusionMemoryInfiniSplat': PromptFusionMemoryInfiniSplat}

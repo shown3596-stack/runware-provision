@@ -799,3 +799,9 @@ a repeat build reused the workspace. The model checksum and required node
 registrations passed. A separate ComfyUI execution with the bundled icon image
 produced a 63 MB PLY. The full provisioner then completed against the prepared
 Pod. Artflow transfer, persistent storage and VR rendering were not tested.
+
+# InfiniSplat Image to Gaussian Splat
+
+The supplied API graph is saved with an editable `API_SPLAT_COUNT`, default 500,000 (10,000–4,000,000, in steps of 10,000), and a starting image. InfiniSplat samples points during generation; the floater filter can reduce the final count. For Artflow, execution uses the pinned InfiniSplat worker in an isolated Python runtime and a RAM-only adapter that writes intermediate images, logs and PLY to `/dev/shm`, converts to SPZ and removes the temporary files. The saved ComfyUI graph remains unchanged apart from input markers.
+
+The RGB model is pinned to `PLUS-WAVE/InfiniSplat` revision `455dc3f21f3b2ddba37df65443112882fc6016d2`, SHA-256 `d68a8c99109f06a264567766bd52d8d9ba81e51d044d0a966c3336160ea7007d`, 3,142,241,921 bytes. The node is pinned to `jKaarlehto/ComfyUI-InfiniSplat` commit `0722bc45e86b51f3fff2415ffc0c982fb0ffa5aa`; its installer pins upstream InfiniSplat commit `f41394a8930e72905d33928396fcac4574cd70a9`. The upstream installer has unpinned transitive Python dependencies. The original model and conversion were previously tested on the current Pod; the Artflow RAM adapter and fresh-Pod provisioning have not been GPU tested.

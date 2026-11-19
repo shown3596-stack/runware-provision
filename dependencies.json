@@ -21,7 +21,7 @@
     "2026-11-08: Kroma Turbo OPD Amateur Upscale adds the publisher BF16 checkpoint, mirrored Amateur Slider and Comfy-Org Wan 2.1 VAE with pinned revisions, SHA256 and sizes; reuses Krea Qwen encoder. VAEEncode and ImageScaleBy are core nodes. res_multistep and beta appeared in the current Pod KSampler schema; fresh template sampler compatibility, model payloads and GPU execution were not verified.",
     "2026-11-09: Added non-turbo Mage Flow INT8 workflow. The official Comfy-Org diffusion checkpoint is pinned to revision and SHA-256 verified against publisher metadata; text encoder and VAE are shared with Mage Flow Turbo. No checkpoint payload download, new Pod installation, or live GPU generation verified.",
     "2026-11-09: Replaced Kromoss OPD INT8 workflow with user-supplied Kromoss update-11000 BF16 and Qwen3.5 W4A8 graph, including its DMD2 adapter, CFG 2 and Comfy Kitchen attention; publisher revisions and SHA256 pinned. MOSS workflows now expose steps and CFG. Rapid MOSS uses CFGGuider and zeroed negative conditioning, default CFG 1; CFG values other than 1 have not been GPU tested.",
-    "2026-11-09: Replaced the four-step Rapid MOSS workflow with the lodestones eight-step data-space adapter; its three files are pinned by publisher revision, size and SHA256. The adapter node supports 1–8 steps. Existing MOSS SFT model, encoder and VAE are shared. No live GPU inference has been tested.",
+    "2026-11-09: Replaced the four-step Rapid MOSS workflow with the lodestones eight-step data-space adapter; its three files are pinned by publisher revision, size and SHA256. The adapter node supports 1\u20138 steps. Existing MOSS SFT model, encoder and VAE are shared. No live GPU inference has been tested.",
     "2026-11-12: MiniMax H3 Image pDMD dependencies pinned to publisher metadata; ComfyUI core node ownership reviewed. No provisioning or fresh GPU test performed.",
     "2026-11-12: MiniMax H3 Image pDMD Detail uses the publisher pre-merged BF16 checkpoint pinned to publisher revision, size and SHA-256; ImageScale core ownership reviewed. No fresh Pod or GPU test performed.",
     "2026-11-12: MiniMax H3 Turbo 4 Step Image to Video: LightX2V 4-step LoRA and Comfy-Org audio VAE pinned to publisher revisions, sizes and SHA256; new core node ownership reviewed. No fresh Pod provisioning or adapted workflow GPU run."
@@ -746,6 +746,15 @@
       "approx_gb": 2.81,
       "review": null,
       "verified_date": "2026-11-18"
+    },
+    "models/infinisplat/checkpoints/infinisplat_rgb.ckpt": {
+      "url": "https://huggingface.co/PLUS-WAVE/InfiniSplat/resolve/455dc3f21f3b2ddba37df65443112882fc6016d2/checkpoints/infinisplat_rgb.ckpt",
+      "source": "https://huggingface.co/PLUS-WAVE/InfiniSplat/blob/455dc3f21f3b2ddba37df65443112882fc6016d2/checkpoints/infinisplat_rgb.ckpt",
+      "revision": "455dc3f21f3b2ddba37df65443112882fc6016d2",
+      "sha256": "d68a8c99109f06a264567766bd52d8d9ba81e51d044d0a966c3336160ea7007d",
+      "size": 3142241921,
+      "approx_gb": 3.15,
+      "review": null
     }
   },
   "custom_nodes": {
@@ -869,6 +878,15 @@
       ],
       "runtime": "sharp_gaussian_isolated",
       "review": null
+    },
+    "ComfyUI-InfiniSplat": {
+      "repo": "https://github.com/jKaarlehto/ComfyUI-InfiniSplat.git",
+      "commit": "0722bc45e86b51f3fff2415ffc0c982fb0ffa5aa",
+      "nodes": [
+        "InfiniSplatGenerate"
+      ],
+      "runtime": "infinisplat_isolated",
+      "review": null
     }
   },
   "core_nodes": {
@@ -937,7 +955,8 @@
     "MiniMaxH3ImageToVideo": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_minimax_h3.py",
     "VAEDecodeAudio": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_audio.py",
     "ImageScaleToTotalPixels": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_post_processing.py",
-    "GetImageSize": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_images.py"
+    "GetImageSize": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_images.py",
+    "PreviewGaussianSplat": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_load_3d.py"
   },
   "workflows": {
     "qwen-2512.json": {
@@ -1029,6 +1048,12 @@
       "name": "SHARP Basic Image to Gaussian Splat",
       "extra_models": [
         "models/sharp/sharp_2572gikvuh.pt"
+      ]
+    },
+    "infinisplat-image-to-gaussian-splat.json": {
+      "name": "InfiniSplat Image to Gaussian Splat",
+      "extra_models": [
+        "models/infinisplat/checkpoints/infinisplat_rgb.ckpt"
       ]
     }
   }

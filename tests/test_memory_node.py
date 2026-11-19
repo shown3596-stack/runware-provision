@@ -43,6 +43,12 @@ class NodeTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'Unsupported SHARP splat limit'):
                 node.save('not-a-path', 'a' * 64, limit)
 
+    def test_infinisplat_rejects_bad_tokens_counts_and_batches(self):
+        node = self.node.PromptFusionMemoryInfiniSplat()
+        for token, count, image in [('bad', 500000, [1]), ('a' * 64, 9999, [1]), ('a' * 64, 10001, [1]), ('a' * 64, 500000, [1, 2])]:
+            with self.assertRaisesRegex(ValueError, 'Invalid InfiniSplat output request'):
+                node.save(image, token, 30, count, 20000, 0, True)
+
     def test_image_batch_encodes_in_memory_and_preserves_order(self):
         class Array:
             def __rmul__(self, value): return self

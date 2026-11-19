@@ -621,6 +621,8 @@ def custom_node(root, name, package, verify=False, downloader='curl', connection
                       "m['main']()")
             env = dict(os.environ, QWEN3_TTS_SKIP_MODEL_DOWNLOAD='1', QWEN_INSTALLER=str(installer))
             subprocess.run([sys.executable, '-c', script], env=env, check=True)
+        elif package.get('runtime') == 'infinisplat_isolated':
+            subprocess.run([sys.executable, str(ROOT / 'scripts/install_infinisplat_runtime.py'), str(target)], check=True)
         elif package.get('runtime') == 'sharp_gaussian_isolated':
             subprocess.run([sys.executable, str(ROOT / 'scripts/install_sharp_runtime.py'), str(root)], check=True)
         elif package.get('runtime') == 'sharp_gaussian_companion':
@@ -631,6 +633,9 @@ def custom_node(root, name, package, verify=False, downloader='curl', connection
     if package.get('runtime') == 'qwen3_tts_isolated':
         runtime = target / '.venv' / 'bin' / 'python'
         subprocess.run([str(runtime), '-c', 'from qwen_tts import Qwen3TTSModel; import torch; assert torch.cuda.is_available()'], check=True)
+    if package.get('runtime') == 'infinisplat_isolated':
+        runtime = target / '.venv' / 'bin' / 'python'
+        subprocess.run([str(runtime), '-c', 'import torch, plyfile, hydra; assert torch.cuda.is_available()'], check=True)
     if package.get('runtime') == 'sharp_gaussian_isolated':
         workspace = Path(os.environ.get('COMFY_ENV_ROOT', str(Path.home() / '.ce')))
         for environment_name in ('sharp-nodes', 'gaussianpack-nodes'):
