@@ -755,6 +755,15 @@
       "size": 3142241921,
       "approx_gb": 3.15,
       "review": null
+    },
+    "models/loras/moss_sft_4step_rank_64_lora_chk00030000_comfyui.safetensors": {
+      "url": "https://huggingface.co/lvladikov/MOSS-SFT-Distill-4step-LoRA/resolve/8d211b763fa020facf0f4aa32d6effca965bf37d/_archive/checkpoints/moss_sft_4step_rank_64_lora_chk00030000_comfyui.safetensors",
+      "source": "https://huggingface.co/lvladikov/MOSS-SFT-Distill-4step-LoRA/blob/8d211b763fa020facf0f4aa32d6effca965bf37d/_archive/checkpoints/moss_sft_4step_rank_64_lora_chk00030000_comfyui.safetensors",
+      "revision": "8d211b763fa020facf0f4aa32d6effca965bf37d",
+      "sha256": "b5b998f65b181169bd2fe6d0ee384a42bebffc1f2aa760b08323aea44497ad11",
+      "size_bytes": 594633680,
+      "approx_gb": 0.595,
+      "review": null
     }
   },
   "custom_nodes": {

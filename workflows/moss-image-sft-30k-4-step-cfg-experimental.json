@@ -1,0 +1,293 @@
+{
+  "name": "MOSS Image SFT 30K 4 Step CFG Experimental",
+  "workflow": {
+    "1": {
+      "inputs": {
+        "unet_name": "moss_image_sft_bf16.safetensors",
+        "weight_dtype": "default"
+      },
+      "class_type": "UNETLoader",
+      "_meta": {
+        "title": "Load MOSS-Image-SFT (bf16, Comfy-Org file)"
+      }
+    },
+    "3": {
+      "inputs": {
+        "text": "API_POSITIVE_PROMPT",
+        "clip": [
+          "10",
+          0
+        ]
+      },
+      "class_type": "CLIPTextEncode",
+      "_meta": {
+        "title": "Prompt (positive)"
+      }
+    },
+    "4": {
+      "inputs": {
+        "text": "API_NEGATIVE_PROMPT",
+        "clip": [
+          "10",
+          0
+        ]
+      },
+      "class_type": "CLIPTextEncode",
+      "_meta": {
+        "title": "Negative (leave empty — CFG is 1.0)"
+      }
+    },
+    "6": {
+      "inputs": {
+        "width": "API_WIDTH",
+        "height": "API_HEIGHT",
+        "batch_size": 1
+      },
+      "class_type": "EmptyFlux2LatentImage",
+      "_meta": {
+        "title": "Empty Flux 2 Latent"
+      }
+    },
+    "7": {
+      "class_type": "SamplerCustomAdvanced",
+      "inputs": {
+        "noise": [
+          "14",
+          0
+        ],
+        "guider": [
+          "13",
+          0
+        ],
+        "sampler": [
+          "15",
+          0
+        ],
+        "sigmas": [
+          "23",
+          0
+        ],
+        "latent_image": [
+          "6",
+          0
+        ]
+      },
+      "_meta": {
+        "title": "MOSS SFT 30K sampling"
+      }
+    },
+    "8": {
+      "inputs": {
+        "samples": [
+          "7",
+          0
+        ],
+        "vae": [
+          "11",
+          0
+        ]
+      },
+      "class_type": "VAEDecode",
+      "_meta": {
+        "title": "VAE Decode"
+      }
+    },
+    "9": {
+      "inputs": {
+        "filename_prefix": "moss-4step",
+        "images": [
+          "8",
+          0
+        ]
+      },
+      "class_type": "SaveImage",
+      "_meta": {
+        "title": "Save Image"
+      }
+    },
+    "10": {
+      "inputs": {
+        "clip_name": "qwen3.5_9b_int8_convrot.safetensors",
+        "type": "moss_image",
+        "device": "default"
+      },
+      "class_type": "CLIPLoader",
+      "_meta": {
+        "title": "Load Qwen3.5 text encoder (type moss_image)"
+      }
+    },
+    "11": {
+      "inputs": {
+        "vae_name": "flux2-vae.safetensors"
+      },
+      "class_type": "VAELoader",
+      "_meta": {
+        "title": "Load FLUX.2 VAE"
+      }
+    },
+    "12": {
+      "inputs": {
+        "lora_name": "moss_sft_4step_rank_64_lora_chk00030000_comfyui.safetensors",
+        "strength_model": 1,
+        "model": [
+          "1",
+          0
+        ]
+      },
+      "class_type": "LoraLoaderModelOnly",
+      "_meta": {
+        "title": "MOSS SFT 30K four-step LoRA (strength 1.0)"
+      }
+    },
+    "13": {
+      "class_type": "CFGGuider",
+      "inputs": {
+        "model": [
+          "12",
+          0
+        ],
+        "positive": [
+          "3",
+          0
+        ],
+        "negative": [
+          "4",
+          0
+        ],
+        "cfg": "API_CFG"
+      },
+      "_meta": {
+        "title": "CFG guider (experimental negative prompt)"
+      }
+    },
+    "14": {
+      "class_type": "RandomNoise",
+      "inputs": {
+        "noise_seed": 0
+      },
+      "_meta": {
+        "title": "Random noise"
+      }
+    },
+    "15": {
+      "class_type": "KSamplerSelect",
+      "inputs": {
+        "sampler_name": "euler"
+      },
+      "_meta": {
+        "title": "Euler sampler"
+      }
+    },
+    "16": {
+      "class_type": "ManualSigmas",
+      "inputs": {
+        "sigmas": "1.0, 0.91, 0.717, 0.024, 0.0"
+      },
+      "_meta": {
+        "title": "MOSS 4-step schedule"
+      }
+    },
+    "17": {
+      "class_type": "ManualSigmas",
+      "inputs": {
+        "sigmas": "1.0, 0.953, 0.883, 0.771, 0.562, 0.024, 0.0"
+      },
+      "_meta": {
+        "title": "MOSS 6-step schedule"
+      }
+    },
+    "18": {
+      "class_type": "ManualSigmas",
+      "inputs": {
+        "sigmas": "1.0, 0.968, 0.926, 0.871, 0.791, 0.671, 0.463, 0.024, 0.0"
+      },
+      "_meta": {
+        "title": "MOSS 8-step schedule"
+      }
+    },
+    "19": {
+      "class_type": "PrimitiveInt",
+      "inputs": {
+        "value": "API_STEPS"
+      },
+      "_meta": {
+        "title": "Steps (4, 6 or 8)"
+      }
+    },
+    "20": {
+      "class_type": "ComfyMathExpression",
+      "inputs": {
+        "expression": "a == 6",
+        "values.a": [
+          "19",
+          0
+        ]
+      },
+      "_meta": {
+        "title": "Use 6 steps"
+      }
+    },
+    "21": {
+      "class_type": "ComfyMathExpression",
+      "inputs": {
+        "expression": "a == 8",
+        "values.a": [
+          "19",
+          0
+        ]
+      },
+      "_meta": {
+        "title": "Use 8 steps"
+      }
+    },
+    "22": {
+      "class_type": "ComfySwitchNode",
+      "inputs": {
+        "switch": [
+          "20",
+          2
+        ],
+        "on_false": [
+          "16",
+          0
+        ],
+        "on_true": [
+          "17",
+          0
+        ]
+      },
+      "_meta": {
+        "title": "Select four or six steps"
+      }
+    },
+    "23": {
+      "class_type": "ComfySwitchNode",
+      "inputs": {
+        "switch": [
+          "21",
+          2
+        ],
+        "on_false": [
+          "22",
+          0
+        ],
+        "on_true": [
+          "18",
+          0
+        ]
+      },
+      "_meta": {
+        "title": "Select eight steps"
+      }
+    }
+  },
+  "parameter_defaults": {
+    "API_POSITIVE_PROMPT": "A cozy cafe chalkboard menu with hand-lettered white chalk text: \"TODAY'S SPECIAL — Flat White $4.50\", small drawings of coffee cups, warm lighting",
+    "API_NEGATIVE_PROMPT": "",
+    "API_WIDTH": 1024,
+    "API_HEIGHT": 1024,
+    "API_STEPS": 4,
+    "API_CFG": 2
+  },
+  "id": "eb2ba603e339487b8b24832d422494b5"
+}
