@@ -1,0 +1,217 @@
+{
+  "name": "Qwen Image 2.1 Uncensored Omni Turbo",
+  "workflow": {
+    "451": {
+      "inputs": {
+        "unet_name": "chatrlabs_qwen_image21_step90000_bf16.safetensors",
+        "weight_dtype": "default"
+      },
+      "class_type": "UNETLoader",
+      "_meta": {
+        "title": "Load Diffusion Model",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    },
+    "452": {
+      "inputs": {
+        "prompt": "API_POSITIVE_PROMPT",
+        "negative_prompt": " ",
+        "resolution": 1728,
+        "clip": [
+          "453",
+          0
+        ]
+      },
+      "class_type": "TextEncodeQwenImage21",
+      "_meta": {
+        "title": "Text Encode Qwen Image 2.1",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    },
+    "453": {
+      "inputs": {
+        "clip_name": "qwen3vl_8b_int8_convrot.safetensors",
+        "type": "qwen_image",
+        "device": "default"
+      },
+      "class_type": "CLIPLoader",
+      "_meta": {
+        "title": "Load CLIP",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    },
+    "454": {
+      "inputs": {
+        "vae_name": "qwen_image_2.1_vae_bf16.safetensors"
+      },
+      "class_type": "VAELoader",
+      "_meta": {
+        "title": "Load VAE",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    },
+    "456": {
+      "inputs": {
+        "width": "API_WIDTH",
+        "height": "API_HEIGHT",
+        "batch_size": 1
+      },
+      "class_type": "EmptyLatentImage",
+      "_meta": {
+        "title": "Empty Latent Image",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    },
+    "457": {
+      "inputs": {
+        "samples": [
+          "458",
+          0
+        ],
+        "vae": [
+          "454",
+          0
+        ]
+      },
+      "class_type": "VAEDecode",
+      "_meta": {
+        "title": "VAE Decode",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    },
+    "458": {
+      "class_type": "SamplerCustomAdvanced",
+      "inputs": {
+        "noise": [
+          "491",
+          0
+        ],
+        "guider": [
+          "492",
+          0
+        ],
+        "sampler": [
+          "493",
+          0
+        ],
+        "sigmas": [
+          "494",
+          0
+        ],
+        "latent_image": [
+          "456",
+          0
+        ]
+      },
+      "_meta": {
+        "title": "Euler sampling - publisher Turbo schedule"
+      }
+    },
+    "480": {
+      "inputs": {
+        "device": "auto",
+        "dtype": "default",
+        "model": [
+          "490",
+          0
+        ]
+      },
+      "class_type": "QwenImage21Cache",
+      "_meta": {
+        "title": "Qwen Image 2.1 Cache",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    },
+    "485": {
+      "inputs": {
+        "filename_prefix": "sample_0006_seed12347",
+        "images": [
+          "457",
+          0
+        ]
+      },
+      "class_type": "SaveImage",
+      "_meta": {
+        "title": "Save Image",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    },
+    "490": {
+      "inputs": {
+        "lora_name": "chatrlabs-omni-turbo-8step-fp32.safetensors",
+        "strength_model": 1,
+        "model": [
+          "451",
+          0
+        ]
+      },
+      "class_type": "LoraLoaderModelOnly",
+      "_meta": {
+        "title": "Load LoRA",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    },
+    "491": {
+      "class_type": "RandomNoise",
+      "inputs": {
+        "noise_seed": 12347
+      },
+      "_meta": {
+        "title": "Random noise"
+      }
+    },
+    "492": {
+      "class_type": "BasicGuider",
+      "inputs": {
+        "model": [
+          "480",
+          0
+        ],
+        "conditioning": [
+          "452",
+          0
+        ]
+      },
+      "_meta": {
+        "title": "Basic guider (CFG 1)"
+      }
+    },
+    "493": {
+      "class_type": "KSamplerSelect",
+      "inputs": {
+        "sampler_name": "euler"
+      },
+      "_meta": {
+        "title": "Euler sampler"
+      }
+    },
+    "494": {
+      "class_type": "ViggleTurboSigmas",
+      "inputs": {
+        "latent": [
+          "456",
+          0
+        ],
+        "nodes": "1.0, 0.875, 0.75, 0.625, 0.5, 0.375, 0.25, 0.125"
+      },
+      "_meta": {
+        "title": "Qwen 2.1 resolution-shifted Turbo sigmas"
+      }
+    }
+  },
+  "parameter_defaults": {
+    "API_POSITIVE_PROMPT": "two people sitting in a cafe",
+    "API_WIDTH": 1728,
+    "API_HEIGHT": 1728
+  },
+  "id": "8f2b0a9d452041b0af9f76d7c46c1ff9"
+}

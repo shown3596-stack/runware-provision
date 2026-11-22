@@ -414,3 +414,9 @@ The installer refuses to replace an existing unowned comfy-env workspace or
 rebuild one containing other comfy-env packs. The workflow can be tested in
 ComfyUI; it is deliberately excluded from the Artflow bridge until 3D result
 transport is implemented. See `DEPENDENCIES.md` for the tested Pod and limits.
+
+## Qwen Image 2.1 Uncensored Omni Turbo
+
+`qwen-image-2-1-uncensored-omni-turbo` uses ChatR's BF16 Omni model and
+Turbo LoRA with eight Euler steps and a resolution-dependent sigma schedule.
+See DEPENDENCIES.md for sources, license and verification status.

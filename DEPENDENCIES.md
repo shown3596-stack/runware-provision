@@ -811,3 +811,20 @@ The RGB model is pinned to `PLUS-WAVE/InfiniSplat` revision `455dc3f21f3b2ddba37
 The existing MOSS Image SFT 4 Step workflow and the new MOSS Image SFT 30K 4 Step CFG Experimental workflow use the same SFT BF16 model, Qwen3.5 INT8 encoder, FLUX.2 VAE and 30K distillation LoRA. They retain editable 4, 6 and 8 step schedules using the creator's published manual sigma values. The standard graph uses a BasicGuider (CFG 1); the experimental graph uses CFGGuider with editable CFG (default 2) and a negative prompt. The creator trained the LoRA at CFG 1; higher CFG is experimental and costs a second model evaluation per step.
 
 The ComfyUI LoRA is pinned to `lvladikov/MOSS-SFT-Distill-4step-LoRA` revision `8d211b763fa020facf0f4aa32d6effca965bf37d`, archive file `_archive/checkpoints/moss_sft_4step_rank_64_lora_chk00030000_comfyui.safetensors`, SHA-256 `b5b998f65b181169bd2fe6d0ee384a42bebffc1f2aa760b08323aea44497ad11`, 594,633,680 bytes. The local filename includes the checkpoint number so it can coexist with the prior 15K file. The creator's LoRA factor was measured on the BF16 base; this workflow retains the existing INT8 text encoder and full FLUX.2 VAE. The four-step switch was tested with the connected ComfyUI's CPU nodes. Full GPU generation and six-/eight-step switching have not been tested live.
+
+# Qwen Image 2.1 Uncensored Omni Turbo — 22 November 2026
+
+The supplied graph is preserved separately; the app and provisioning copies use the
+ChatR BF16 Omni transformer and Turbo LoRA at strength 1. For the publisher's
+8-step Turbo schedule, the saved sampler was replaced with Euler, a CFG-1 basic
+guider and resolution-shifted raw sigma points 1, 7/8, ..., 1/8, ending in 0.
+The pinned ViggleTurboSigmas node calculates the Qwen Diffusers exponential shift
+from latent dimensions with no terminal stretch. This is an independently sourced
+scheduler node implementing the publisher's described schedule, not a published
+ChatR workflow. The positive prompt and dimensions are editable; the negative
+conditioning is unused at CFG 1. The submitted 1728-square default is retained.
+The model and LoRA are pinned by full revision, size and SHA-256; encoder and VAE
+are shared with Qwen 2.1. The LoRA was downloaded and checksum-verified on the
+previously connected Pod. The adapted graph, scheduler node installation and GPU
+inference have not been tested live. Qwen Research license limits use to
+non-commercial research and evaluation unless separately licensed.

@@ -764,6 +764,26 @@
       "size_bytes": 594633680,
       "approx_gb": 0.595,
       "review": null
+    },
+    "models/diffusion_models/chatrlabs_qwen_image21_step90000_bf16.safetensors": {
+      "url": "https://huggingface.co/chatrlabs/Qwen-Image-2.1-Uncensored-Omni-Quantized/resolve/85156a863c05a58b73831d21bd968b5344d7296e/qwen-image-2.1-step90000-BF16/diffusion_pytorch_model.safetensors",
+      "source": "https://huggingface.co/chatrlabs/Qwen-Image-2.1-Uncensored-Omni-Quantized/blob/85156a863c05a58b73831d21bd968b5344d7296e/qwen-image-2.1-step90000-BF16/diffusion_pytorch_model.safetensors",
+      "revision": "85156a863c05a58b73831d21bd968b5344d7296e",
+      "sha256": "97b3ad25796fc4b7d5e2572ffb3bd8560e3c343d79623e2711fabe9ebcf3cfe3",
+      "size_bytes": 14230284680,
+      "review": null,
+      "verified_date": "2026-11-22",
+      "approx_gb": 14.23
+    },
+    "models/loras/chatrlabs-omni-turbo-8step-fp32.safetensors": {
+      "url": "https://huggingface.co/chatrlabs/Qwen-Image-2.1-Uncensored-Omni-LoRA-v0.1/resolve/142de7a5af56387c5282a0e91532cafc726af7b8/chatrlabs-omni-turbo-8step-fp32.safetensors",
+      "source": "https://huggingface.co/chatrlabs/Qwen-Image-2.1-Uncensored-Omni-LoRA-v0.1/blob/142de7a5af56387c5282a0e91532cafc726af7b8/chatrlabs-omni-turbo-8step-fp32.safetensors",
+      "revision": "142de7a5af56387c5282a0e91532cafc726af7b8",
+      "sha256": "77e8863bed85e7baebd31e242810a708e11071674e42b7c21b0ff9c88cd94b43",
+      "size_bytes": 671148320,
+      "review": null,
+      "verified_date": "2026-11-22",
+      "approx_gb": 0.671
     }
   },
   "custom_nodes": {
@@ -896,6 +916,20 @@
       ],
       "runtime": "infinisplat_isolated",
       "review": null
+    },
+    "qwen21-viggle-sigmas": {
+      "repo": "https://huggingface.co/Viggle/Qwen-Image-2.1-viggle-turbo",
+      "commit": "009a44a895ef85f7e643c80fdca9543795248867",
+      "nodes": [
+        "ViggleTurboSigmas"
+      ],
+      "review": null,
+      "files": {
+        "__init__.py": {
+          "url": "https://huggingface.co/Viggle/Qwen-Image-2.1-viggle-turbo/resolve/009a44a895ef85f7e643c80fdca9543795248867/comfyui/viggle_turbo.py",
+          "sha256": "0592defd8ee6555b8c02bd9b287514849b1d46f579f47f8c7f711e6411f89587"
+        }
+      }
     }
   },
   "core_nodes": {
