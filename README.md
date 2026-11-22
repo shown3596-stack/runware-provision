@@ -420,3 +420,8 @@ transport is implemented. See `DEPENDENCIES.md` for the tested Pod and limits.
 `qwen-image-2-1-uncensored-omni-turbo` uses ChatR's BF16 Omni model and
 Turbo LoRA with eight Euler steps and a resolution-dependent sigma schedule.
 See DEPENDENCIES.md for sources, license and verification status.
+
+## MiniMax H3 Image Q4 GGUF
+
+`minimax-h3-image-q4-gguf` uses the pruned Q4 image model and Q3 text encoder
+with six Euler steps. See DEPENDENCIES.md for dependencies and verification.

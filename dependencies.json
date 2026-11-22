@@ -784,6 +784,26 @@
       "review": null,
       "verified_date": "2026-11-22",
       "approx_gb": 0.671
+    },
+    "models/diffusion_models/MiniMax-H3-Image-Pruned-Q4_K_M.gguf": {
+      "url": "https://huggingface.co/Abiray/MiniMax-H3-Image-GGUF/resolve/fec7ec774db49d0c785bdc2174a488576b7396dd/MiniMax-H3-Image-Pruned-Q4_K_M.gguf",
+      "source": "https://huggingface.co/Abiray/MiniMax-H3-Image-GGUF/blob/fec7ec774db49d0c785bdc2174a488576b7396dd/MiniMax-H3-Image-Pruned-Q4_K_M.gguf",
+      "revision": "fec7ec774db49d0c785bdc2174a488576b7396dd",
+      "sha256": "e545379320e533f9d60e2d831a9489d94889158e88cd681ea7940da47882015f",
+      "size_bytes": 11573106304,
+      "approx_gb": 11.573,
+      "review": null,
+      "verified_date": "2026-11-22"
+    },
+    "models/text_encoders/Qwen3vl_32b_h3-Q3_K_M.gguf": {
+      "url": "https://huggingface.co/Abiray/Qwen3-VL-32B-Instruct-GGUF/resolve/9ab1551f6c7e2b9dcfd791c03179696001d1ebfa/Qwen3vl_32b_h3-Q3_K_M.gguf",
+      "source": "https://huggingface.co/Abiray/Qwen3-VL-32B-Instruct-GGUF/blob/9ab1551f6c7e2b9dcfd791c03179696001d1ebfa/Qwen3vl_32b_h3-Q3_K_M.gguf",
+      "revision": "9ab1551f6c7e2b9dcfd791c03179696001d1ebfa",
+      "sha256": "fd0fb6dc05fa0a9c22082b64b69ec3bac27dfac617633250b61c771f40ce8499",
+      "size_bytes": 12001428448,
+      "approx_gb": 12.001,
+      "review": null,
+      "verified_date": "2026-11-22"
     }
   },
   "custom_nodes": {
@@ -999,7 +1019,9 @@
     "VAEDecodeAudio": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_audio.py",
     "ImageScaleToTotalPixels": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_post_processing.py",
     "GetImageSize": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_images.py",
-    "PreviewGaussianSplat": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_load_3d.py"
+    "PreviewGaussianSplat": "https://github.com/Comfy-Org/ComfyUI/blob/master/comfy_extras/nodes_load_3d.py",
+    "JsonExtractString": "https://github.com/Comfy-Org/ComfyUI/blob/a277b5bf213e8a44fa34817b7770b54f86ef4cea/comfy_extras/nodes_string.py",
+    "MiniMaxH3ImageConditioning": "https://github.com/Comfy-Org/ComfyUI/blob/a277b5bf213e8a44fa34817b7770b54f86ef4cea/comfy_extras/nodes_minimax_h3.py"
   },
   "workflows": {
     "qwen-2512.json": {

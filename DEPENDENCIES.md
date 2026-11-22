@@ -828,3 +828,16 @@ are shared with Qwen 2.1. The LoRA was downloaded and checksum-verified on the
 previously connected Pod. The adapted graph, scheduler node installation and GPU
 inference have not been tested live. Qwen Research license limits use to
 non-commercial research and evaluation unless separately licensed.
+
+# MiniMax H3 Image Q4 GGUF
+
+The supplied six-step Euler/simple graph uses Abiray's Q4_K_M pruned image
+model and Q3_K_M MiniMax text encoder with the existing MiniMax image VAE.
+Prompt, width and height are editable; the 1 MP square selector resolves to
+1024 × 1024. The conditioning node uses a 32-pixel dimension grid. CFG remains
+1, negative conditioning is zeroed, and the supplied disabled prompt-enhancer
+branch is retained. ComfyUI-GGUF uses the existing pinned package. The two
+GGUF files are pinned with publisher revisions, SHA-256 and exact sizes; the
+files and VAE were checksum-verified on the earlier pod. The supplied ComfyUI
+graph completed there; the parameterised app snapshot and a fresh Pod
+installation have not been GPU-tested.
