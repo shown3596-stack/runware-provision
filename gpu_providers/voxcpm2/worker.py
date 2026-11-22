@@ -7,24 +7,36 @@ import sys
 
 MODEL = '/workspace/artflow-voxcpm2/model'
 
+def validate(request):
+    if not isinstance(request, dict) or set(request) != {'text', 'voice'}:
+        raise ValueError('Invalid request')
+    for field in ('text', 'voice'):
+        value = request[field]
+        if not isinstance(value, str) or not value.strip() or len(value) > 500:
+            raise ValueError('Invalid text or voice instructions')
+    return request
+
+def load_model():
+    from voxcpm import VoxCPM
+    return VoxCPM.from_pretrained(MODEL, load_denoiser=False, optimize=False, device='cuda:0', local_files_only=True)
+
+def generate(model, request):
+    import soundfile as sf
+    request = validate(request)
+    text, voice = request['text'], request['voice']
+    audio = model.generate(text='(' + voice.strip() + ')' + text.strip(), cfg_value=2.0, inference_timesteps=10, max_len=1024)
+    result = io.BytesIO()
+    sf.write(result, audio, model.tts_model.sample_rate, format='WAV', subtype='PCM_16')
+    return result.getvalue()
+
 def main():
     raw = sys.stdin.buffer.read(16385)
     if len(raw) > 16384:
         raise ValueError('Request too large')
-    request = json.loads(raw)
-    if not isinstance(request, dict) or set(request) != {'text', 'voice'}:
-        raise ValueError('Invalid request')
-    text, voice = request['text'], request['voice']
-    if not isinstance(text, str) or not text.strip() or len(text) > 500 or not isinstance(voice, str) or not voice.strip() or len(voice) > 500:
-        raise ValueError('Invalid text or voice instructions')
+    request = validate(json.loads(raw))
     with contextlib.redirect_stdout(sys.stderr):
-        import soundfile as sf
-        from voxcpm import VoxCPM
-        model = VoxCPM.from_pretrained(MODEL, load_denoiser=False, optimize=False, device='cuda:0', local_files_only=True)
-        audio = model.generate(text='(' + voice.strip() + ')' + text.strip(), cfg_value=2.0, inference_timesteps=10, max_len=1024)
-        result = io.BytesIO()
-        sf.write(result, audio, model.tts_model.sample_rate, format='WAV', subtype='PCM_16')
-    sys.stdout.buffer.write(result.getvalue())
+        audio = generate(load_model(), request)
+    sys.stdout.buffer.write(audio)
 
 if __name__ == '__main__':
     try:
