@@ -30,5 +30,5 @@ snapshot_download(repo_id='ResembleAI/chatterbox-turbo', revision='749d1c1a46eb1
 PY
   touch "$provider_root/.ready-ab55923-749d1c1"
 fi
-install -m 0644 "$script_dir/worker.py" "$provider_root/worker.py"
+install -m 0644 "$script_dir/worker.py" "$script_dir/server.py" "$provider_root/"
 printf '%s\n' 'Chatterbox Turbo provider installed.'
