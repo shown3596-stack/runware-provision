@@ -841,3 +841,14 @@ GGUF files are pinned with publisher revisions, SHA-256 and exact sizes; the
 files and VAE were checksum-verified on the earlier pod. The supplied ComfyUI
 graph completed there; the parameterised app snapshot and a fresh Pod
 installation have not been GPU-tested.
+
+# Juggernaut Moss Turbo — 25 November 2026
+
+The supplied graph uses Juggernaut Moss V1 INT8, its DMD2 LoRA at strength 1,
+the MOSS Qwen3.5 INT8 encoder and the small FLUX.2 VAE. Publisher revisions,
+file sizes and SHA-256 values are pinned in the manifest. All four files were
+checksum-verified on the current Pod. Prompt, negative prompt and dimensions
+are editable; defaults preserve the supplied 1152 × 896, eight Euler ancestral /
+simple steps and CFG 2. At CFG 2 the negative prompt can affect generation. The
+publisher recommends six steps and CFG 1 for the beta LoRA; the supplied settings
+are retained. The saved workflow and fresh-Pod provisioning have not been GPU tested.

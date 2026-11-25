@@ -1,0 +1,172 @@
+{
+  "name": "Juggernaut Moss Turbo",
+  "workflow": {
+    "2": {
+      "inputs": {
+        "unet_name": "juggernaut_moss_v1_int8_convrot.safetensors",
+        "weight_dtype": "default"
+      },
+      "class_type": "UNETLoader",
+      "_meta": {
+        "title": "Load Diffusion Model",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    },
+    "3": {
+      "inputs": {
+        "lora_name": "JuggernautMossDMD2Lora4-8Steps.safetensors",
+        "strength_model": 1,
+        "model": [
+          "2",
+          0
+        ]
+      },
+      "class_type": "LoraLoaderModelOnly",
+      "_meta": {
+        "title": "Load LoRA",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    },
+    "4": {
+      "inputs": {
+        "clip_name": "qwen3.5_9b_int8_convrot.safetensors",
+        "type": "moss_image",
+        "device": "default"
+      },
+      "class_type": "CLIPLoader",
+      "_meta": {
+        "title": "Load CLIP",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    },
+    "5": {
+      "inputs": {
+        "vae_name": "flux2-vae_small.safetensors"
+      },
+      "class_type": "VAELoader",
+      "_meta": {
+        "title": "Load VAE",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    },
+    "6": {
+      "inputs": {
+        "text": "API_POSITIVE_PROMPT",
+        "clip": [
+          "4",
+          0
+        ]
+      },
+      "class_type": "CLIPTextEncode",
+      "_meta": {
+        "title": "Positive prompt",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    },
+    "7": {
+      "inputs": {
+        "text": "API_NEGATIVE_PROMPT",
+        "clip": [
+          "4",
+          0
+        ]
+      },
+      "class_type": "CLIPTextEncode",
+      "_meta": {
+        "title": "Negative (ignored at CFG 1)",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    },
+    "8": {
+      "inputs": {
+        "width": "API_WIDTH",
+        "height": "API_HEIGHT",
+        "batch_size": 1
+      },
+      "class_type": "EmptyFlux2LatentImage",
+      "_meta": {
+        "title": "Empty Flux 2 Latent",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    },
+    "9": {
+      "inputs": {
+        "seed": 289045599275014,
+        "steps": 8,
+        "cfg": 2,
+        "sampler_name": "euler_ancestral",
+        "scheduler": "simple",
+        "denoise": 1,
+        "model": [
+          "3",
+          0
+        ],
+        "positive": [
+          "6",
+          0
+        ],
+        "negative": [
+          "7",
+          0
+        ],
+        "latent_image": [
+          "8",
+          0
+        ]
+      },
+      "class_type": "KSampler",
+      "_meta": {
+        "title": "KSampler",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    },
+    "10": {
+      "inputs": {
+        "samples": [
+          "9",
+          0
+        ],
+        "vae": [
+          "5",
+          0
+        ]
+      },
+      "class_type": "VAEDecode",
+      "_meta": {
+        "title": "VAE Decode",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    },
+    "11": {
+      "inputs": {
+        "filename_prefix": "Juggernaut_Moss_Turbo",
+        "images": [
+          "10",
+          0
+        ]
+      },
+      "class_type": "SaveImage",
+      "_meta": {
+        "title": "Save Image",
+        "cnr_id": "comfy-core",
+        "ver": "0.46.0"
+      }
+    }
+  },
+  "parameter_defaults": {
+    "API_POSITIVE_PROMPT": "POSITIVE_PROMPT",
+    "API_NEGATIVE_PROMPT": "",
+    "API_WIDTH": 1152,
+    "API_HEIGHT": 896
+  },
+  "id": "cf4ceddae32a4a65bd18ed1b4ae47536"
+}

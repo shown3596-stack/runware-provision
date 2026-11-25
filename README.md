@@ -425,3 +425,9 @@ See DEPENDENCIES.md for sources, license and verification status.
 
 `minimax-h3-image-q4-gguf` uses the pruned Q4 image model and Q3 text encoder
 with six Euler steps. See DEPENDENCIES.md for dependencies and verification.
+
+## Juggernaut Moss Turbo
+
+`juggernaut-moss-turbo` uses the INT8 Juggernaut Moss model, DMD2 LoRA,
+MOSS text encoder and small FLUX.2 VAE. It retains the supplied eight-step,
+CFG 2 settings. See DEPENDENCIES.md for dependencies and validation.
